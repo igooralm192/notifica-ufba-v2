@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  name     String
+  email    String                @unique
+  password String
+  type     UserType              @default(STUDENT)
+  teacher  Teacher?
+  student  Student?
+  posts    DisciplineGroupPost[]
+  pushToken String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Teacher {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @unique @db.ObjectId
+  user   User?  @relation(fields: [userId], references: [id])
+
+  disciplineIds String[]     @db.ObjectId
+  disciplines   Discipline[] @relation(fields: [disciplineIds], references: [id])
+
+  groups DisciplineGroup[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Student {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  matriculation String @unique
+  course        String
+
+  userId String @unique @db.ObjectId
+  user   User?  @relation(fields: [userId], references: [id])
+
+  groupIds String[]          @db.ObjectId
+  groups   DisciplineGroup[] @relation(fields: [groupIds], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Discipline {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  name   String
+  code   String @unique
+  course String
+
+  teacherIds String[]  @db.ObjectId
+  teachers   Teacher[] @relation(fields: [teacherIds], references: [id])
+
+  groups DisciplineGroup[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DisciplineGroup {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  code        String   @unique
+  semester    String
+  description String
+  place       String
+  menuUrl     String
+  classTime   DateTime
+
+  teacherId String?  @unique @db.ObjectId
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  disciplineId String?     @unique @db.ObjectId
+  discipline   Discipline? @relation(fields: [disciplineId], references: [id])
+
+  studentIds String[]  @db.ObjectId
+  students   Student[] @relation(fields: [studentIds], references: [id])
+
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  DisciplineGroupPost DisciplineGroupPost[]
+}
+
+model DisciplineGroupPost {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  title   String?
+  content String
+
+  authorId String? @db.ObjectId
+  author   User?   @relation(fields: [authorId], references: [id])
+
+  disciplineGroupId String?          @db.ObjectId
+  disciplineGroup   DisciplineGroup? @relation(fields: [disciplineGroupId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserType {
+  STUDENT
+  TEACHER
+}

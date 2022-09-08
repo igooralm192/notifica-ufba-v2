@@ -1,0 +1,7 @@
+export * from './DisciplineGroupDoesNotExistError'
+export * from './StudentAlreadyExistsError'
+export * from './StudentAlreadySubscribedError'
+export * from './StudentDoesNotExistError'
+export * from './UserAlreadyExistsError'
+export * from './UserDoesNotExistError'
+export * from './WrongPasswordError'

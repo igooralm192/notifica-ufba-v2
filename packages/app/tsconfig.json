@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../../dist/api",
+    "rootDir": ".",
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "jsx": "react-native",
+    "lib": ["dom", "esnext"],
+    "moduleResolution": "node",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "paths": {
+      "@/*": ["./packages/app/src/*"],
+      "@shared/*": ["./packages/shared/src/*"]
+    }
+  },
+  "references": [{ "path": "../shared" }]
+}

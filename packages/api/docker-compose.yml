@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    container_name: notifica-ufba
+    environment:
+      POSTGRES_DB: notifica-ufba
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - 5432:5432
+    volumes:
+      - /var/lib/postgresql/data
