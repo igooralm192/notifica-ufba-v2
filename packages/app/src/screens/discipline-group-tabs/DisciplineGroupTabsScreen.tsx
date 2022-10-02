@@ -1,5 +1,4 @@
-import { Button } from '@/components/Button'
-import { FullLoading } from '@/components/FullLoading'
+import { useMe } from '@/contexts/me'
 import { useStatusBar } from '@/contexts/status-bar'
 import { useNavigation } from '@/helpers'
 
@@ -15,10 +14,13 @@ import {
 import { Container } from './DisciplineGroupTabsStyles'
 
 const DisciplineGroupTabsScreen: React.FC = () => {
-  const { initialIndex, disciplineGroup, navigateToCreatePost } = useDisciplineGroupTabsPresenter()
+  const { initialIndex, disciplineGroup, navigateToCreatePost } =
+    useDisciplineGroupTabsPresenter()
 
+  const { user } = useMe()
   const navigation = useNavigation()
   const { theme } = useTheme()
+
   const [index, setIndex] = useState(initialIndex)
 
   useStatusBar('primary')
@@ -77,7 +79,7 @@ const DisciplineGroupTabsScreen: React.FC = () => {
       </TabView>
 
       <FAB
-        visible={true}
+        visible={user?.type === 'TEACHER'}
         icon={{ name: 'add', color: 'white' }}
         color={theme.colors.primary}
         style={{ position: 'absolute', bottom: 30, right: 24 }}

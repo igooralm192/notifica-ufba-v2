@@ -1,4 +1,5 @@
 export * from './DisciplineGroupDoesNotExistError'
+export * from './PermissionDeniedError'
 export * from './StudentAlreadyExistsError'
 export * from './StudentAlreadySubscribedError'
 export * from './StudentDoesNotExistError'

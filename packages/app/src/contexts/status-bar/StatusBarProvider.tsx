@@ -34,9 +34,12 @@ export const StatusBarProvider: React.FC = ({ children }) => {
 
 export const useStatusBar = (theme: StatusBarTheme = 'primary') => {
   const statusBar = useContext(StatusBarContext)
+  const { theme: appTheme } = useTheme()
 
   useFocusEffect(
     useCallback(() => {
+      StatusBar.setBackgroundColor(theme === 'light' ? appTheme.colors.white : appTheme.colors.primary)
+      StatusBar.setBarStyle(theme === 'light' ? 'dark-content' : 'light-content')
       statusBar.setTheme(theme)
     }, [theme]),
   )
