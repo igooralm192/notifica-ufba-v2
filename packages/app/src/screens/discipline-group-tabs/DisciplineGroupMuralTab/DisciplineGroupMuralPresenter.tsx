@@ -1,6 +1,6 @@
 import { IDisciplineGroupPost } from '@shared/entities'
 
-import { IPaginatedList } from '@/types/list'
+import { IFilterParams, IPaginatedList } from '@/types/list'
 
 import React, { useContext } from 'react'
 import {
@@ -18,6 +18,8 @@ import {
 } from '@/state/discipline-group-post'
 import { useDisciplineGroupTabsPresenter } from '../DisciplineGroupTabsPresenter'
 import { useEffect } from 'react'
+import { useInfiniteQuery } from 'react-query'
+import api from '@/api'
 
 export interface DisciplineGroupMuralPresenterContextData {
   loadingPosts: boolean
@@ -28,61 +30,47 @@ const DisciplineGroupMuralPresenterContext = React.createContext(
   {} as DisciplineGroupMuralPresenterContextData,
 )
 
+const initialFilter: IFilterParams = {
+  page: 0,
+  limit: 10,
+}
+
 export const DisciplineGroupMuralPresenter: React.FC = ({ children }) => {
   const { disciplineGroup } = useDisciplineGroupTabsPresenter()
 
-  const [filter, setFilter] = useRecoilState(disciplineGroupPostsFilterState)
-
-  const loadingDisciplineGroupPosts =
-    useRecoilValueLoadable(
-      getDisciplineGroupPostsQuery({
-        disciplineGroupId: disciplineGroup?.id,
-        filterParams: filter,
-      }),
-    ).state === 'loading'
-
-  const [disciplineGroupPostsLoadable, setDisciplineGroupPosts] =
-    useRecoilStateLoadable(disciplineGroupPostsState)
-
-  const getDisciplineGroupPosts = useRecoilCallback(
-    ({ snapshot }) =>
-      async ({
-        disciplineGroupId,
-        filterParams,
-      }: IGetDisciplineGroupPostsQueryArgs) => {
-        const disciplineGroupPosts = await snapshot.getPromise(
-          getDisciplineGroupPostsQuery({ disciplineGroupId, filterParams }),
-        )
-
-        if (filterParams.page === 0)
-          setDisciplineGroupPosts(disciplineGroupPosts)
-        else
-          setDisciplineGroupPosts(currentDisciplineGroupPosts => ({
-            results: [
-              ...currentDisciplineGroupPosts.results,
-              ...disciplineGroupPosts.results,
-            ],
-            total: disciplineGroupPosts.total,
-          }))
+  const { isLoading, data } = useInfiniteQuery(
+    'disciplineGroupPosts',
+    async ({ pageParam = initialFilter }) => {
+      return api.disciplineGroup.getDisciplineGroupPosts(disciplineGroup!.id, {
+        page: pageParam.page,
+        limit: pageParam.limit,
+      })
+    },
+    {
+      enabled: !!disciplineGroup?.id,
+      keepPreviousData: true,
+      refetchOnMount: 'always',
+      getNextPageParam: (_, pages) => {
+        return { ...initialFilter, page: pages.length }
       },
-    [],
+    },
   )
 
-  useEffect(() => {
-    getDisciplineGroupPosts({
-      disciplineGroupId: disciplineGroup?.id,
-      filterParams: filter,
-    })
-  }, [filter])
-
-  if (disciplineGroupPostsLoadable.state === 'loading') return <FullLoading />
+  if (isLoading) return <FullLoading />
+  if (!data) return null
 
   return (
     <DisciplineGroupMuralPresenterContext.Provider
       value={{
-        loadingPosts: loadingDisciplineGroupPosts,
+        loadingPosts: isLoading,
 
-        disciplineGroupPosts: disciplineGroupPostsLoadable.getValue(),
+        disciplineGroupPosts: data.pages.reduce(
+          (acc, page) => ({
+            results: [...acc.results, ...page.results],
+            total: Math.max(acc.total, page.total),
+          }),
+          { results: [], total: 0 },
+        ),
       }}
     >
       {children}

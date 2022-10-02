@@ -1,11 +1,12 @@
 import React from 'react'
-import { Keyboard } from 'react-native'
+import { Keyboard, StyleProp, ViewStyle } from 'react-native'
+import { KeyboardAwareScrollViewProps } from 'react-native-keyboard-aware-scroll-view'
 
 import { Container } from './FormStyles'
 
-export interface FormProps {}
+export interface FormProps extends KeyboardAwareScrollViewProps {}
 
-const Form: React.FC<FormProps> = ({ children }) => {
+const Form: React.FC<FormProps> = props => {
   return (
     <Container
       enableOnAndroid={true}
@@ -15,9 +16,8 @@ const Form: React.FC<FormProps> = ({ children }) => {
       keyboardDismissMode="on-drag"
       keyboardShouldPersistTaps="handled"
       onScrollBeginDrag={Keyboard.dismiss}
-    >
-      {children}
-    </Container>
+      {...props}
+    />
   )
 }
 

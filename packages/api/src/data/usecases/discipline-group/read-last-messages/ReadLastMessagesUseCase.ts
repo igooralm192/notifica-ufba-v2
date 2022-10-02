@@ -51,14 +51,16 @@ export class ReadLastMessagesUseCase implements IReadLastMessagesUseCase {
             disciplineCode: disciplineGroup.discipline!.code,
             disciplineGroupCode: disciplineGroup.code,
             disciplineName: disciplineGroup.discipline!.name,
-            message: messages[0].body,
-            sentBy: messages[0].sentBy,
-            sentAt: messages[0].sentAt,
+            message: messages[0]?.body,
+            sentBy: messages[0]?.sentBy,
+            sentAt: messages[0]?.sentAt,
           }
         })
     })
 
-    const lastMessages = await Promise.all(promises)
+    const lastMessages = await Promise.all(promises).then(lastMessages => {
+      return lastMessages.filter(lastMessage => !!lastMessage.message)
+    })
 
     return right({
       results: lastMessages,

@@ -8,15 +8,15 @@ export const Container = styled(Input).attrs<InputProps>(
         paddingHorizontal: 0,
       },
       inputContainerStyle: {
-        ...(inputContainerStyle?.valueOf() as any),
         width: '100%',
-        minHeight: 56,
+        // minHeight: 56,
         paddingHorizontal: 16,
         backgroundColor: theme.colors.grey0,
         borderWidth: 1,
         borderColor: theme.colors.grey1,
         borderStyle: 'solid',
         borderRadius: 8,
+        ...(inputContainerStyle?.valueOf() as any),
       },
       leftIcon: leftIcon
         ? {

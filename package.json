@@ -4,6 +4,10 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "api:start": "yarn workspace api dev",
+    "app:start": "yarn workspace app start"
+  },
   "dependencies": {
     "module-alias": "^2.2.2"
   },

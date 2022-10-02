@@ -2,10 +2,11 @@ import { IReadDisciplinesUseCase } from '@/domain/usecases'
 
 import { BaseController } from '@/application/helpers'
 import { IListParamsParser } from '@/application/protocols'
+import { IDiscipline } from '@shared/entities'
 
 export class ReadDisciplinesController extends BaseController {
   constructor(
-    private readonly listParamsParser: IListParamsParser,
+    private readonly listParamsParser: IListParamsParser<IDiscipline>,
     private readonly readDisciplinesUseCase: IReadDisciplinesUseCase,
   ) {
     super()

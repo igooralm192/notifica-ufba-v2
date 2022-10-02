@@ -17,7 +17,7 @@ export class ReadDisciplinesUseCase implements IReadDisciplinesUseCase {
   async run(
     input: IReadDisciplinesUseCase.Input = {},
   ): Promise<Either<BaseError, IReadDisciplinesUseCase.Output>> {
-    const { paginate } = input
+    const { filter, paginate } = input
 
     const listInput: IDisciplineRepositoryListInput = {
       skip: paginate?.page,
@@ -27,6 +27,12 @@ export class ReadDisciplinesUseCase implements IReadDisciplinesUseCase {
           include: {
             teacher: { include: { user: true } },
           },
+        },
+      },
+      where: {
+        code: {
+          ...filter.code,
+          mode: 'insensitive',
         },
       },
     }

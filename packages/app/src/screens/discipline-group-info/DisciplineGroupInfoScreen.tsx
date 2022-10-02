@@ -96,7 +96,7 @@ const DisciplineGroupInfoScreen: React.FC = () => {
         </ClassSchedulesContainer>
       </ScrollContainer>
 
-      {(
+      {!isSubscribed && (
         <ButtonContainer>
           <SubscribeButton
             title="Inscrever-se"

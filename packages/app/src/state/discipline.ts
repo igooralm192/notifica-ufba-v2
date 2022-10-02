@@ -1,6 +1,6 @@
 import { IDiscipline } from '@shared/entities'
 import api from '@/api'
-import { IPageParams, IPaginatedList } from '@/types/list'
+import { IFilterParams, IPaginatedList } from '@/types/list'
 import { atom, selectorFamily } from 'recoil'
 import { BaseError } from '@/helpers'
 import Toast from 'react-native-toast-message'
@@ -9,23 +9,24 @@ export const disciplinesState = atom<IPaginatedList<IDiscipline>>({
   key: 'DisciplinesState',
 })
 
-export const disciplinesFilterState = atom<IPageParams>({
+export const disciplinesFilterState = atom<IFilterParams>({
   key: 'DisciplinesFilterState',
   default: { page: 0, limit: 10 },
 })
 
 export const getAllDisciplinesQuery = selectorFamily<
   IPaginatedList<IDiscipline>,
-  IPageParams
+  IFilterParams & { code?: string }
 >({
   key: 'GetAllDisciplinesQuery',
   get:
-    ({ page, limit }) =>
+    ({ page, limit, code }) =>
     async () => {
       try {
         const disciplines = await api.discipline.getDisciplines({
           page,
           limit,
+          code,
         })
 
         return disciplines

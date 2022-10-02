@@ -25,6 +25,8 @@ import { getRecoil } from 'recoil-nexus'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import Toast from 'react-native-toast-message'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
+import api from '@/api'
 
 export interface DisciplineGroupInfoPresenterContextData {
   subscribing: boolean
@@ -41,50 +43,49 @@ export const DisciplineGroupInfoPresenter: React.FC<{
 }> = ({ disciplineGroupId, children }) => {
   const navigation = useNavigation()
 
-  const [subscribing, setSubscribing] = useState(false)
+  const queryClient = useQueryClient()
 
-  const disciplineGroupLoadable = useRecoilValueLoadable(
-    getDisciplineGroupQuery(disciplineGroupId),
+  const { isLoading, data } = useQuery(
+    ['disciplineGroup', disciplineGroupId],
+    () => api.disciplineGroup.getDisciplineGroup(disciplineGroupId),
   )
 
-  const subscribeStudent = useRecoilCallback(
-    ({ snapshot }) =>
-      async () => {
-        setSubscribing(true)
+  const { isLoading: isSubscribing, mutate } = useMutation(
+    async () => {
+      try {
+        await api.disciplineGroup.subscribeStudent({ disciplineGroupId })
 
-        try {
-          await snapshot.getPromise(
-            subscribeStudentQuery({ disciplineGroupId }),
-          )
+        navigation.dispatch(
+          StackActions.replace('DisciplineGroupTabsScreen', {
+            disciplineGroupId,
+          }),
+        )
+      } catch (err) {
+        const error = err as BaseError
 
-          navigation.dispatch(
-            StackActions.replace('DisciplineGroupTabsScreen', {
-              disciplineGroupId,
-            }),
-          )
-        } catch (err) {
-          const error = err as BaseError
-
-          Toast.show({
-            type: 'error',
-            text1: 'Erro ao inscrever estudante na turma.',
-            text2: error.message,
-          })
-        } finally {
-          setSubscribing(false)
-        }
+        Toast.show({
+          type: 'error',
+          text1: 'Erro ao inscrever estudante na turma.',
+          text2: error.message,
+        })
+      }
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('disciplineGroups')
       },
-    [disciplineGroupId],
+    },
   )
 
-  if (disciplineGroupLoadable.state === 'loading') return <FullLoading />
+  if (isLoading) return <FullLoading />
+  if (!data) return null
 
   return (
     <DisciplineGroupInfoPresenterContext.Provider
       value={{
-        subscribing,
-        disciplineGroup: disciplineGroupLoadable.getValue(),
-        subscribeStudent,
+        subscribing: isSubscribing,
+        disciplineGroup: data.disciplineGroup,
+        subscribeStudent: async () => mutate(),
       }}
     >
       {children}

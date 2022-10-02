@@ -1,8 +1,8 @@
-import { ILastMessageDTO } from '@notifica-ufba/domain/usecases'
 
 import { useNavigation } from '@/helpers'
 
 import { ListItem } from '@rneui/themed'
+import { ILastMessageDTO } from '@shared/dtos'
 import { formatDistanceToNow } from 'date-fns'
 import LocalePTBR from 'date-fns/locale/pt-BR'
 import React from 'react'
@@ -24,6 +24,8 @@ const LastMessageListItem: React.FC<LastMessageListItemProps> = ({
   message,
 }) => {
   const navigation = useNavigation()
+
+  console.log({message})
 
   return (
     <ListItem

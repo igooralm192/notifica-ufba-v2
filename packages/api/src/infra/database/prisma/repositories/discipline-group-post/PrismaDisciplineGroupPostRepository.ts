@@ -37,7 +37,7 @@ export class PrismaDisciplineGroupPostRepository
     const disciplineGroupPosts = await this.client.disciplineGroupPost.findMany(
       {
         take,
-        skip,
+        skip: skip * take,
         where: { ...where, disciplineGroupId },
         include,
         orderBy,

@@ -8,7 +8,7 @@ import {
   disciplineGroupsAdded,
   selectAllDisciplineGroups,
 } from '@/store/disciplineGroups'
-import { IPageParams, IPaginatedList } from '@/types/list'
+import { IFilterParams, IPaginatedList } from '@/types/list'
 
 import { useFocusEffect } from '@react-navigation/native'
 import React, { useCallback, useContext, useState } from 'react'
@@ -27,9 +27,15 @@ import {
 } from '@/state/discipline-group'
 import { useEffect } from 'react'
 import { FullLoading } from '@/components/FullLoading'
+import { useInfiniteQuery, useQuery, useQueryClient } from 'react-query'
+import { useMemo } from 'react'
+import { useRef } from 'react'
+import { Ref } from 'react'
+import { MutableRefObject } from 'react'
+import { Text } from '@rneui/themed'
 
 export interface DisciplineGroupsPresenterContextData {
-  // loading: boolean
+  loading: boolean
   disciplineGroups: IPaginatedList<IDisciplineGroup>
 }
 
@@ -37,57 +43,46 @@ const DisciplineGroupsPresenterContext = React.createContext(
   {} as DisciplineGroupsPresenterContextData,
 )
 
+const initialFilter: IFilterParams = {
+  page: 0,
+  limit: 10,
+}
+
 export const DisciplineGroupsPresenter: React.FC = ({ children }) => {
   const { user } = useMe()
 
-  const [filter, setFilter] = useRecoilState(disciplineGroupsFilterState)
-
-  const loadingDisciplineGroups =
-    useRecoilValueLoadable(
-      getMyDisciplineGroupsQuery({
-        studentId: user?.student?.id,
-        filterParams: filter,
-      }),
-    ).state === 'loading'
-
-  const [disciplineGroupsLoadable, setDisciplineGroups] =
-    useRecoilStateLoadable(disciplineGroupsState)
-
-  const getMyDisciplineGroups = useRecoilCallback(
-    ({ snapshot }) =>
-      async ({ studentId, filterParams }: IGetMyDisciplineGroupsQueryArgs) => {
-        const disciplineGroups = await snapshot.getPromise(
-          getMyDisciplineGroupsQuery({ studentId, filterParams }),
-        )
-
-        if (filterParams.page === 0) setDisciplineGroups(disciplineGroups)
-        else
-          setDisciplineGroups(currentDisciplineGroups => ({
-            results: [
-              ...currentDisciplineGroups.results,
-              ...disciplineGroups.results,
-            ],
-            total: disciplineGroups.total,
-          }))
-      },
-    [],
-  )
-
-  useFocusEffect(
-    useCallback(() => {
-      getMyDisciplineGroups({
-        studentId: user?.student?.id,
-        filterParams: filter,
+  const { isLoading, data } = useInfiniteQuery(
+    'disciplineGroups',
+    async ({ pageParam = initialFilter }) => {
+      return api.disciplineGroup.getDisciplineGroups({
+        query: { studentId: user?.student?.id },
+        page: pageParam.page,
+        limit: pageParam.limit,
       })
-    }, [user?.student?.id, filter]),
+    },
+    {
+      keepPreviousData: true,
+      getNextPageParam: (_, pages) => {
+        return { ...initialFilter, page: pages.length }
+      },
+    },
   )
 
-  if (disciplineGroupsLoadable.state === 'loading') return <FullLoading />
+  if (isLoading) return <FullLoading />
+
+  if (!data) return null
 
   return (
     <DisciplineGroupsPresenterContext.Provider
       value={{
-        disciplineGroups: disciplineGroupsLoadable.getValue(),
+        loading: isLoading,
+        disciplineGroups: data.pages.reduce(
+          (acc, page) => ({
+            results: [...acc.results, ...page.results],
+            total: Math.max(acc.total, page.total),
+          }),
+          { results: [], total: 0 },
+        ),
       }}
     >
       {children}

@@ -1,60 +1,61 @@
-import { ILastMessageDTO } from '@notifica-ufba/domain/usecases'
+import { ILastMessageDTO } from '@shared/dtos'
 import { BaseError } from '@/helpers'
 
 import api from '@/api'
 import { useDispatch, useSelector } from '@/store'
 import { lastMessagesAdded, selectAllLastMessages } from '@/store/lastMessages'
-import { IPaginatedList } from '@/types/list'
+import { IFilterParams, IPaginatedList } from '@/types/list'
 
 import React, { useContext, useState } from 'react'
 import Toast from 'react-native-toast-message'
+import { useInfiniteQuery } from 'react-query'
+import { FullLoading } from '@/components/FullLoading'
 
 export interface LastMessagesPresenterContextData {
   loading: boolean
   lastMessages: IPaginatedList<ILastMessageDTO>
-  getLastMessages(): Promise<void>
 }
 
 const LastMessagesPresenterContext = React.createContext(
   {} as LastMessagesPresenterContextData,
 )
 
+const initialFilter: IFilterParams = {
+  page: 0,
+  limit: 10,
+}
+
 export const LastMessagesPresenter: React.FC = ({ children }) => {
-  const dispatch = useDispatch()
-
-  const lastMessages = useSelector(selectAllLastMessages)
-  const lastMessagesTotal = useSelector(state => state.lastMessages.total)
-
-  const [loading, setLoading] = useState(true)
-
-  const getLastMessages = async (page = 0, limit = 10) => {
-    setLoading(true)
-
-    try {
-      const lastMessages = await api.disciplineGroup.getMyLastMessages({
-        page,
-        limit,
+  const { isLoading, isFetching, data } = useInfiniteQuery(
+    'lastMessages',
+    async ({ pageParam = initialFilter }) => {
+      return api.disciplineGroup.getMyLastMessages({
+        page: pageParam.page,
+        limit: pageParam.limit,
       })
+    },
+    {
+      keepPreviousData: true,
+      getNextPageParam: (_, pages) => {
+        return { ...initialFilter, page: pages.length }
+      },
+    },
+  )
 
-      dispatch(lastMessagesAdded(lastMessages))
-    } catch (err) {
-      const error = err as BaseError
-      Toast.show({
-        type: 'error',
-        text1: 'Erro ao retornar as últimas mensagens.',
-        text2: error.message,
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
+  if (isLoading) return <FullLoading />
+  if (!data) return null
 
   return (
     <LastMessagesPresenterContext.Provider
       value={{
-        loading,
-        lastMessages: { results: lastMessages, total: lastMessagesTotal },
-        getLastMessages,
+        loading: isFetching,
+        lastMessages: data.pages.reduce(
+          (acc, page) => ({
+            results: [...acc.results, ...page.results],
+            total: Math.max(acc.total, page.total),
+          }),
+          { results: [], total: 0 },
+        ),
       }}
     >
       {children}

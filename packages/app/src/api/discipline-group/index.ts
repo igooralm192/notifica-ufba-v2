@@ -6,11 +6,11 @@ import {
   LastMessageMapper,
 } from '@/mappers'
 import { api } from '@/services/api'
-import { delay } from '@/utils/delay'
 
 import { collection, doc, orderBy, query, getDocs } from 'firebase/firestore'
 
 import {
+  ICreatePostEndpoint,
   IGetDisciplineGroupEndpoint,
   IGetDisciplineGroupsEndpoint,
   IGetDisciplineGroupPostsEndpoint,
@@ -24,7 +24,7 @@ export const getDisciplineGroups = async ({
   page,
   limit,
 }: IGetDisciplineGroupsEndpoint.Request): Promise<IGetDisciplineGroupsEndpoint.Response> => {
-  console.log('GET DISCIPLINE GROUPS')
+  console.log('OPA', { query, page, limit })
   const response = await api.get('/discipline-groups', {
     params: {
       studentIds_has: query?.studentId || undefined,
@@ -110,4 +110,11 @@ export const getDisciplineGroupMessages = async (
     ),
     total: querySnapshot.size,
   }
+}
+
+export const createPost = async (
+  { disciplineGroupId }: ICreatePostEndpoint.Params,
+  { content }: ICreatePostEndpoint.Body,
+): Promise<void> => {
+  await api.post(`/discipline-groups/${disciplineGroupId}/posts`, { content })
 }

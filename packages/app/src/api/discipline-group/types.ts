@@ -71,3 +71,13 @@ export namespace ISubscribeStudentEndpoint {
     disciplineGroupId: string
   }
 }
+
+export namespace ICreatePostEndpoint {
+  export type Params = {
+    disciplineGroupId: string
+  }
+
+  export type Body = {
+    content: string
+  }
+}

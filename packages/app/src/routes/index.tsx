@@ -3,8 +3,10 @@ import { MeProvider } from '@/contexts/me'
 import { BottomTabsNavigator } from '@/routes/bottom-tabs'
 import { AppNavigation } from '@/types/navigation'
 import {
+  CreatePostScreen,
   DisciplineGroupInfoScreen,
   LoginScreen,
+  ListGroupsScreen,
   RegisterScreen,
   SplashScreen,
   WelcomeScreen,
@@ -20,12 +22,12 @@ import { authStateQuery } from '@/state/auth'
 import { useEffect } from 'react'
 import { useNavigation } from '@/helpers'
 import { MessagingProvider } from '@/contexts/messaging'
+import { useAuthStore } from '@/state/zustand/auth'
 
 const Stack = createStackNavigator<AppNavigation>()
 
 const Routes: React.FC = () => {
-  const authState = useRecoilValue(authStateQuery)
-  const loader = useRecoilValue(loaderState)
+  const { state: authState } = useAuth()
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -58,6 +60,17 @@ const Routes: React.FC = () => {
                   <Stack.Screen
                     name="DisciplineGroupInfoScreen"
                     component={DisciplineGroupInfoScreen}
+                  />
+
+                  <Stack.Screen
+                    name="CreatePostScreen"
+                    component={CreatePostScreen}
+                  />
+
+                  <Stack.Screen
+                    name="ListGroupsScreen"
+                    component={ListGroupsScreen}
+                    options={{ headerShown: false, presentation: 'modal' }}
                   />
                 </Stack.Navigator>
               </MessagingProvider>

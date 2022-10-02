@@ -23,6 +23,11 @@ export class ListParamsParser<T> implements IListParamsParser<T> {
         const field = key.replace('_has', '')
         filter[field] = { has: value }
       }
+      
+      if (key.endsWith('_contains')) {
+        const field = key.replace('_contains', '')
+        filter[field] = { contains: value }
+      }
     })
 
     return filter

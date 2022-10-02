@@ -1,9 +1,15 @@
 import { IDisciplineGroupPost } from '@shared/entities'
-import { IPageParams, IPaginatedList } from '@/types/list'
+import { IFilterParams, IPaginatedList } from '@/types/list'
 import { atom, selectorFamily } from 'recoil'
 import Toast from 'react-native-toast-message'
 import api from '@/api'
 import { BaseError } from '@/helpers'
+import {
+  IHttpRequestBody,
+  IHttpRequestBodyAndParams,
+  IHttpRequestParams,
+} from '@/types/http'
+import { ICreatePostEndpoint } from '@/api/discipline-group/types'
 
 export const disciplineGroupPostsState = atom<
   IPaginatedList<IDisciplineGroupPost>
@@ -11,14 +17,14 @@ export const disciplineGroupPostsState = atom<
   key: 'DisciplineGroupPostsState',
 })
 
-export const disciplineGroupPostsFilterState = atom<IPageParams>({
+export const disciplineGroupPostsFilterState = atom<IFilterParams>({
   key: 'DisciplineGroupPostsFilterState',
   default: { page: 0, limit: 10 },
 })
 
 export type IGetDisciplineGroupPostsQueryArgs = {
   disciplineGroupId?: string
-  filterParams: IPageParams
+  filterParams: IFilterParams
 }
 
 export const getDisciplineGroupPostsQuery = selectorFamily<
@@ -30,7 +36,7 @@ export const getDisciplineGroupPostsQuery = selectorFamily<
     ({ disciplineGroupId, filterParams: { page, limit } }) =>
     async () => {
       if (!disciplineGroupId) return { results: [], total: 0 }
-      
+
       try {
         const disciplineGroupPosts =
           await api.disciplineGroup.getDisciplineGroupPosts(disciplineGroupId, {
@@ -50,5 +56,20 @@ export const getDisciplineGroupPostsQuery = selectorFamily<
 
         return { results: [], total: 0 }
       }
+    },
+})
+
+export const createPostMutation = selectorFamily<
+  void,
+  IHttpRequestBodyAndParams<
+    ICreatePostEndpoint.Body,
+    ICreatePostEndpoint.Params
+  >
+>({
+  key: 'CreatePostMutation',
+  get:
+    ({ body: { content }, params: { disciplineGroupId } }) =>
+    async () => {
+      await api.disciplineGroup.createPost({ disciplineGroupId }, { content })
     },
 })

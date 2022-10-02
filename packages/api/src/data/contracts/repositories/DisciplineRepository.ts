@@ -23,7 +23,12 @@ export type ITeacherRepositoryListInput = {
 }
 
 export type IDisciplineRepositoryListInput = {
-  where?: any
+  where?: {
+    code?: {
+      contains?: string
+      mode?: 'default' | 'insensitive'
+    }
+  }
   take?: number
   skip?: number
   select?: {

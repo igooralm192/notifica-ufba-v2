@@ -1,6 +1,6 @@
 import { IDisciplineGroupMessage } from '@shared/entities'
 
-import { IPaginatedList } from '@/types/list'
+import { IFilterParams, IPaginatedList } from '@/types/list'
 
 import React, { useContext } from 'react'
 import {
@@ -18,6 +18,8 @@ import {
 } from '@/state/discipline-group-message'
 import { useDisciplineGroupTabsPresenter } from '../DisciplineGroupTabsPresenter'
 import { useEffect } from 'react'
+import { useInfiniteQuery } from 'react-query'
+import api from '@/api'
 
 export interface DisciplineGroupChatPresenterContextData {
   loadingMessages: boolean
@@ -28,62 +30,46 @@ const DisciplineGroupChatPresenterContext = React.createContext(
   {} as DisciplineGroupChatPresenterContextData,
 )
 
+const initialFilter: IFilterParams = {
+  page: 0,
+  limit: 10,
+}
+
 export const DisciplineGroupChatPresenter: React.FC = ({ children }) => {
   const { disciplineGroup } = useDisciplineGroupTabsPresenter()
 
-  const [filter, setFilter] = useRecoilState(disciplineGroupMessagesFilterState)
-
-  const loadingDisciplineGroupMessages =
-    useRecoilValueLoadable(
-      getDisciplineGroupMessagesQuery({
-        disciplineGroupId: disciplineGroup?.id,
-        filterParams: filter,
-      }),
-    ).state === 'loading'
-
-  const [disciplineGroupMessagesLoadable, setDisciplineGroupMessages] =
-    useRecoilStateLoadable(disciplineGroupMessagesState)
-
-  const getDisciplineGroupMessages = useRecoilCallback(
-    ({ snapshot }) =>
-      async ({
-        disciplineGroupId,
-        filterParams,
-      }: IGetDisciplineGroupMessagesQueryArgs) => {
-        const disciplineGroupMessages = await snapshot.getPromise(
-          getDisciplineGroupMessagesQuery({ disciplineGroupId, filterParams }),
-        )
-
-        if (filterParams.page === 0)
-          setDisciplineGroupMessages(disciplineGroupMessages)
-        else
-          setDisciplineGroupMessages(currentDisciplineGroupMessages => ({
-            results: [
-              ...currentDisciplineGroupMessages.results,
-              ...disciplineGroupMessages.results,
-            ],
-            total: disciplineGroupMessages.total,
-          }))
+  const { isLoading, data } = useInfiniteQuery(
+    'disciplineGroupMessages',
+    async ({ pageParam = initialFilter }) => {
+      return api.disciplineGroup.getDisciplineGroupMessages(disciplineGroup!.id, {
+        page: pageParam.page,
+        limit: pageParam.limit,
+      })
+    },
+    {
+      enabled: !!disciplineGroup?.id,
+      keepPreviousData: true,
+      getNextPageParam: (_, pages) => {
+        return { ...initialFilter, page: pages.length }
       },
-    [],
+    },
   )
 
-  useEffect(() => {
-    getDisciplineGroupMessages({
-      disciplineGroupId: disciplineGroup?.id,
-      filterParams: filter,
-    })
-  }, [filter])
-
-  if (disciplineGroupMessagesLoadable.state === 'loading')
-    return <FullLoading />
+  if (isLoading) return <FullLoading />
+  if (!data) return null
 
   return (
     <DisciplineGroupChatPresenterContext.Provider
       value={{
-        loadingMessages: loadingDisciplineGroupMessages,
+        loadingMessages: isLoading,
 
-        disciplineGroupMessages: disciplineGroupMessagesLoadable.getValue(),
+        disciplineGroupMessages: data.pages.reduce(
+          (acc, page) => ({
+            results: [...acc.results, ...page.results],
+            total: Math.max(acc.total, page.total),
+          }),
+          { results: [], total: 0 },
+        ),
       }}
     >
       {children}

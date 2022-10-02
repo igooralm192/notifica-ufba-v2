@@ -26,6 +26,8 @@ export class ReadDisciplineGroupsUseCase
           teacher: { include: { user: true } },
         },
       })
+    
+    console.log({disciplineGroups})
 
     return right({
       results: disciplineGroups.results,

@@ -1,8 +1,9 @@
+import { Button } from '@/components/Button'
 import { FullLoading } from '@/components/FullLoading'
 import { useStatusBar } from '@/contexts/status-bar'
 import { useNavigation } from '@/helpers'
 
-import { Tab, TabView, useTheme } from '@rneui/themed'
+import { FAB, Tab, TabView, useTheme } from '@rneui/themed'
 import React, { useState } from 'react'
 
 import { DisciplineGroupChatTab } from './DisciplineGroupChatTab'
@@ -14,7 +15,7 @@ import {
 import { Container } from './DisciplineGroupTabsStyles'
 
 const DisciplineGroupTabsScreen: React.FC = () => {
-  const { initialIndex, disciplineGroup } = useDisciplineGroupTabsPresenter()
+  const { initialIndex, disciplineGroup, navigateToCreatePost } = useDisciplineGroupTabsPresenter()
 
   const navigation = useNavigation()
   const { theme } = useTheme()
@@ -74,6 +75,14 @@ const DisciplineGroupTabsScreen: React.FC = () => {
           <DisciplineGroupChatTab />
         </TabView.Item>
       </TabView>
+
+      <FAB
+        visible={true}
+        icon={{ name: 'add', color: 'white' }}
+        color={theme.colors.primary}
+        style={{ position: 'absolute', bottom: 30, right: 24 }}
+        onPress={navigateToCreatePost}
+      />
     </Container>
   )
 }

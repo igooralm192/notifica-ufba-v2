@@ -1,10 +1,11 @@
 import { IDiscipline } from '@shared/entities'
 import { Either, UseCase } from '@shared/utils'
-import { IQueryPaginateDTO } from '@/domain/dtos'
+import { IQueryFilterDTO, IQueryPaginateDTO } from '@/domain/dtos'
 import { BaseError } from '@/domain/helpers'
 
 export namespace IReadDisciplinesUseCase {
   export type Input = {
+    filter?: IQueryFilterDTO<IDiscipline>
     paginate?: IQueryPaginateDTO
   }
 

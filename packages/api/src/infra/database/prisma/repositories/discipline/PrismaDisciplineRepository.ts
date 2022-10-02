@@ -19,12 +19,13 @@ export class PrismaDisciplineRepository
   async findAll(
     input: IFindAllDisciplineRepository.Input = {},
   ): Promise<IFindAllDisciplineRepository.Output> {
-    const { take, skip, include } = input
+    const { take, skip, include, where } = input
 
     const disciplines = await this.client.discipline.findMany({
       take,
-      skip,
+      skip: skip * take,
       include,
+      where
     })
 
     return disciplines

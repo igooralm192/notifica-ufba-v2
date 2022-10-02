@@ -1,5 +1,5 @@
-import { ILastMessageDTO } from '@notifica-ufba/domain/usecases'
 
+import { ILastMessageDTO } from '@shared/dtos'
 import { useStatusBar } from '@/contexts/status-bar'
 
 import { Divider } from '@rneui/themed'
@@ -16,26 +16,18 @@ import { Container } from './LastMessagesStyles'
 export interface LastMessagesScreenProps {}
 
 const LastMessagesScreen: React.FC<LastMessagesScreenProps> = () => {
-  const presenter = useLastMessagesPresenter()
-
-  const statusBar = useStatusBar()
+  const { loading, lastMessages } = useLastMessagesPresenter()
 
   const renderLastMessageListItem = ({ item }: { item: ILastMessageDTO }) => {
     return <LastMessageListItem key={item.disciplineGroupCode} message={item} />
   }
 
-  useLayoutEffect(() => {
-    statusBar.setTheme('primary')
-  }, [])
-
-  useEffect(() => {
-    presenter.getLastMessages()
-  }, [])
+  useStatusBar('primary')
 
   return (
     <Container headerProps={{ title: 'Mensagens', back: false }}>
       <FlatList
-        data={presenter.lastMessages.results}
+        data={lastMessages.results}
         renderItem={renderLastMessageListItem}
         ItemSeparatorComponent={Divider}
       />

@@ -1,5 +1,5 @@
 import { IDisciplineGroupMessage } from '@shared/entities'
-import { IPageParams, IPaginatedList } from '@/types/list'
+import { IFilterParams, IPaginatedList } from '@/types/list'
 import { atom, selectorFamily } from 'recoil'
 import Toast from 'react-native-toast-message'
 import api from '@/api'
@@ -14,14 +14,14 @@ export const disciplineGroupMessagesState = atom<
   key: 'DisciplineGroupMessagesState',
 })
 
-export const disciplineGroupMessagesFilterState = atom<IPageParams>({
+export const disciplineGroupMessagesFilterState = atom<IFilterParams>({
   key: 'DisciplineGroupMessagesFilterState',
   default: { page: 0, limit: 10 },
 })
 
 export type IGetDisciplineGroupMessagesQueryArgs = {
   disciplineGroupId?: string
-  filterParams: IPageParams
+  filterParams: IFilterParams
 }
 
 export const getDisciplineGroupMessagesQuery = selectorFamily<

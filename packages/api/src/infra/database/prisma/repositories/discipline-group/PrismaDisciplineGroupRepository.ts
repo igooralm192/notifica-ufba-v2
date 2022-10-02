@@ -23,9 +23,11 @@ export class PrismaDisciplineGroupRepository
     include,
     orderBy,
   }: IDisciplineGroupRepositoryListInput): Promise<IFindAllDisciplineGroupRepository.Output> {
+    const total = await this.client.disciplineGroup.count({ where })
+    
     const disciplineGroups = await this.client.disciplineGroup.findMany({
       take,
-      skip,
+      skip: skip * take,
       where,
       include,
       orderBy,
@@ -33,7 +35,7 @@ export class PrismaDisciplineGroupRepository
 
     return {
       results: disciplineGroups.map(this.parseDisciplineGroup),
-      total: disciplineGroups.length,
+      total: total,
     }
   }
 

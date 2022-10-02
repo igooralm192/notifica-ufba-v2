@@ -1,3 +1,5 @@
+import { IDiscipline, IDisciplineGroup } from "@shared/entities";
+
 export type AppNavigation = {
   // Unknown
   SplashScreen: undefined
@@ -14,6 +16,13 @@ export type AppNavigation = {
   LastMessagesScreen: undefined
   DisciplinesScreen: undefined
   DisciplineGroupsScreen: undefined
+  CreatePostScreen: {
+    discipline?: IDiscipline
+    disciplineGroup?: IDisciplineGroup
+  }
+  ListGroupsScreen: {
+    onDisciplineGroupSelected: (discipline: IDiscipline, disciplineGroup: IDisciplineGroup) => void
+  }
 
   DisciplineGroupTabsScreen: {
     disciplineGroupId: string

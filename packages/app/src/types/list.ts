@@ -3,7 +3,8 @@ export interface IPaginatedList<T = any> {
   total: number
 }
 
-export type IPageParams = {
+export type IFilterParams = {
   page: number
   limit: number
+  search?: string
 }

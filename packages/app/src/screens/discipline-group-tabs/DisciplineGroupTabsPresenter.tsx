@@ -7,6 +7,9 @@ import React, { useContext } from 'react'
 import { useRecoilValueLoadable } from 'recoil'
 import { FullLoading } from '@/components/FullLoading'
 import { getDisciplineGroupQuery } from '@/state/discipline-group'
+import { useNavigation } from '@/helpers'
+import { useQuery } from 'react-query'
+import api from '@/api'
 
 interface DisciplineGroupTabsPresenterProps {
   disciplineGroupId: string
@@ -16,6 +19,7 @@ interface DisciplineGroupTabsPresenterProps {
 export interface DisciplineGroupTabsPresenterContextData {
   initialIndex: number
   disciplineGroup: IDisciplineGroup | null
+  navigateToCreatePost: () => void
 }
 
 const DisciplineGroupTabsPresenterContext = React.createContext(
@@ -25,18 +29,27 @@ const DisciplineGroupTabsPresenterContext = React.createContext(
 export const DisciplineGroupTabsPresenter: React.FC<
   DisciplineGroupTabsPresenterProps
 > = ({ disciplineGroupId, initialTab, children }) => {
-  const disciplineGroupLoadable = useRecoilValueLoadable(
-    getDisciplineGroupQuery(disciplineGroupId),
-  )
+  const navigation = useNavigation()
 
-  if (disciplineGroupLoadable.state === 'loading') return <FullLoading />
+  const { isLoading, data } = useQuery(['disciplineGroup', disciplineGroupId], () => {
+    return api.disciplineGroup.getDisciplineGroup(disciplineGroupId)
+  })
+
+  const navigateToCreatePost = () => navigation.navigate('CreatePostScreen', {
+    discipline: data?.disciplineGroup?.discipline,
+    disciplineGroup: data?.disciplineGroup
+  })
+
+  if (isLoading) return <FullLoading />
+
+  if (!data) return null
 
   return (
     <DisciplineGroupTabsPresenterContext.Provider
       value={{
         initialIndex: initialTab === 'chat' ? 1 : 0,
-
-        disciplineGroup: disciplineGroupLoadable.getValue(),
+        disciplineGroup: data.disciplineGroup,
+        navigateToCreatePost,
       }}
     >
       {children}

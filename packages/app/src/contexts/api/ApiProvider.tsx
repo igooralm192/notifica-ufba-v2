@@ -1,19 +1,13 @@
 import api from '@/api'
 import { FullLoading } from '@/components/FullLoading'
 import { BaseError } from '@/helpers'
-import { apiState } from '@/state/api'
 import { authStateQuery, tokenState } from '@/state/auth'
 import { loaderState } from '@/state/loader'
+import { getAuthStore } from '@/state/zustand/auth'
 import { AxiosError } from 'axios'
 
 import React, { useContext, useEffect } from 'react'
 import { useState } from 'react'
-import {
-  useRecoilCallback,
-  useRecoilSnapshot,
-  useRecoilValue,
-  useSetRecoilState,
-} from 'recoil'
 
 export interface ApiContextData {}
 
@@ -22,21 +16,12 @@ const ApiContext = React.createContext({} as ApiContextData)
 const ApiProviderBase: React.FC = ({ children }) => {
   const [ready, setReady] = useState(false)
 
-  const getToken = useRecoilCallback(
-    ({ snapshot }) =>
-      () =>
-        snapshot.getPromise(tokenState),
-    [],
-  )
-
   useEffect(() => {
-    console.log('API INTERCEPTOR')
     setReady(true)
 
     const interceptorId = api.instance.interceptors.request.use(
       async config => {
-        const token = await getToken()
-        console.log('API INTERCEPTOR REQUEST', token)
+        const token = getAuthStore().getState().token
 
         if (config.headers)
           config.headers.Authorization = token ? 'Bearer ' + token : ''
@@ -50,13 +35,8 @@ const ApiProviderBase: React.FC = ({ children }) => {
 
   useEffect(() => {
     const interceptorId = api.instance.interceptors.response.use(
-      response => {
-        console.log('API INTERCEPTOR RESPONSE')
-
-        return response
-      },
+      response => response,
       (err: AxiosError) => {
-        console.log('API INTERCEPTOR RESPONSE ERROR')
         // TODO: Handle network error
         if (!err?.response?.data?.code || !err?.response?.data?.message) {
           return Promise.reject(

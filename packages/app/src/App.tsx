@@ -11,16 +11,22 @@ import { RecoilRoot } from 'recoil'
 import RecoilNexus from 'recoil-nexus'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 
+import { QueryClient, QueryClientProvider } from 'react-query'
+
+const queryClient = new QueryClient()
+
 const App: React.FC = () => {
   return (
-    <RecoilRoot >
-      <RecoilNexus/>
-      <ErrorBoundary>
-        <AllProviders>
-          <Routes />
-        </AllProviders>
-      </ErrorBoundary>
-    </RecoilRoot>
+    <QueryClientProvider client={queryClient}>
+      <RecoilRoot>
+        <RecoilNexus />
+        <ErrorBoundary>
+          <AllProviders>
+            <Routes />
+          </AllProviders>
+        </ErrorBoundary>
+      </RecoilRoot>
+    </QueryClientProvider>
   )
 }
 
