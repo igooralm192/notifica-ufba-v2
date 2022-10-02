@@ -1,6 +1,6 @@
 import {
   DisciplineGroupDoesNotExistError,
-  UserDoesNotExistError
+  UserDoesNotExistError,
 } from '@/domain/errors'
 import { ICreateDisciplineGroupPostUseCase } from '@/domain/usecases'
 import { BaseError } from '@/domain/helpers'
@@ -65,9 +65,9 @@ export class CreateDisciplineGroupPostUseCase
       include: { user: true },
     })
 
-    const allUserPushTokens = allStudents.results.map(
-      ({ user }) => user?.pushToken || '',
-    )
+    const allUserPushTokens = allStudents.results
+      .filter(({ user }) => user.id != userId)
+      .map(({ user }) => user?.pushToken || '')
 
     this.createMessagingService.create({
       title: `${disciplineGroup.discipline?.code} - ${disciplineGroup.code}`,
