@@ -2,7 +2,8 @@ import { IDisciplineGroupPostRepository } from '@/data/contracts'
 import { PrismaDisciplineGroupPostRepository } from '@/infra/database/prisma/repositories/discipline-group-post'
 
 type IDisciplineGroupPostRepository = IDisciplineGroupPostRepository.Create &
-  IDisciplineGroupPostRepository.FindAllByDisciplineGroupId
+  IDisciplineGroupPostRepository.Count &
+  IDisciplineGroupPostRepository.FindAll
 
 export const makeDisciplineGroupPostRepository =
   (): IDisciplineGroupPostRepository => {

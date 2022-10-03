@@ -1,29 +1,20 @@
 import { IDisciplineGroupPost } from '@shared/entities'
 
-import { IFilterParams, IPaginatedList } from '@/types/list'
+import api from '@/api'
+import { FullLoading } from '@/components/FullLoading'
+import { IFilterParams } from '@/types/list'
 
 import React, { useContext } from 'react'
-import {
-  useRecoilCallback,
-  useRecoilState,
-  useRecoilStateLoadable,
-  useRecoilValueLoadable,
-} from 'recoil'
-import { FullLoading } from '@/components/FullLoading'
-import {
-  disciplineGroupPostsFilterState,
-  disciplineGroupPostsState,
-  getDisciplineGroupPostsQuery,
-  IGetDisciplineGroupPostsQueryArgs,
-} from '@/state/discipline-group-post'
-import { useDisciplineGroupTabsPresenter } from '../DisciplineGroupTabsPresenter'
-import { useEffect } from 'react'
 import { useInfiniteQuery } from 'react-query'
-import api from '@/api'
+
+import { useDisciplineGroupTabsPresenter } from '../DisciplineGroupTabsPresenter'
 
 export interface DisciplineGroupMuralPresenterContextData {
-  loadingPosts: boolean
-  disciplineGroupPosts: IPaginatedList<IDisciplineGroupPost>
+  isFetchingMore: boolean
+  isRefreshing: boolean
+  disciplineGroupPosts: IDisciplineGroupPost[]
+  onNextPage: () => void
+  onRefresh: () => void
 }
 
 const DisciplineGroupMuralPresenterContext = React.createContext(
@@ -38,7 +29,15 @@ const initialFilter: IFilterParams = {
 export const DisciplineGroupMuralPresenter: React.FC = ({ children }) => {
   const { disciplineGroup } = useDisciplineGroupTabsPresenter()
 
-  const { isLoading, data } = useInfiniteQuery(
+  const {
+    isLoading,
+    data,
+    fetchNextPage,
+    hasNextPage,
+    refetch,
+    isRefetching,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
     'disciplineGroupPosts',
     async ({ pageParam = initialFilter }) => {
       return api.disciplineGroup.getDisciplineGroupPosts(disciplineGroup!.id, {
@@ -49,12 +48,28 @@ export const DisciplineGroupMuralPresenter: React.FC = ({ children }) => {
     {
       enabled: !!disciplineGroup?.id,
       keepPreviousData: true,
-      refetchOnMount: 'always',
-      getNextPageParam: (_, pages) => {
+      // refetchOnMount: 'always',
+      getNextPageParam: (lastPage, pages) => {
+        const allResults = pages.reduce(
+          (acc, page) => [...acc, ...page.results],
+          [] as IDisciplineGroupPost[],
+        )
+
+        if (allResults.length >= lastPage.total) return undefined
+
         return { ...initialFilter, page: pages.length }
       },
     },
   )
+
+  const handleNextPage = () => {
+    if (!isFetchingNextPage && hasNextPage)
+      fetchNextPage()
+  }
+
+  const handleRefresh = () => {
+    refetch()
+  }
 
   if (isLoading) return <FullLoading />
   if (!data) return null
@@ -62,15 +77,14 @@ export const DisciplineGroupMuralPresenter: React.FC = ({ children }) => {
   return (
     <DisciplineGroupMuralPresenterContext.Provider
       value={{
-        loadingPosts: isLoading,
-
+        isFetchingMore: isFetchingNextPage,
+        isRefreshing: isRefetching,
         disciplineGroupPosts: data.pages.reduce(
-          (acc, page) => ({
-            results: [...acc.results, ...page.results],
-            total: Math.max(acc.total, page.total),
-          }),
-          { results: [], total: 0 },
+          (acc: IDisciplineGroupPost[], page) => [...acc, ...page.results],
+          [],
         ),
+        onNextPage: handleNextPage,
+        onRefresh: handleRefresh,
       }}
     >
       {children}

@@ -13,7 +13,8 @@ export class ReadDisciplineGroupPostsUseCase
 {
   constructor(
     private readonly findOneDisciplineGroupRepository: IFindOneDisciplineGroupRepository,
-    private readonly findAllByDisciplineGroupIdDisciplineGroupPostRepository: IDisciplineGroupPostRepository.FindAllByDisciplineGroupId,
+    private readonly findAllDisciplineGroupPostRepository: IDisciplineGroupPostRepository.FindAll,
+    private readonly countDisciplineGroupPostRepository: IDisciplineGroupPostRepository.Count,
   ) {}
 
   async run({
@@ -32,20 +33,19 @@ export class ReadDisciplineGroupPostsUseCase
       return left(new DisciplineGroupDoesNotExistError())
     }
 
-    const disciplineGroupPosts =
-      await this.findAllByDisciplineGroupIdDisciplineGroupPostRepository.findAllByDisciplineGroupId(
-        disciplineGroup.id,
-        {
-          take: paginate?.limit,
-          skip: paginate?.page,
-          orderBy: { createdAt: 'desc' },
-          include: { author: true },
-        },
-      )
+    const [results, total] = await Promise.all([
+      this.findAllDisciplineGroupPostRepository.findAll({
+        take: paginate?.limit,
+        skip: paginate?.page,
+        where: { disciplineGroupId },
+        orderBy: { createdAt: 'desc' },
+        include: { author: true },
+      }),
+      this.countDisciplineGroupPostRepository.count({
+        where: { disciplineGroupId },
+      }),
+    ])
 
-    return right({
-      results: disciplineGroupPosts.results,
-      total: disciplineGroupPosts.total,
-    })
+    return right({ results, total })
   }
 }

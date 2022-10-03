@@ -8,7 +8,8 @@ export class PrismaDisciplineGroupPostRepository
   extends PrismaRepository
   implements
     IDisciplineGroupPostRepository.Create,
-    IDisciplineGroupPostRepository.FindAllByDisciplineGroupId
+    IDisciplineGroupPostRepository.Count,
+    IDisciplineGroupPostRepository.FindAll
 {
   async create({
     title,
@@ -28,26 +29,30 @@ export class PrismaDisciplineGroupPostRepository
     return this.parseDisciplineGroupPost(disciplineGroupPost)
   }
 
-  async findAllByDisciplineGroupId(
-    disciplineGroupId: string,
-    listInput: IDisciplineGroupPostRepository.FindAllByDisciplineGroupId.Input,
-  ): Promise<IDisciplineGroupPostRepository.FindAllByDisciplineGroupId.Output> {
-    const { take, skip, where, include, orderBy } = listInput
+  async count(
+    input: IDisciplineGroupPostRepository.Count.Input = {},
+  ): Promise<IDisciplineGroupPostRepository.Count.Output> {
+    const { where } = input
+
+    return await this.client.disciplineGroupPost.count({ where })
+  }
+
+  async findAll(
+    input: IDisciplineGroupPostRepository.FindAll.Input,
+  ): Promise<IDisciplineGroupPostRepository.FindAll.Output> {
+    const { take, skip, where, include, orderBy } = input
 
     const disciplineGroupPosts = await this.client.disciplineGroupPost.findMany(
       {
         take,
         skip: skip * take,
-        where: { ...where, disciplineGroupId },
+        where,
         include,
         orderBy,
       },
     )
 
-    return {
-      results: disciplineGroupPosts.map(this.parseDisciplineGroupPost),
-      total: disciplineGroupPosts.length,
-    }
+    return disciplineGroupPosts.map(this.parseDisciplineGroupPost)
   }
 
   private parseDisciplineGroupPost(

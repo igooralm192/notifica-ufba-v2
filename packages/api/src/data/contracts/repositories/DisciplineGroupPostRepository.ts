@@ -1,7 +1,7 @@
 import { IDisciplineGroupPost } from '@shared/entities'
 
 export type IDisciplineGroupPostRepositoryListInput = {
-  where?: any
+  where?: { disciplineGroupId?: string }
   take?: number
   skip?: number
   include?: {
@@ -33,18 +33,21 @@ export namespace IDisciplineGroupPostRepository {
     create(input: Create.Input): Promise<Create.Output>
   }
 
-  export namespace FindAllByDisciplineGroupId {
+  export namespace Count {
     export type Input = IDisciplineGroupPostRepositoryListInput
-    export type Output = {
-      results: IDisciplineGroupPost[]
-      total: number
-    }
+    export type Output = number
   }
 
-  export interface FindAllByDisciplineGroupId {
-    findAllByDisciplineGroupId(
-      disciplineGroupId: string,
-      input: FindAllByDisciplineGroupId.Input,
-    ): Promise<FindAllByDisciplineGroupId.Output>
+  export interface Count {
+    count(input?: Count.Input): Promise<Count.Output>
+  }
+
+  export namespace FindAll {
+    export type Input = IDisciplineGroupPostRepositoryListInput
+    export type Output = IDisciplineGroupPost[]
+  }
+
+  export interface FindAll {
+    findAll(input: FindAll.Input): Promise<FindAll.Output>
   }
 }

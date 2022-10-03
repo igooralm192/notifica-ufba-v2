@@ -13,5 +13,6 @@ export const makeReadDisciplineGroupPostsUseCase =
     return new ReadDisciplineGroupPostsUseCase(
       disciplineGroupRepository,
       disciplineGroupPostRepository,
+      disciplineGroupPostRepository,
     )
   }
