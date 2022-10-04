@@ -2,10 +2,12 @@ import { IDisciplineGroupPost } from '@shared/entities'
 
 import api from '@/api'
 import { FullLoading } from '@/components/FullLoading'
+import { BaseError } from '@/helpers'
 import { IFilterParams } from '@/types/list'
 
 import React, { useContext } from 'react'
 import { useInfiniteQuery } from 'react-query'
+import Toast from 'react-native-toast-message'
 
 import { useDisciplineGroupTabsPresenter } from '../DisciplineGroupTabsPresenter'
 
@@ -48,7 +50,6 @@ export const DisciplineGroupMuralPresenter: React.FC = ({ children }) => {
     {
       enabled: !!disciplineGroup?.id,
       keepPreviousData: true,
-      // refetchOnMount: 'always',
       getNextPageParam: (lastPage, pages) => {
         const allResults = pages.reduce(
           (acc, page) => [...acc, ...page.results],
@@ -59,12 +60,18 @@ export const DisciplineGroupMuralPresenter: React.FC = ({ children }) => {
 
         return { ...initialFilter, page: pages.length }
       },
+      onError: (error: BaseError) => {
+        Toast.show({
+          type: 'error',
+          text1: `Erro ao retornar lista de postagens`,
+          text2: error.message,
+        })
+      },
     },
   )
 
   const handleNextPage = () => {
-    if (!isFetchingNextPage && hasNextPage)
-      fetchNextPage()
+    if (!isFetchingNextPage && hasNextPage) fetchNextPage()
   }
 
   const handleRefresh = () => {

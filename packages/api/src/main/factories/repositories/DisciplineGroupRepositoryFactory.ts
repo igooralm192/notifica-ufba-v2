@@ -1,11 +1,13 @@
 import {
+  ICountDisciplineGroupRepository,
   IFindAllDisciplineGroupRepository,
   IFindOneDisciplineGroupRepository,
   IPushStudentDisciplineGroupRepository,
 } from '@/data/contracts'
 import { PrismaDisciplineGroupRepository } from '@/infra/database/prisma/repositories/discipline-group'
 
-type IDisciplineGroupRepository = IFindAllDisciplineGroupRepository &
+type IDisciplineGroupRepository = ICountDisciplineGroupRepository &
+  IFindAllDisciplineGroupRepository &
   IFindOneDisciplineGroupRepository &
   IPushStudentDisciplineGroupRepository
 

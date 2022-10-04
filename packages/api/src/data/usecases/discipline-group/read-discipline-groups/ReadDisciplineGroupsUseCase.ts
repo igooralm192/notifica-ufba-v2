@@ -2,13 +2,17 @@ import { IReadDisciplineGroupsUseCase } from '@/domain/usecases'
 import { BaseError } from '@/domain/helpers'
 import { Either, right } from '@shared/utils'
 
-import { IFindAllDisciplineGroupRepository } from '@/data/contracts'
+import {
+  ICountDisciplineGroupRepository,
+  IFindAllDisciplineGroupRepository,
+} from '@/data/contracts'
 
 export class ReadDisciplineGroupsUseCase
   implements IReadDisciplineGroupsUseCase
 {
   constructor(
     private readonly findAllDisciplineGroupRepository: IFindAllDisciplineGroupRepository,
+    private readonly countDisciplineGroupRepository: ICountDisciplineGroupRepository,
   ) {}
 
   async run({
@@ -16,8 +20,8 @@ export class ReadDisciplineGroupsUseCase
   }: IReadDisciplineGroupsUseCase.Input): Promise<
     Either<BaseError, IReadDisciplineGroupsUseCase.Output>
   > {
-    const disciplineGroups =
-      await this.findAllDisciplineGroupRepository.findAll({
+    const [results, total] = await Promise.all([
+      this.findAllDisciplineGroupRepository.findAll({
         where: filter,
         skip: paginate?.page,
         take: paginate?.limit,
@@ -25,13 +29,10 @@ export class ReadDisciplineGroupsUseCase
           discipline: true,
           teacher: { include: { user: true } },
         },
-      })
-    
-    console.log({disciplineGroups})
+      }),
+      this.countDisciplineGroupRepository.count({ where: filter }),
+    ])
 
-    return right({
-      results: disciplineGroups.results,
-      total: disciplineGroups.total,
-    })
+    return right({ results, total })
   }
 }

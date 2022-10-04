@@ -1,10 +1,11 @@
 import { IDisciplineGroup } from '@shared/entities'
-import { FullLoading } from '@/components/FullLoading'
+
+import { FooterLoading } from '@/components/FooterLoading'
 import { Spacer } from '@/components/Spacer'
 import { useStatusBar } from '@/contexts/status-bar'
 
 import React from 'react'
-import { FlatList } from 'react-native'
+import { FlatList, RefreshControl } from 'react-native'
 
 import { DisciplineGroupListItem } from './DisciplineGroupListItem'
 import {
@@ -16,7 +17,13 @@ import { Container, ListContainer } from './DisciplineGroupsStyles'
 export interface DisciplineGroupsScreenProps {}
 
 const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
-  const { disciplineGroups } = useDisciplineGroupsPresenter()
+  const {
+    isFetchingMore,
+    isRefreshing,
+    disciplineGroups,
+    onNextPage,
+    onRefresh,
+  } = useDisciplineGroupsPresenter()
 
   const renderDisciplineGroupListItem = ({
     item,
@@ -32,10 +39,21 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
     <Container headerProps={{ title: 'Turmas', back: false }}>
       <ListContainer>
         <FlatList
-          data={disciplineGroups.results}
-          renderItem={renderDisciplineGroupListItem}
+          data={disciplineGroups}
+          renderItem={({ item }) => (
+            <DisciplineGroupListItem disciplineGroup={item} />
+          )}
           ItemSeparatorComponent={Spacer}
           contentContainerStyle={{ padding: 16 }}
+          onEndReached={onNextPage}
+          onEndReachedThreshold={0.15}
+          ListFooterComponent={isFetchingMore ? FooterLoading : undefined}
+          refreshControl={
+            <RefreshControl
+              refreshing={!isFetchingMore && isRefreshing}
+              onRefresh={onRefresh}
+            />
+          }
         />
       </ListContainer>
     </Container>

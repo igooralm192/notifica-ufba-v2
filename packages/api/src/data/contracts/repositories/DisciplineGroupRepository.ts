@@ -26,10 +26,7 @@ export type IDisciplineGroupRepositoryListInput = {
 
 export namespace IFindAllDisciplineGroupRepository {
   export type Input = IDisciplineGroupRepositoryListInput
-  export type Output = {
-    results: IDisciplineGroup[]
-    total: number
-  }
+  export type Output = IDisciplineGroup[]
 }
 
 export interface IFindAllDisciplineGroupRepository {
@@ -56,6 +53,17 @@ export interface IFindOneDisciplineGroupRepository {
   findOne(
     input: IFindOneDisciplineGroupRepository.Input,
   ): Promise<IFindOneDisciplineGroupRepository.Output>
+}
+
+export namespace ICountDisciplineGroupRepository {
+  export type Input = IDisciplineGroupRepositoryListInput
+  export type Output = number
+}
+
+export interface ICountDisciplineGroupRepository {
+  count(
+    input?: ICountDisciplineGroupRepository.Input,
+  ): Promise<ICountDisciplineGroupRepository.Output>
 }
 
 export namespace IPushStudentDisciplineGroupRepository {

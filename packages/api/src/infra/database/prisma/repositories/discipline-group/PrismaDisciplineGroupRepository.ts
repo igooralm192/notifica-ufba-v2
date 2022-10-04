@@ -1,5 +1,6 @@
 import { IDisciplineGroup } from '@shared/entities'
 import {
+  ICountDisciplineGroupRepository,
   IDisciplineGroupRepositoryListInput,
   IFindAllDisciplineGroupRepository,
   IFindOneDisciplineGroupRepository,
@@ -12,10 +13,15 @@ import { DisciplineGroup } from '@prisma/client'
 export class PrismaDisciplineGroupRepository
   extends PrismaRepository
   implements
+    ICountDisciplineGroupRepository,
     IFindAllDisciplineGroupRepository,
     IFindOneDisciplineGroupRepository,
     IPushStudentDisciplineGroupRepository
 {
+  async count({ where }: IDisciplineGroupRepositoryListInput): Promise<number> {
+    return this.client.disciplineGroup.count({ where })
+  }
+
   async findAll({
     take,
     skip,
@@ -23,8 +29,6 @@ export class PrismaDisciplineGroupRepository
     include,
     orderBy,
   }: IDisciplineGroupRepositoryListInput): Promise<IFindAllDisciplineGroupRepository.Output> {
-    const total = await this.client.disciplineGroup.count({ where })
-    
     const disciplineGroups = await this.client.disciplineGroup.findMany({
       take,
       skip: skip * take,
@@ -33,10 +37,7 @@ export class PrismaDisciplineGroupRepository
       orderBy,
     })
 
-    return {
-      results: disciplineGroups.map(this.parseDisciplineGroup),
-      total: total,
-    }
+    return disciplineGroups.map(this.parseDisciplineGroup)
   }
 
   async findOne({

@@ -1,42 +1,21 @@
 import { IDisciplineGroup } from '@shared/entities'
-import { BaseError } from '@/helpers'
 
 import api from '@/api'
-import { useMe } from '@/contexts/me'
-import { useDispatch, useSelector } from '@/store'
-import {
-  disciplineGroupsAdded,
-  selectAllDisciplineGroups,
-} from '@/store/disciplineGroups'
-import { IFilterParams, IPaginatedList } from '@/types/list'
-
-import { useFocusEffect } from '@react-navigation/native'
-import React, { useCallback, useContext, useState } from 'react'
-import Toast from 'react-native-toast-message'
-import {
-  useRecoilCallback,
-  useRecoilState,
-  useRecoilStateLoadable,
-  useRecoilValueLoadable,
-} from 'recoil'
-import {
-  disciplineGroupsFilterState,
-  disciplineGroupsState,
-  getMyDisciplineGroupsQuery,
-  IGetMyDisciplineGroupsQueryArgs,
-} from '@/state/discipline-group'
-import { useEffect } from 'react'
 import { FullLoading } from '@/components/FullLoading'
-import { useInfiniteQuery, useQuery, useQueryClient } from 'react-query'
-import { useMemo } from 'react'
-import { useRef } from 'react'
-import { Ref } from 'react'
-import { MutableRefObject } from 'react'
-import { Text } from '@rneui/themed'
+import { useMe } from '@/contexts/me'
+import { BaseError } from '@/helpers'
+import { IFilterParams } from '@/types/list'
+
+import React, { useContext } from 'react'
+import { useInfiniteQuery } from 'react-query'
+import Toast from 'react-native-toast-message'
 
 export interface DisciplineGroupsPresenterContextData {
-  loading: boolean
-  disciplineGroups: IPaginatedList<IDisciplineGroup>
+  isFetchingMore: boolean
+  isRefreshing: boolean
+  disciplineGroups: IDisciplineGroup[]
+  onNextPage: () => void
+  onRefresh: () => void
 }
 
 const DisciplineGroupsPresenterContext = React.createContext(
@@ -51,7 +30,15 @@ const initialFilter: IFilterParams = {
 export const DisciplineGroupsPresenter: React.FC = ({ children }) => {
   const { user } = useMe()
 
-  const { isLoading, data } = useInfiniteQuery(
+  const {
+    isLoading,
+    data,
+    fetchNextPage,
+    hasNextPage,
+    refetch,
+    isRefetching,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
     'disciplineGroups',
     async ({ pageParam = initialFilter }) => {
       return api.disciplineGroup.getDisciplineGroups({
@@ -61,28 +48,50 @@ export const DisciplineGroupsPresenter: React.FC = ({ children }) => {
       })
     },
     {
+      enabled: !!user?.student?.id,
       keepPreviousData: true,
-      getNextPageParam: (_, pages) => {
+      getNextPageParam: (lastPage, pages) => {
+        const allResults = pages.reduce(
+          (acc, page) => [...acc, ...page.results],
+          [] as IDisciplineGroup[],
+        )
+
+        if (allResults.length >= lastPage.total) return undefined
+
         return { ...initialFilter, page: pages.length }
+      },
+      onError: (error: BaseError) => {
+        Toast.show({
+          type: 'error',
+          text1: `Erro ao retornar lista de turmas`,
+          text2: error.message,
+        })
       },
     },
   )
 
-  if (isLoading) return <FullLoading />
+  const handleNextPage = () => {
+    if (!isFetchingNextPage && hasNextPage) fetchNextPage()
+  }
 
+  const handleRefresh = () => {
+    refetch()
+  }
+
+  if (isLoading) return <FullLoading />
   if (!data) return null
 
   return (
     <DisciplineGroupsPresenterContext.Provider
       value={{
-        loading: isLoading,
+        isFetchingMore: isFetchingNextPage,
+        isRefreshing: isRefetching,
         disciplineGroups: data.pages.reduce(
-          (acc, page) => ({
-            results: [...acc.results, ...page.results],
-            total: Math.max(acc.total, page.total),
-          }),
-          { results: [], total: 0 },
+          (acc: IDisciplineGroup[], page) => [...acc, ...page.results],
+          [],
         ),
+        onNextPage: handleNextPage,
+        onRefresh: handleRefresh,
       }}
     >
       {children}

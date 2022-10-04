@@ -6,5 +6,8 @@ export const makeReadDisciplineGroupsUseCase =
   (): IReadDisciplineGroupsUseCase => {
     const disciplineGroupRepository = makeDisciplineGroupRepository()
 
-    return new ReadDisciplineGroupsUseCase(disciplineGroupRepository)
+    return new ReadDisciplineGroupsUseCase(
+      disciplineGroupRepository,
+      disciplineGroupRepository,
+    )
   }
