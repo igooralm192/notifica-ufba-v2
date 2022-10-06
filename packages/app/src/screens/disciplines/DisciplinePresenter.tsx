@@ -1,32 +1,20 @@
 import { IDiscipline } from '@shared/entities'
-import { BaseError } from '@/helpers'
 
 import api from '@/api'
-import { useDispatch, useSelector } from '@/store'
-import { disciplinesAdded, selectAllDisciplines } from '@/store/disciplines'
-import { IFilterParams, IPaginatedList } from '@/types/list'
-
-import React, { useContext, useState } from 'react'
-import Toast from 'react-native-toast-message'
-import {
-  useRecoilCallback,
-  useRecoilState,
-  useRecoilStateLoadable,
-  useRecoilValueLoadable,
-} from 'recoil'
-import {
-  disciplinesFilterState,
-  disciplinesState,
-  getAllDisciplinesQuery,
-} from '@/state/discipline'
 import { FullLoading } from '@/components/FullLoading'
-import { useEffect } from 'react'
-import { setRecoil } from 'recoil-nexus'
+import { BaseError } from '@/helpers'
+import { IFilterParams } from '@/types/list'
+
+import React, { useContext } from 'react'
 import { useInfiniteQuery } from 'react-query'
+import Toast from 'react-native-toast-message'
 
 export interface DisciplinePresenterContextData {
-  loading: boolean
-  disciplines: IPaginatedList<IDiscipline>
+  isFetchingMore: boolean
+  isRefreshing: boolean
+  disciplines: IDiscipline[]
+  onNextPage: () => void
+  onRefresh: () => void
 }
 
 const DisciplinePresenterContext = React.createContext(
@@ -39,7 +27,15 @@ const initialFilter: IFilterParams = {
 }
 
 export const DisciplinePresenter: React.FC = ({ children }) => {
-  const { isLoading, isFetching, data } = useInfiniteQuery(
+  const {
+    isLoading,
+    data,
+    fetchNextPage,
+    hasNextPage,
+    refetch,
+    isRefetching,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
     'disciplines',
     async ({ pageParam = initialFilter }) => {
       return api.discipline.getDisciplines({
@@ -49,11 +45,33 @@ export const DisciplinePresenter: React.FC = ({ children }) => {
     },
     {
       keepPreviousData: true,
-      getNextPageParam: (_, pages) => {
+      getNextPageParam: (lastPage, pages) => {
+        const allResults = pages.reduce(
+          (acc, page) => [...acc, ...page.results],
+          [] as IDiscipline[],
+        )
+
+        if (allResults.length >= lastPage.total) return undefined
+
         return { ...initialFilter, page: pages.length }
+      },
+      onError: (error: BaseError) => {
+        Toast.show({
+          type: 'error',
+          text1: `Erro ao retornar lista de disciplinas`,
+          text2: error.message,
+        })
       },
     },
   )
+
+  const handleNextPage = () => {
+    if (!isFetchingNextPage && hasNextPage) fetchNextPage()
+  }
+
+  const handleRefresh = () => {
+    refetch()
+  }
 
   if (isLoading) return <FullLoading />
   if (!data) return null
@@ -61,14 +79,14 @@ export const DisciplinePresenter: React.FC = ({ children }) => {
   return (
     <DisciplinePresenterContext.Provider
       value={{
-        loading: isFetching,
+        isFetchingMore: isFetchingNextPage,
+        isRefreshing: isRefetching,
         disciplines: data.pages.reduce(
-          (acc, page) => ({
-            results: [...acc.results, ...page.results],
-            total: Math.max(acc.total, page.total),
-          }),
-          { results: [], total: 0 },
+          (acc: IDiscipline[], page) => [...acc, ...page.results],
+          [],
         ),
+        onNextPage: handleNextPage,
+        onRefresh: handleRefresh,
       }}
     >
       {children}

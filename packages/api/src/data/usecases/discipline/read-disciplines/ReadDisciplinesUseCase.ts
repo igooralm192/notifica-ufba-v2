@@ -19,32 +19,28 @@ export class ReadDisciplinesUseCase implements IReadDisciplinesUseCase {
   ): Promise<Either<BaseError, IReadDisciplinesUseCase.Output>> {
     const { filter, paginate } = input
 
-    const listInput: IDisciplineRepositoryListInput = {
-      skip: paginate?.page,
-      take: paginate?.limit,
-      include: {
-        groups: {
-          include: {
-            teacher: { include: { user: true } },
+    const [results, total] = await Promise.all([
+      this.findAllDisciplineRepository.findAll({
+        skip: paginate?.page,
+        take: paginate?.limit,
+        include: {
+          groups: {
+            include: {
+              teacher: { include: { user: true } },
+            },
           },
         },
-      },
-      where: {
-        code: {
-          ...filter.code,
-          mode: 'insensitive',
+        where: {
+          code: filter.code,
         },
-      },
-    }
-
-    const [disciplines, totalDisciplines] = await Promise.all([
-      this.findAllDisciplineRepository.findAll(listInput),
-      this.countDisciplineRepository.count(),
+      }),
+      this.countDisciplineRepository.count({
+        where: {
+          code: filter.code,
+        },
+      }),
     ])
 
-    return right({
-      results: disciplines,
-      total: totalDisciplines,
-    })
+    return right({ results, total })
   }
 }

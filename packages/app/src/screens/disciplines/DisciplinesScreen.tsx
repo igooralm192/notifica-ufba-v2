@@ -1,9 +1,11 @@
-import { IDiscipline } from '@shared/entities'
-
+import { Spacer } from '@/components/Spacer'
+import { FooterLoading } from '@/components/FooterLoading'
+import { useAuth } from '@/contexts/auth'
 import { useStatusBar } from '@/contexts/status-bar'
 
-import React, { useEffect, useLayoutEffect } from 'react'
-import { FlatList } from 'react-native'
+import { Button } from '@rneui/themed'
+import React from 'react'
+import { FlatList, RefreshControl } from 'react-native'
 
 import {
   useDisciplinePresenter,
@@ -11,31 +13,30 @@ import {
 } from './DisciplinePresenter'
 import { DisciplinesListItem } from './DisciplinesListItem'
 import { Container } from './DisciplinesStyles'
-import { Button } from '@rneui/themed'
-import { useAuth } from '@/contexts/auth'
-import { FullLoading } from '@/components/FullLoading'
 
-export interface DisciplinesScreenProps {}
-
-const DisciplinesScreen: React.FC<DisciplinesScreenProps> = props => {
+const DisciplinesScreen: React.FC = () => {
   const auth = useAuth()
-  const { disciplines } = useDisciplinePresenter()
 
-  const statusBar = useStatusBar()
+  const { isFetchingMore, isRefreshing, disciplines, onNextPage, onRefresh } =
+    useDisciplinePresenter()
 
-  const renderDisciplinesListItem = ({ item }: { item: IDiscipline }) => {
-    return <DisciplinesListItem discipline={item} />
-  }
-
-  useLayoutEffect(() => {
-    statusBar.setTheme('primary')
-  }, [])
+  useStatusBar('primary')
 
   return (
     <Container headerProps={{ title: 'Disciplinas', back: false }}>
       <FlatList
-        data={disciplines.results}
-        renderItem={renderDisciplinesListItem}
+        data={disciplines}
+        renderItem={({ item }) => <DisciplinesListItem discipline={item} />}
+        ItemSeparatorComponent={Spacer}
+        onEndReached={onNextPage}
+        onEndReachedThreshold={0.15}
+        ListFooterComponent={isFetchingMore ? FooterLoading : undefined}
+        refreshControl={
+          <RefreshControl
+            refreshing={!isFetchingMore && isRefreshing}
+            onRefresh={onRefresh}
+          />
+        }
       />
 
       <Button title={'Logout'} onPress={() => auth.logout()} />
