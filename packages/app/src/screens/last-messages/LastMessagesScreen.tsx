@@ -1,38 +1,48 @@
-
 import { ILastMessageDTO } from '@shared/dtos'
+
+import { Spacer } from '@/components/Spacer'
+import { FooterLoading } from '@/components/FooterLoading'
 import { useStatusBar } from '@/contexts/status-bar'
 
-import { Divider } from '@rneui/themed'
-import React, { useEffect, useLayoutEffect } from 'react'
-import { FlatList } from 'react-native'
+import React from 'react'
+import { FlatList, RefreshControl } from 'react-native'
 
+import { LastMessageListItem } from './LastMessageListItem'
 import {
   useLastMessagesPresenter,
   withLastMessagesPresenter,
 } from './LastMessagesPresenter'
-import { LastMessageListItem } from './LastMessageListItem'
 import { Container } from './LastMessagesStyles'
 
 export interface LastMessagesScreenProps {}
 
 const LastMessagesScreen: React.FC<LastMessagesScreenProps> = () => {
-  const { loading, lastMessages } = useLastMessagesPresenter()
-
-  const renderLastMessageListItem = ({ item }: { item: ILastMessageDTO }) => {
-    return <LastMessageListItem key={item.disciplineGroupCode} message={item} />
-  }
+  const { isFetchingMore, isRefreshing, lastMessages, onNextPage, onRefresh } =
+    useLastMessagesPresenter()
 
   useStatusBar('primary')
 
   return (
     <Container headerProps={{ title: 'Mensagens', back: false }}>
       <FlatList
-        data={lastMessages.results}
-        renderItem={renderLastMessageListItem}
-        ItemSeparatorComponent={Divider}
+        data={lastMessages}
+        renderItem={({ item }) => (
+          <LastMessageListItem
+            key={item.disciplineGroupCode}
+            lastMessage={item}
+          />
+        )}
+        ItemSeparatorComponent={Spacer}
+        onEndReached={onNextPage}
+        onEndReachedThreshold={0.15}
+        ListFooterComponent={isFetchingMore ? FooterLoading : undefined}
+        refreshControl={
+          <RefreshControl
+            refreshing={!isFetchingMore && isRefreshing}
+            onRefresh={onRefresh}
+          />
+        }
       />
-
-      {/* <Button title={'Logout'} onPress={() => auth.logout()} /> */}
     </Container>
   )
 }

@@ -1,4 +1,4 @@
-import { ILastMessageDTO } from '@notifica-ufba/domain/usecases'
+import { ILastMessageDTO } from '@shared/dtos'
 
 export class LastMessageMapper {
   static toDTO(data: Record<string, any>): ILastMessageDTO {
@@ -9,7 +9,7 @@ export class LastMessageMapper {
       disciplineName: data.disciplineName,
       message: data.message,
       sentBy: data.sentBy,
-      sentAt: new Date(data.sentAt),
+      sentAt: data.sentAt ? new Date(data.sentAt) : undefined,
     }
   }
 

@@ -52,7 +52,7 @@ export class PostMessageUseCase implements IPostMessageUseCase {
       include: { user: true },
     })
 
-    const allUserIds = allStudents.results.map(({ userId }) => userId)
+    const allUserIds = allStudents.map(({ userId }) => userId)
 
     const disciplineGroupMessage =
       await this.createDisciplineGroupMessageRepository.create({

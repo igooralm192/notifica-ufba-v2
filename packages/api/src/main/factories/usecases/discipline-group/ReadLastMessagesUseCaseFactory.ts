@@ -15,6 +15,7 @@ export const makeReadLastMessagesUseCase = (): IReadLastMessagesUseCase => {
   return new ReadLastMessagesUseCase(
     studentRepository,
     disciplineGroupRepository,
+    disciplineGroupRepository,
     disciplineGroupMessageRepository,
   )
 }

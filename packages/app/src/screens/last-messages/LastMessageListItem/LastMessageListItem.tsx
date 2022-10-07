@@ -1,4 +1,3 @@
-
 import { useNavigation } from '@/helpers'
 
 import { ListItem } from '@rneui/themed'
@@ -17,22 +16,24 @@ import {
 } from './LastMessageListItemStyles'
 
 export interface LastMessageListItemProps {
-  message: ILastMessageDTO
+  lastMessage: ILastMessageDTO
 }
 
 const LastMessageListItem: React.FC<LastMessageListItemProps> = ({
-  message,
+  lastMessage,
 }) => {
   const navigation = useNavigation()
 
-  console.log({message})
+  const { message, disciplineName, sentBy, sentAt } = lastMessage
+
+  console.log({lastMessage})
 
   return (
     <ListItem
       containerStyle={{ paddingHorizontal: 16 }}
       onPress={() =>
         navigation.navigate('DisciplineGroupTabsScreen', {
-          disciplineGroupId: message.disciplineGroupId,
+          disciplineGroupId: lastMessage.disciplineGroupId,
           initialTab: 'chat',
         })
       }
@@ -40,18 +41,21 @@ const LastMessageListItem: React.FC<LastMessageListItemProps> = ({
       <ListItem.Content>
         <Container>
           <DisciplineDetailsContainer>
-            <DisciplineName>{message.disciplineName}</DisciplineName>
+            <DisciplineName>{disciplineName}</DisciplineName>
+
             <DisciplineMessage numberOfLines={2}>
-              {message.message}
+              {message ?? 'Não há mensagens para esta turma'}
             </DisciplineMessage>
           </DisciplineDetailsContainer>
 
           <DisciplineTimestampContainer>
-            <DisciplineMessageTime>
-              {formatDistanceToNow(message.sentAt, {
-                locale: LocalePTBR,
-              })}
-            </DisciplineMessageTime>
+            {!!sentAt && (
+              <DisciplineMessageTime>
+                {formatDistanceToNow(sentAt, {
+                  locale: LocalePTBR,
+                })}
+              </DisciplineMessageTime>
+            )}
           </DisciplineTimestampContainer>
         </Container>
       </ListItem.Content>

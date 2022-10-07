@@ -1,7 +1,9 @@
 import { IDisciplineGroupMessage } from '@shared/entities'
 
 export type IDisciplineGroupMessageRepositoryListInput = {
-  where?: any
+  where: {
+    disciplineGroupId: string
+  }
   take?: number
   skip?: number
   orderBy?: {
@@ -26,14 +28,9 @@ export interface ICreateDisciplineGroupMessageRepository {
 }
 
 export namespace IFindAllDisciplineGroupMessageRepository {
-  export type Input = {
-    disciplineGroupId: string
-    listInput: IDisciplineGroupMessageRepositoryListInput
-  }
-  export type Output = {
-    results: IDisciplineGroupMessage[]
-    total: number
-  }
+  export type Input = IDisciplineGroupMessageRepositoryListInput
+
+  export type Output = IDisciplineGroupMessage[]
 }
 
 export interface IFindAllDisciplineGroupMessageRepository {

@@ -1,9 +1,12 @@
-import { StudentDoesNotExistError } from '@/domain/errors'
-import { ILastMessageDTO, IReadLastMessagesUseCase } from '@/domain/usecases'
-import { BaseError } from '@/domain/helpers'
+import { ILastMessageDTO } from '@shared/dtos'
 import { Either, left, right } from '@shared/utils'
 
+import { StudentDoesNotExistError } from '@/domain/errors'
+import { IReadLastMessagesUseCase } from '@/domain/usecases'
+import { BaseError } from '@/domain/helpers'
+
 import {
+  ICountDisciplineGroupRepository,
   IFindAllDisciplineGroupMessageRepository,
   IFindAllDisciplineGroupRepository,
   IFindOneStudentRepository,
@@ -13,6 +16,7 @@ export class ReadLastMessagesUseCase implements IReadLastMessagesUseCase {
   constructor(
     private readonly findOneStudentRepository: IFindOneStudentRepository,
     private readonly findAllDisciplineGroupRepository: IFindAllDisciplineGroupRepository,
+    private readonly countDisciplineGroupRepository: ICountDisciplineGroupRepository,
     private readonly findAllDisciplineGroupMessageRepository: IFindAllDisciplineGroupMessageRepository,
   ) {}
 
@@ -30,22 +34,27 @@ export class ReadLastMessagesUseCase implements IReadLastMessagesUseCase {
       return left(new StudentDoesNotExistError())
     }
 
-    const disciplineGroups =
-      await this.findAllDisciplineGroupRepository.findAll({
+    const [disciplineGroups, total] = await Promise.all([
+      this.findAllDisciplineGroupRepository.findAll({
         skip: paginate?.page,
         take: paginate?.limit,
         where: { studentIds: { has: student.id } },
         include: { discipline: true },
         orderBy: { discipline: { code: 'desc' } },
-      })
+      }),
+      this.countDisciplineGroupRepository.count({
+        where: { studentIds: { has: student.id } },
+      }),
+    ])
 
-    const promises = disciplineGroups.results.map(async disciplineGroup => {
+    const promises = disciplineGroups.map(async disciplineGroup => {
       return this.findAllDisciplineGroupMessageRepository
         .findAll({
-          disciplineGroupId: disciplineGroup.id,
-          listInput: { orderBy: { sentAt: 'desc' }, take: 1 },
+          where: { disciplineGroupId: disciplineGroup.id },
+          take: 1,
+          orderBy: { sentAt: 'desc' },
         })
-        .then(({ results: messages }) => {
+        .then((messages) => {
           return <ILastMessageDTO>{
             disciplineGroupId: disciplineGroup.id,
             disciplineCode: disciplineGroup.discipline!.code,
@@ -58,13 +67,11 @@ export class ReadLastMessagesUseCase implements IReadLastMessagesUseCase {
         })
     })
 
-    const lastMessages = await Promise.all(promises).then(lastMessages => {
-      return lastMessages.filter(lastMessage => !!lastMessage.message)
-    })
+    const lastMessages = await Promise.all(promises)
 
     return right({
       results: lastMessages,
-      total: disciplineGroups.total,
+      total,
     })
   }
 }

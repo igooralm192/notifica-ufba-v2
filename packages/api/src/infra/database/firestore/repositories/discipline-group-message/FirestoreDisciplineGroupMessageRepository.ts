@@ -39,15 +39,12 @@ export class FirestoreDisciplineGroupMessageRepository
     return disciplineGroupMessage
   }
 
-  async findAll({
-    disciplineGroupId,
-    listInput,
-  }: IFindAllDisciplineGroupMessageRepository.Input): Promise<IFindAllDisciplineGroupMessageRepository.Output> {
-    const { take, skip } = listInput
+  async findAll(input: IFindAllDisciplineGroupMessageRepository.Input): Promise<IFindAllDisciplineGroupMessageRepository.Output> {
+    const { take, skip, where } = input
 
     let query = this.client
       .collection('disciplineGroupMessages')
-      .doc(disciplineGroupId)
+      .doc(where.disciplineGroupId)
       .collection('messages')
       .orderBy('sentAt', 'desc')
 
@@ -57,12 +54,7 @@ export class FirestoreDisciplineGroupMessageRepository
     return query.get().then(snapshot => {
       const disciplineGroupMessages = snapshot.docs.map(doc => doc.data())
 
-      return {
-        results: disciplineGroupMessages.map(
-          this.mapDocumentDataToDisciplineGroupMessage,
-        ),
-        total: snapshot.size,
-      }
+      return disciplineGroupMessages.map(this.mapDocumentDataToDisciplineGroupMessage)
     })
   }
 

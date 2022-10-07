@@ -1,19 +1,20 @@
 import { ILastMessageDTO } from '@shared/dtos'
-import { BaseError } from '@/helpers'
 
 import api from '@/api'
-import { useDispatch, useSelector } from '@/store'
-import { lastMessagesAdded, selectAllLastMessages } from '@/store/lastMessages'
-import { IFilterParams, IPaginatedList } from '@/types/list'
+import { FullLoading } from '@/components/FullLoading'
+import { BaseError } from '@/helpers'
+import { IFilterParams } from '@/types/list'
 
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import Toast from 'react-native-toast-message'
 import { useInfiniteQuery } from 'react-query'
-import { FullLoading } from '@/components/FullLoading'
 
 export interface LastMessagesPresenterContextData {
-  loading: boolean
-  lastMessages: IPaginatedList<ILastMessageDTO>
+  isFetchingMore: boolean
+  isRefreshing: boolean
+  lastMessages: ILastMessageDTO[]
+  onNextPage: () => void
+  onRefresh: () => void
 }
 
 const LastMessagesPresenterContext = React.createContext(
@@ -26,7 +27,15 @@ const initialFilter: IFilterParams = {
 }
 
 export const LastMessagesPresenter: React.FC = ({ children }) => {
-  const { isLoading, isFetching, data } = useInfiniteQuery(
+  const {
+    isLoading,
+    data,
+    fetchNextPage,
+    hasNextPage,
+    refetch,
+    isRefetching,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
     'lastMessages',
     async ({ pageParam = initialFilter }) => {
       return api.disciplineGroup.getMyLastMessages({
@@ -36,11 +45,33 @@ export const LastMessagesPresenter: React.FC = ({ children }) => {
     },
     {
       keepPreviousData: true,
-      getNextPageParam: (_, pages) => {
+      getNextPageParam: (lastPage, pages) => {
+        const allResults = pages.reduce(
+          (acc, page) => [...acc, ...page.results],
+          [] as ILastMessageDTO[],
+        )
+
+        if (allResults.length >= lastPage.total) return undefined
+
         return { ...initialFilter, page: pages.length }
+      },
+      onError: (error: BaseError) => {
+        Toast.show({
+          type: 'error',
+          text1: `Erro ao retornar as últimas mensagens das suas turmas`,
+          text2: error.message,
+        })
       },
     },
   )
+
+  const handleNextPage = () => {
+    if (!isFetchingNextPage && hasNextPage) fetchNextPage()
+  }
+
+  const handleRefresh = () => {
+    refetch()
+  }
 
   if (isLoading) return <FullLoading />
   if (!data) return null
@@ -48,14 +79,14 @@ export const LastMessagesPresenter: React.FC = ({ children }) => {
   return (
     <LastMessagesPresenterContext.Provider
       value={{
-        loading: isFetching,
+        isFetchingMore: isFetchingNextPage,
+        isRefreshing: isRefetching,
         lastMessages: data.pages.reduce(
-          (acc, page) => ({
-            results: [...acc.results, ...page.results],
-            total: Math.max(acc.total, page.total),
-          }),
-          { results: [], total: 0 },
+          (acc: ILastMessageDTO[], page) => [...acc, ...page.results],
+          [],
         ),
+        onNextPage: handleNextPage,
+        onRefresh: handleRefresh,
       }}
     >
       {children}

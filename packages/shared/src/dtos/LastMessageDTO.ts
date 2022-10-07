@@ -3,7 +3,7 @@ export interface ILastMessageDTO {
   disciplineGroupCode: string
   disciplineName: string
   disciplineCode: string
-  message: string
-  sentBy: string
-  sentAt: Date
+  message?: string
+  sentBy?: string
+  sentAt?: Date
 }
