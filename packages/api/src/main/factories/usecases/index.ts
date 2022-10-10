@@ -6,7 +6,8 @@ export * from './discipline-group/ReadDisciplineGroupPostsUseCaseFactory'
 export * from './discipline-group/ReadDisciplineGroupsUseCaseFactory'
 export * from './discipline-group/ReadDisciplineGroupUseCaseFactory'
 export * from './discipline-group/ReadLastMessagesUseCaseFactory'
-export * from './discipline-group/SubscribeStudentToDisciplineGroupFactory'
+export * from './discipline-group/SubscribeStudentToDisciplineGroupUseCaseFactory'
+export * from './discipline-group/UnsubscribeStudentUseCaseFactory'
 
 export * from './student/CreateStudentUseCaseFactory'
 

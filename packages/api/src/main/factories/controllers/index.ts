@@ -7,6 +7,7 @@ export * from './discipline-group/ReadDisciplineGroupsControllerFactory'
 export * from './discipline-group/ReadDisciplineGroupControllerFactory'
 export * from './discipline-group/ReadLastMessagesControllerFactory'
 export * from './discipline-group/SubscribeStudentToDisciplineGroupControllerFactory'
+export * from './discipline-group/UnsubscribeStudentControllerFactory'
 
 export * from './student/CreateStudentControllerFactory'
 

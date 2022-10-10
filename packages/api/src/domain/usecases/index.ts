@@ -7,6 +7,7 @@ export * from './discipline-group/ReadDisciplineGroupsUseCase'
 export * from './discipline-group/ReadDisciplineGroupUseCase'
 export * from './discipline-group/ReadLastMessagesUseCase'
 export * from './discipline-group/SubscribeStudentToDisciplineGroupUseCase'
+export * from './discipline-group/UnsubscribeStudentUseCase'
 
 export * from './student/CreateStudentUseCase'
 

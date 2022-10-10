@@ -79,3 +79,18 @@ export interface IPushStudentDisciplineGroupRepository {
     input: IPushStudentDisciplineGroupRepository.Input,
   ): Promise<IPushStudentDisciplineGroupRepository.Output>
 }
+
+export namespace IRemoveStudentDisciplineGroupRepository {
+  export type Input = {
+    studentId: string
+  }
+  export type Output = IDisciplineGroup
+}
+
+export interface IRemoveStudentDisciplineGroupRepository {
+  removeStudent(
+    disciplineGroupId: string,
+    input: IRemoveStudentDisciplineGroupRepository.Input,
+  ): Promise<IRemoveStudentDisciplineGroupRepository.Output>
+}
+

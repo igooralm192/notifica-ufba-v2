@@ -5,6 +5,7 @@ import {
   IFindAllDisciplineGroupRepository,
   IFindOneDisciplineGroupRepository,
   IPushStudentDisciplineGroupRepository,
+  IRemoveStudentDisciplineGroupRepository,
 } from '@/data/contracts'
 import { PrismaRepository } from '@/infra/database/prisma/helpers'
 
@@ -16,7 +17,8 @@ export class PrismaDisciplineGroupRepository
     ICountDisciplineGroupRepository,
     IFindAllDisciplineGroupRepository,
     IFindOneDisciplineGroupRepository,
-    IPushStudentDisciplineGroupRepository
+    IPushStudentDisciplineGroupRepository,
+    IRemoveStudentDisciplineGroupRepository
 {
   async count({ where }: IDisciplineGroupRepositoryListInput): Promise<number> {
     return this.client.disciplineGroup.count({ where })
@@ -60,6 +62,25 @@ export class PrismaDisciplineGroupRepository
     const disciplineGroup = await this.client.disciplineGroup.update({
       data: {
         studentIds: { push: studentId },
+      },
+      where: { id: disciplineGroupId },
+    })
+
+    return this.parseDisciplineGroup(disciplineGroup)
+  }
+
+  async removeStudent(
+    disciplineGroupId: string,
+    { studentId }: IRemoveStudentDisciplineGroupRepository.Input,
+  ): Promise<IRemoveStudentDisciplineGroupRepository.Output> {
+    const { studentIds } = await this.client.disciplineGroup.findFirst({
+      select: { studentIds: true },
+      where: { id: disciplineGroupId },
+    })
+
+    const disciplineGroup = await this.client.disciplineGroup.update({
+      data: {
+        studentIds: { set: studentIds.filter(id => id != studentId) },
       },
       where: { id: disciplineGroupId },
     })
