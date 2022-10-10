@@ -41,7 +41,6 @@ export const DisciplineGroupTabsPresenter: React.FC<
   })
 
   if (isLoading) return <FullLoading />
-
   if (!data) return null
 
   return (

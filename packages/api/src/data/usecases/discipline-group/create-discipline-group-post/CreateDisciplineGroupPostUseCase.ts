@@ -69,7 +69,7 @@ export class CreateDisciplineGroupPostUseCase
       include: { user: true },
     })
 
-    const allUserPushTokens = allStudents.results
+    const allUserPushTokens = allStudents
       .filter(({ user }) => user.id != userId)
       .map(({ user }) => user?.pushToken || '')
 

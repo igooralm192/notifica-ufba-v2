@@ -30,10 +30,7 @@ export interface ICreateStudentRepository {
 
 export namespace IFindAllStudentRepository {
   export type Input = IStudentRepositoryListInput
-  export type Output = {
-    results: IStudent[]
-    total: number
-  }
+  export type Output = IStudent[]
 }
 
 export interface IFindAllStudentRepository {

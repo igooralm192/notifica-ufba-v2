@@ -45,13 +45,10 @@ export class PrismaStudentRepository
       include,
     })
 
-    return {
-      results: students.map(student => ({
-        ...student,
-        user: student.user || undefined,
-      })),
-      total: students.length,
-    }
+    return students.map(student => ({
+      ...student,
+      user: student.user || undefined,
+    }))
   }
 
   async findOne(

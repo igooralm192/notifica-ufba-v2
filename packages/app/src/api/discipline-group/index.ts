@@ -7,7 +7,17 @@ import {
 } from '@/mappers'
 import { api } from '@/services/api'
 
-import { collection, doc, orderBy, query, getDocs } from 'firebase/firestore'
+import {
+  collection,
+  doc,
+  orderBy,
+  query,
+  startAfter,
+  limit as limitFirestore,
+  getDoc,
+  getDocs,
+  onSnapshot,
+} from 'firebase/firestore'
 
 import {
   ICreatePostEndpoint,
@@ -15,6 +25,7 @@ import {
   IGetDisciplineGroupsEndpoint,
   IGetDisciplineGroupPostsEndpoint,
   IGetDisciplineGroupMessagesEndpoint,
+  IDisciplineGroupMessageListener,
   IGetMyLastMessagesEndpoint,
   ISubscribeStudentEndpoint,
 } from './types'
@@ -24,7 +35,6 @@ export const getDisciplineGroups = async ({
   page,
   limit,
 }: IGetDisciplineGroupsEndpoint.Request): Promise<IGetDisciplineGroupsEndpoint.Response> => {
-  console.log('OPA', { query, page, limit })
   const response = await api.get('/discipline-groups', {
     params: {
       studentIds_has: query?.studentId || undefined,
@@ -95,21 +105,64 @@ export const getDisciplineGroup = async (
 }
 
 export const getDisciplineGroupMessages = async (
-  disciplineGroupId: string,
-  { page, limit }: IGetDisciplineGroupPostsEndpoint.Request,
+  { disciplineGroupId }: IGetDisciplineGroupMessagesEndpoint.Params,
+  { nextCursor, limit = 10 }: IGetDisciplineGroupMessagesEndpoint.Query,
 ): Promise<IGetDisciplineGroupMessagesEndpoint.Response> => {
   const docRef = doc(db, 'disciplineGroupMessages', disciplineGroupId)
   const collectionRef = collection(docRef, 'messages')
-  const queryRef = query(collectionRef, orderBy('sentAt', 'desc'))
+
+  const nextDocument = nextCursor
+    ? await getDoc(doc(collectionRef, nextCursor))
+    : undefined
+
+  const queryRef = nextDocument
+    ? query(
+        collectionRef,
+        orderBy('sentAt', 'desc'),
+        startAfter(nextDocument),
+        limitFirestore(limit),
+      )
+    : query(collectionRef, orderBy('sentAt', 'desc'), limitFirestore(limit))
 
   const querySnapshot = await getDocs(queryRef)
 
+  const lastCursor =
+    querySnapshot.docs.length > 0
+      ? querySnapshot.docs[querySnapshot.docs.length - 1]
+      : undefined
+
+  const disciplineGroupMessages = DisciplineGroupMessageMapper.toEntityList(
+    querySnapshot.docs.map(doc => doc.data()),
+  )
+
   return {
-    results: DisciplineGroupMessageMapper.toEntityList(
-      querySnapshot.docs.map(doc => doc.data()),
-    ),
-    total: querySnapshot.size,
+    results: disciplineGroupMessages,
+    nextCursor: lastCursor?.id,
   }
+}
+
+export const disciplineGroupMessageListener = (
+  { disciplineGroupId }: IDisciplineGroupMessageListener.Params,
+  callback: IDisciplineGroupMessageListener.Callback,
+): (() => void) => {
+  const docRef = doc(db, 'disciplineGroupMessages', disciplineGroupId)
+  const collectionRef = collection(docRef, 'messages')
+
+  const queryRef = query(
+    collectionRef,
+    orderBy('sentAt', 'desc'),
+    limitFirestore(1),
+  )
+
+  const unsubscribe = onSnapshot(queryRef, querySnapshot => {
+    const disciplineGroupMessages = DisciplineGroupMessageMapper.toEntityList(
+      querySnapshot.docs.map(doc => doc.data()),
+    )
+
+    callback(disciplineGroupMessages)
+  })
+
+  return unsubscribe
 }
 
 export const createPost = async (

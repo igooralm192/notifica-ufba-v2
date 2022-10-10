@@ -23,8 +23,8 @@ export class PrismaDisciplineGroupRepository
   }
 
   async findAll({
-    take,
-    skip,
+    take = 10,
+    skip = 0,
     where,
     include,
     orderBy,

@@ -43,15 +43,29 @@ export namespace IGetDisciplineGroupPostsEndpoint {
 }
 
 export namespace IGetDisciplineGroupMessagesEndpoint {
-  export interface Request {
-    page?: number
+  export interface Params {
+    disciplineGroupId: string
+  }
+
+  export interface Query {
     limit?: number
+    nextCursor?: string
   }
 
   export interface Response {
     results: IDisciplineGroupMessage[]
-    total: number
+    nextCursor?: string
   }
+}
+
+export namespace IDisciplineGroupMessageListener {
+  export interface Params {
+    disciplineGroupId: string
+  }
+
+  export type Callback = (
+    disciplineGroupMessages: IDisciplineGroupMessage[],
+  ) => void
 }
 
 export namespace IGetMyLastMessagesEndpoint {

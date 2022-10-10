@@ -1,12 +1,15 @@
 import api from '@/api'
-import { authStateQuery, tokenState } from '@/state/auth'
-import { getAuthStore, useAuthStateSelector, useAuthStore } from '@/state/zustand/auth'
+import { BaseError } from '@/helpers'
+import {
+  getAuthStore,
+  useAuthStateSelector,
+  useAuthStore,
+} from '@/state/zustand/auth'
 import { AuthState } from '@/store/auth/types'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import React, { useContext } from 'react'
-import { useEffect } from 'react'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import React, { useContext, useEffect } from 'react'
+import Toast from 'react-native-toast-message'
 
 export interface AuthContextData {
   state: AuthState
@@ -21,7 +24,7 @@ const AuthProviderBase: React.FC = ({ children }) => {
   const store = useAuthStore()
 
   const authState = useAuthStateSelector()
-  
+
   const changeToken = (token: string | null) => {
     store.setToken(token)
   }
@@ -46,25 +49,27 @@ const AuthProviderBase: React.FC = ({ children }) => {
 
     return () => unsubscribe()
   }, [])
-  // useEffect(() => {
-  //   const interceptorId = api.interceptors.response.use(
-  //     undefined,
-  //     async (error: BaseError) => {
-  //       if (error.statusCode === 401) {
-  //         await logout()
 
-  //         toast({
-  //           description: error.message,
-  //           status: 'error',
-  //         })
-  //       }
+  useEffect(() => {
+    const interceptorId = api.instance.interceptors.response.use(
+      undefined,
+      async (error: BaseError) => {
+        if (error.code === 'ExpiredTokenError') {
+          await logout()
 
-  //       return Promise.reject(error)
-  //     }
-  //   )
+          Toast.show({
+            type: 'error',
+            text1: `Seu token expirou, favor realizar login novamente.`,
+            text2: error.message,
+          })
+        }
 
-  //   return () => api.interceptors.response.eject(interceptorId)
-  // }, [])
+        return Promise.reject(error)
+      },
+    )
+
+    return () => api.instance.interceptors.response.eject(interceptorId)
+  }, [])
 
   console.log('AUTH STATE', store)
 

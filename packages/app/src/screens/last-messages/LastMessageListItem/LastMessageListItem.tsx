@@ -1,7 +1,7 @@
+import { ILastMessageDTO } from '@shared/dtos'
 import { useNavigation } from '@/helpers'
 
 import { ListItem } from '@rneui/themed'
-import { ILastMessageDTO } from '@shared/dtos'
 import { formatDistanceToNow } from 'date-fns'
 import LocalePTBR from 'date-fns/locale/pt-BR'
 import React from 'react'
@@ -24,9 +24,7 @@ const LastMessageListItem: React.FC<LastMessageListItemProps> = ({
 }) => {
   const navigation = useNavigation()
 
-  const { message, disciplineName, sentBy, sentAt } = lastMessage
-
-  console.log({lastMessage})
+  const { message, disciplineName, sentAt } = lastMessage
 
   return (
     <ListItem
