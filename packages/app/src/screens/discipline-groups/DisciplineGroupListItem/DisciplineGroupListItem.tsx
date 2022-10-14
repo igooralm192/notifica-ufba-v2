@@ -1,12 +1,14 @@
 import { IDisciplineGroup } from '@shared/entities'
 
 import { BottomSheet } from '@/components/BottomSheet'
+import { LoadingModal } from '@/components/LoadingModal'
 import { Spacer } from '@/components/Spacer'
 import { useNavigation } from '@/helpers'
 
 import { Icon, ListItem } from '@rneui/themed'
 import React, { useState } from 'react'
 
+import { useDisciplineGroupsPresenter } from '../DisciplineGroupsPresenter'
 import {
   Container,
   LeftContainer,
@@ -25,6 +27,8 @@ export interface DisciplineGroupListItemProps {
 const DisciplineGroupListItem: React.FC<DisciplineGroupListItemProps> = ({
   disciplineGroup,
 }) => {
+  const { isUnsubscribing, unsubscribeStudent } = useDisciplineGroupsPresenter()
+
   const navigation = useNavigation()
 
   const [visible, setVisible] = useState(false)
@@ -32,7 +36,7 @@ const DisciplineGroupListItem: React.FC<DisciplineGroupListItemProps> = ({
   const options = [
     {
       label: 'Remover disciplina',
-      onPress: () => {},
+      onPress: () => unsubscribeStudent(disciplineGroup.id),
     },
   ]
 
@@ -61,8 +65,12 @@ const DisciplineGroupListItem: React.FC<DisciplineGroupListItemProps> = ({
         </LeftBottomContainer>
       </LeftContainer>
 
-      <RightContainer >
-        <Icon style={{padding: 16}} name="more-vert" onPress={() => setVisible(true)} />
+      <RightContainer>
+        <Icon
+          style={{ padding: 16 }}
+          name="more-vert"
+          onPress={() => setVisible(true)}
+        />
       </RightContainer>
 
       <BottomSheet visible={visible} onHide={() => setVisible(false)}>
@@ -127,6 +135,11 @@ const DisciplineGroupListItem: React.FC<DisciplineGroupListItemProps> = ({
             </ListItem.Title>
           </ListItem.Content>
         </ListItem>
+
+        <LoadingModal
+          visible={isUnsubscribing}
+          description="Desinscrevendo estudante..."
+        ></LoadingModal>
       </BottomSheet>
     </Container>
   )

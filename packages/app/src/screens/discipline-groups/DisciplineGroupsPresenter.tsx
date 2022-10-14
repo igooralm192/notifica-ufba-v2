@@ -7,13 +7,15 @@ import { BaseError } from '@/helpers'
 import { IFilterParams } from '@/types/list'
 
 import React, { useContext } from 'react'
-import { useInfiniteQuery } from 'react-query'
+import { useInfiniteQuery, useMutation, useQueryClient } from 'react-query'
 import Toast from 'react-native-toast-message'
 
 export interface DisciplineGroupsPresenterContextData {
   isFetchingMore: boolean
   isRefreshing: boolean
+  isUnsubscribing: boolean
   disciplineGroups: IDisciplineGroup[]
+  unsubscribeStudent: (disciplineGroupId: string) => Promise<void>
   onNextPage: () => void
   onRefresh: () => void
 }
@@ -29,6 +31,8 @@ const initialFilter: IFilterParams = {
 
 export const DisciplineGroupsPresenter: React.FC = ({ children }) => {
   const { user } = useMe()
+
+  const queryClient = useQueryClient()
 
   const {
     isLoading,
@@ -70,6 +74,35 @@ export const DisciplineGroupsPresenter: React.FC = ({ children }) => {
     },
   )
 
+  const { isLoading: isUnsubscribing, mutateAsync: unsubscribeStudent } =
+    useMutation(
+      async (disciplineGroupId: string) => {
+        try {
+          await api.disciplineGroup.unsubscribeStudent({ disciplineGroupId })
+
+          await queryClient.invalidateQueries([
+            'disciplineGroup',
+            disciplineGroupId,
+          ])
+        } catch (err) {
+          const error = err as BaseError
+
+          Toast.show({
+            type: 'error',
+            text1: 'Erro ao desinscrever estudante nesta turma.',
+            text2: error.message,
+          })
+        }
+      },
+      {
+        onSuccess: (_, disciplineGroupId: string) => {
+          queryClient.invalidateQueries(['disciplineGroups', disciplineGroupId])
+          queryClient.invalidateQueries('disciplineGroups')
+          queryClient.invalidateQueries('lastMessages')
+        },
+      },
+    )
+
   const handleNextPage = () => {
     if (!isFetchingNextPage && hasNextPage) fetchNextPage()
   }
@@ -86,10 +119,12 @@ export const DisciplineGroupsPresenter: React.FC = ({ children }) => {
       value={{
         isFetchingMore: isFetchingNextPage,
         isRefreshing: isRefetching,
+        isUnsubscribing,
         disciplineGroups: data.pages.reduce(
           (acc: IDisciplineGroup[], page) => [...acc, ...page.results],
           [],
         ),
+        unsubscribeStudent,
         onNextPage: handleNextPage,
         onRefresh: handleRefresh,
       }}
