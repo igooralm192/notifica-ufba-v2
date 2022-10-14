@@ -86,6 +86,12 @@ export namespace ISubscribeStudentEndpoint {
   }
 }
 
+export namespace IUnsubscribeStudentEndpoint {
+  export interface Request {
+    disciplineGroupId: string
+  }
+}
+
 export namespace ICreatePostEndpoint {
   export type Params = {
     disciplineGroupId: string

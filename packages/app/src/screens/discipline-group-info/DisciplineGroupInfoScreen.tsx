@@ -31,11 +31,17 @@ import {
   ClassSchedule,
   ButtonContainer,
   SubscribeButton,
+  UnsubscribeButton,
 } from './DisciplineGroupInfoStyles'
 
 const DisciplineGroupInfoScreen: React.FC = () => {
-  const { disciplineGroup, subscribing, subscribeStudent } =
-    useDisciplineGroupInfoPresenter()
+  const {
+    subscribing,
+    unsubscribing,
+    disciplineGroup,
+    subscribeStudent,
+    unsubscribeStudent,
+  } = useDisciplineGroupInfoPresenter()
 
   const { user } = useMe()
   const statusBar = useStatusBar()
@@ -96,13 +102,24 @@ const DisciplineGroupInfoScreen: React.FC = () => {
         </ClassSchedulesContainer>
       </ScrollContainer>
 
-      {!isSubscribed && (
+      {!isSubscribed ? (
         <ButtonContainer>
           <SubscribeButton
             title="Inscrever-se"
             loading={subscribing}
             disabled={subscribing}
             onPress={() => subscribeStudent()}
+            // loadingProps={{ testID: 'login-loading' }}
+          />
+        </ButtonContainer>
+      ) : (
+        <ButtonContainer>
+          <UnsubscribeButton
+            color="error"
+            title="Desinscrever-se"
+            loading={unsubscribing}
+            disabled={unsubscribing}
+            onPress={() => unsubscribeStudent()}
             // loadingProps={{ testID: 'login-loading' }}
           />
         </ButtonContainer>

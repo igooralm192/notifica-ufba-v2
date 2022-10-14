@@ -1,5 +1,3 @@
-import { IDisciplineGroup } from '@shared/entities'
-
 import { FooterLoading } from '@/components/FooterLoading'
 import { Spacer } from '@/components/Spacer'
 import { useStatusBar } from '@/contexts/status-bar'
@@ -24,14 +22,6 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
     onNextPage,
     onRefresh,
   } = useDisciplineGroupsPresenter()
-
-  const renderDisciplineGroupListItem = ({
-    item,
-  }: {
-    item: IDisciplineGroup
-  }) => {
-    return <DisciplineGroupListItem disciplineGroup={item} />
-  }
 
   useStatusBar('primary')
 

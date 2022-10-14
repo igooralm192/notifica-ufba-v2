@@ -29,6 +29,8 @@ const Stack = createStackNavigator<AppNavigation>()
 const Routes: React.FC = () => {
   const { state: authState } = useAuth()
 
+  console.log(authState)
+
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {authState === AuthState.UNAUTHENTICATED ? (

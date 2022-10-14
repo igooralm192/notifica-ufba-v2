@@ -99,3 +99,4 @@ export const ButtonContainer = styled.View`
 `
 
 export const SubscribeButton = styled(Button)``
+export const UnsubscribeButton = styled(Button)``

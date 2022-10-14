@@ -1,6 +1,5 @@
 import { UserMapper } from '@/mappers'
 import { api } from '@/services/api'
-import { delay } from '@/utils/delay'
 
 import {
   IGetMyUserEndpoint,

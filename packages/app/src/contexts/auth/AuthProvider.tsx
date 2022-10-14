@@ -59,8 +59,8 @@ const AuthProviderBase: React.FC = ({ children }) => {
 
           Toast.show({
             type: 'error',
-            text1: `Seu token expirou, favor realizar login novamente.`,
-            text2: error.message,
+            text1: 'Token expirado',
+            text2: 'Seu token expirou, favor realizar login novamente.',
           })
         }
 

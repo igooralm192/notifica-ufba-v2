@@ -1,14 +1,12 @@
 import { IUser } from '@shared/entities'
 
-import { FullLoading } from '@/components/FullLoading'
-import { currentUserState } from '@/state/user'
-
-import React, { useContext } from 'react'
-import { useRecoilValueLoadable } from 'recoil'
-import { useQuery } from 'react-query'
 import api from '@/api'
+import { FullLoading } from '@/components/FullLoading'
 import { useAuthStateSelector } from '@/state/zustand/auth'
 import { AuthState } from '@/store/auth/types'
+
+import React, { useContext } from 'react'
+import { useQuery } from 'react-query'
 
 export interface MeContextData {
   user: IUser | null

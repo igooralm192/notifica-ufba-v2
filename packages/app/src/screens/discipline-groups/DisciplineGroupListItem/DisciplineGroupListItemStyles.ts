@@ -2,14 +2,15 @@ import { Text } from '@rneui/themed'
 import styled from 'styled-components/native'
 
 export const Container = styled.Pressable`
-  padding: 16px;
   flex-direction: row;
   justify-content: space-between;
   background-color: white;
   border-radius: 8px;
 `
 
-export const LeftContainer = styled.View``
+export const LeftContainer = styled.View`
+  padding: 16px;
+`
 export const LeftTopContainer = styled.View``
 export const LeftBottomContainer = styled.View``
 export const RightContainer = styled.View``
