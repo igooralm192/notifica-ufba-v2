@@ -39,7 +39,7 @@ const DisciplinesScreen: React.FC = () => {
         }
       />
 
-      <Button title={'Logout'} onPress={() => auth.logout()} />
+      <Button title={'Logout'} onPress={() => auth.onTokenChange(null)} />
     </Container>
   )
 }

@@ -29,7 +29,7 @@ const DisciplineGroupMuralTab: React.FC<DisciplineGroupMuralTabProps> = () => {
       style={{ backgroundColor: theme.colors.grey1 }}
       data={disciplineGroupPosts}
       renderItem={({ item }) => (
-        <DisciplineGroupPostListItem disciplineGroupPost={item} />
+        <DisciplineGroupPostListItem key={item.id} disciplineGroupPost={item} />
       )}
       ItemSeparatorComponent={Spacer}
       contentContainerStyle={{ padding: 16 }}

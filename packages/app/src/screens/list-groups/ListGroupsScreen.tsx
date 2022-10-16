@@ -1,19 +1,16 @@
-import { FullLoading } from '@/components/FullLoading'
-import { Input } from '@/components/Input'
-import { Spacer } from '@/components/Spacer'
-import { Spinner } from '@/components/Spinner'
-import { useMe } from '@/contexts/me'
-import { useStatusBar } from '@/contexts/status-bar'
-import { ListGroupsItem } from '@/screens/list-groups/ListGroupsItem'
-import { joiResolver } from '@hookform/resolvers/joi'
 import { IDiscipline } from '@shared/entities'
 
-import Joi from 'joi'
-import React, { useLayoutEffect, useMemo } from 'react'
-import { useEffect } from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import { FlatList } from 'react-native'
+import { FooterLoading } from '@/components/FooterLoading'
+import { Spacer } from '@/components/Spacer'
+import { useStatusBar } from '@/contexts/status-bar'
 
+import { joiResolver } from '@hookform/resolvers/joi'
+import Joi from 'joi'
+import React from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { FlatList, RefreshControl } from 'react-native'
+
+import { ListGroupsItem } from './ListGroupsItem'
 import {
   useListGroupsPresenter,
   withListGroupsPresenter,
@@ -29,8 +26,15 @@ const listGroupsSchema = Joi.object({
 })
 
 const ListGroupsScreen: React.FC = () => {
-  const { loading, disciplines, onCodeChange, onDisciplineGroupSelected } =
-    useListGroupsPresenter()
+  const {
+    isFetchingMore,
+    isRefreshing,
+    disciplines,
+    onNextPage,
+    onRefresh,
+    onCodeChange,
+    onDisciplineGroupSelected,
+  } = useListGroupsPresenter()
 
   const form = useForm<IListGroupsFormValues>({
     mode: 'onChange',
@@ -58,7 +62,7 @@ const ListGroupsScreen: React.FC = () => {
             <ListGroupsInput
               placeholder="Digite o código da disciplina"
               value={field.value}
-              onChangeText={(code) => {
+              onChangeText={code => {
                 field.onChange(code)
                 onCodeChange(code)
               }}
@@ -72,19 +76,19 @@ const ListGroupsScreen: React.FC = () => {
       </InputContainer>
 
       <FlatList
-        data={disciplines.results}
+        data={disciplines}
         renderItem={renderListGroupsItem}
         style={{ borderTopWidth: 1, borderTopColor: '#dedede' }}
         contentContainerStyle={{ paddingHorizontal: 8 }}
-        ListFooterComponent={
-          <>
-            {loading && (
-              <>
-                <Spacer />
-                <Spinner />
-              </>
-            )}
-          </>
+        onEndReached={onNextPage}
+        onEndReachedThreshold={0.15}
+        ItemSeparatorComponent={Spacer}
+        ListFooterComponent={isFetchingMore ? FooterLoading : undefined}
+        refreshControl={
+          <RefreshControl
+            refreshing={!isFetchingMore && isRefreshing}
+            onRefresh={onRefresh}
+          />
         }
       />
     </Container>

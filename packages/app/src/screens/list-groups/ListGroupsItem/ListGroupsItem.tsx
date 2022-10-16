@@ -1,7 +1,5 @@
 import { IDiscipline, IDisciplineGroup } from '@shared/entities'
 
-import { useNavigation } from '@/helpers'
-
 import { ListItem } from '@rneui/themed'
 import React, { useState } from 'react'
 
@@ -14,7 +12,10 @@ import {
 
 export interface ListGroupsItemProps {
   discipline: IDiscipline
-  onDisciplineGroupPress: (discipline: IDiscipline, disciplineGroup: IDisciplineGroup) => void
+  onDisciplineGroupPress: (
+    discipline: IDiscipline,
+    disciplineGroup: IDisciplineGroup,
+  ) => void
 }
 
 const ListGroupsItem: React.FC<ListGroupsItemProps> = ({

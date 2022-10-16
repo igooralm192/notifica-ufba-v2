@@ -1,96 +1,96 @@
-import { Button } from "@/components/Button";
-import { Input } from "@/components/Input";
+import { Button } from '@/components/Button'
+import { Input } from '@/components/Input'
 
-import { joiResolver } from "@hookform/resolvers/joi";
-import Joi from "joi";
-import React, { useRef } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { Keyboard, TextInput } from "react-native";
+import { joiResolver } from '@hookform/resolvers/joi'
+import Joi from 'joi'
+import React, { useRef } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { Keyboard, TextInput } from 'react-native'
 
 import {
   useRegisterPresenter,
-  withRegisterPresenter
-} from "./RegisterPresenter";
+  withRegisterPresenter,
+} from './RegisterPresenter'
 import {
   Container,
   Logo,
   WelcomeText,
   InputContainer,
-  ButtonContainer
-} from "./RegisterStyles";
+  ButtonContainer,
+} from './RegisterStyles'
 
 interface RegisterScreenProps {}
 
 export interface IRegisterFormValues {
-  name: string;
-  email: string;
-  matriculation: string;
-  course: string;
-  password: string;
-  confirmPassword: string;
+  name: string
+  email: string
+  matriculation: string
+  course: string
+  password: string
+  confirmPassword: string
 }
 
 const registerSchema = Joi.object({
   name: Joi.string().required().messages({
-    "any.required": `Campo obrigatório.`,
-    "string.empty": "Campo obrigatório."
+    'any.required': `Campo obrigatório.`,
+    'string.empty': 'Campo obrigatório.',
   }),
   email: Joi.string()
     .email({ tlds: { allow: false } })
     .required()
     .messages({
-      "any.required": `Campo obrigatório.`,
-      "string.empty": "Campo obrigatório.",
-      "string.email": `E-mail inválido.`
+      'any.required': `Campo obrigatório.`,
+      'string.empty': 'Campo obrigatório.',
+      'string.email': `E-mail inválido.`,
     }),
   matriculation: Joi.string().required().messages({
-    "any.required": `Campo obrigatório.`,
-    "string.empty": "Campo obrigatório."
+    'any.required': `Campo obrigatório.`,
+    'string.empty': 'Campo obrigatório.',
   }),
   course: Joi.string().required().messages({
-    "any.required": `Campo obrigatório.`,
-    "string.empty": "Campo obrigatório."
+    'any.required': `Campo obrigatório.`,
+    'string.empty': 'Campo obrigatório.',
   }),
   password: Joi.string().min(6).required().messages({
-    "any.required": `Campo obrigatório.`,
-    "string.empty": "Campo obrigatório.",
-    "string.min": `Senha precisa ter no mínimo 6 caracteres.`
+    'any.required': `Campo obrigatório.`,
+    'string.empty': 'Campo obrigatório.',
+    'string.min': `Senha precisa ter no mínimo 6 caracteres.`,
   }),
-  confirmPassword: Joi.any().equal(Joi.ref("password")).required().messages({
-    "any.only": "As senhas não conferem.",
-    "any.required": `Campo obrigatório.`,
-    "string.empty": "Campo obrigatório."
-  })
-});
+  confirmPassword: Joi.any().equal(Joi.ref('password')).required().messages({
+    'any.only': 'As senhas não conferem.',
+    'any.required': `Campo obrigatório.`,
+    'string.empty': 'Campo obrigatório.',
+  }),
+})
 
 const RegisterScreen: React.FC<RegisterScreenProps> = () => {
-  const presenter = useRegisterPresenter();
+  const { isCreating, register } = useRegisterPresenter()
 
   const form = useForm<IRegisterFormValues>({
-    mode: "onChange",
-    resolver: joiResolver(registerSchema)
-  });
+    mode: 'onChange',
+    resolver: joiResolver(registerSchema),
+  })
 
-  const emailRef = useRef() as React.MutableRefObject<TextInput>;
-  const matriculationRef = useRef() as React.MutableRefObject<TextInput>;
-  const courseRef = useRef() as React.MutableRefObject<TextInput>;
-  const passwordRef = useRef() as React.MutableRefObject<TextInput>;
-  const confirmPasswordRef = useRef() as React.MutableRefObject<TextInput>;
+  const emailRef = useRef() as React.MutableRefObject<TextInput>
+  const matriculationRef = useRef() as React.MutableRefObject<TextInput>
+  const courseRef = useRef() as React.MutableRefObject<TextInput>
+  const passwordRef = useRef() as React.MutableRefObject<TextInput>
+  const confirmPasswordRef = useRef() as React.MutableRefObject<TextInput>
 
   const handleSubmit = async (values: IRegisterFormValues) => {
-    Keyboard.dismiss();
+    Keyboard.dismiss()
 
-    await presenter.register(values);
-  };
+    await register(values)
+  }
 
-  const submitForm = form.handleSubmit(handleSubmit);
+  const submitForm = form.handleSubmit(handleSubmit)
 
   return (
     <Container>
       <Logo />
 
       <WelcomeText>
-        Conheça nossa plataforma.{"\n"}
+        Conheça nossa plataforma.{'\n'}
         Crie já sua conta!
       </WelcomeText>
 
@@ -101,7 +101,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = () => {
           render={({ field, fieldState }) => (
             <Input
               placeholder="Nome"
-              leftIcon={{ name: "person" }}
+              leftIcon={{ name: 'person' }}
               value={field.value}
               onChangeText={field.onChange}
               onBlur={field.onBlur}
@@ -124,7 +124,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = () => {
             <Input
               ref={emailRef}
               placeholder="E-mail"
-              leftIcon={{ name: "email" }}
+              leftIcon={{ name: 'email' }}
               value={field.value}
               onChangeText={field.onChange}
               onBlur={field.onBlur}
@@ -148,7 +148,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = () => {
             <Input
               ref={matriculationRef}
               placeholder="Matrícula"
-              leftIcon={{ name: "app-registration" }}
+              leftIcon={{ name: 'app-registration' }}
               value={field.value}
               onChangeText={field.onChange}
               onBlur={field.onBlur}
@@ -170,7 +170,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = () => {
             <Input
               ref={courseRef}
               placeholder="Curso"
-              leftIcon={{ name: "library-books" }}
+              leftIcon={{ name: 'library-books' }}
               value={field.value}
               onChangeText={field.onChange}
               onBlur={field.onBlur}
@@ -192,7 +192,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = () => {
             <Input
               ref={passwordRef}
               placeholder="Senha"
-              leftIcon={{ name: "lock" }}
+              leftIcon={{ name: 'lock' }}
               value={field.value}
               onChangeText={field.onChange}
               onBlur={field.onBlur}
@@ -215,7 +215,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = () => {
             <Input
               ref={confirmPasswordRef}
               placeholder="Confirmar senha"
-              leftIcon={{ name: "lock" }}
+              leftIcon={{ name: 'lock' }}
               value={field.value}
               onChangeText={field.onChange}
               onBlur={field.onBlur}
@@ -233,14 +233,14 @@ const RegisterScreen: React.FC<RegisterScreenProps> = () => {
       <ButtonContainer>
         <Button
           title="Cadastrar"
-          loading={presenter.loading}
-          disabled={presenter.loading || form.formState.isSubmitting}
+          loading={isCreating}
+          disabled={isCreating || form.formState.isSubmitting}
           onPress={submitForm}
-          loadingProps={{ testID: "register-loading" }}
+          loadingProps={{ testID: 'register-loading' }}
         />
       </ButtonContainer>
     </Container>
-  );
-};
+  )
+}
 
-export default withRegisterPresenter(RegisterScreen);
+export default withRegisterPresenter(RegisterScreen)

@@ -1,15 +1,12 @@
 import { IDisciplineGroup } from '@shared/entities'
 
+import { FullLoading } from '@/components/FullLoading'
+import { useNavigation } from '@/helpers'
+import { useGetDisciplineGroup } from '@/hooks/api'
 import { AppNavigation } from '@/types/navigation'
 
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useContext } from 'react'
-import { useRecoilValueLoadable } from 'recoil'
-import { FullLoading } from '@/components/FullLoading'
-import { getDisciplineGroupQuery } from '@/state/discipline-group'
-import { useNavigation } from '@/helpers'
-import { useQuery } from 'react-query'
-import api from '@/api'
 
 interface DisciplineGroupTabsPresenterProps {
   disciplineGroupId: string
@@ -18,7 +15,7 @@ interface DisciplineGroupTabsPresenterProps {
 
 export interface DisciplineGroupTabsPresenterContextData {
   initialIndex: number
-  disciplineGroup: IDisciplineGroup | null
+  disciplineGroup: IDisciplineGroup
   navigateToCreatePost: () => void
 }
 
@@ -31,23 +28,24 @@ export const DisciplineGroupTabsPresenter: React.FC<
 > = ({ disciplineGroupId, initialTab, children }) => {
   const navigation = useNavigation()
 
-  const { isLoading, data } = useQuery(['disciplineGroup', disciplineGroupId], () => {
-    return api.disciplineGroup.getDisciplineGroup(disciplineGroupId)
+  const { isLoading, disciplineGroup } = useGetDisciplineGroup({
+    disciplineGroupId,
   })
 
-  const navigateToCreatePost = () => navigation.navigate('CreatePostScreen', {
-    discipline: data?.disciplineGroup?.discipline,
-    disciplineGroup: data?.disciplineGroup
-  })
+  const navigateToCreatePost = () =>
+    navigation.navigate('CreatePostScreen', {
+      discipline: disciplineGroup?.discipline,
+      disciplineGroup: disciplineGroup || undefined,
+    })
 
   if (isLoading) return <FullLoading />
-  if (!data) return null
+  if (!disciplineGroup) return null
 
   return (
     <DisciplineGroupTabsPresenterContext.Provider
       value={{
         initialIndex: initialTab === 'chat' ? 1 : 0,
-        disciplineGroup: data.disciplineGroup,
+        disciplineGroup,
         navigateToCreatePost,
       }}
     >

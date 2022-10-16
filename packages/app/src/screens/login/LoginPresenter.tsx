@@ -1,14 +1,12 @@
-import { IAuthenticateUserUseCase } from '@notifica-ufba/domain/usecases'
-import { BaseError } from '@/helpers'
-
+import { ILoginEndpoint } from '@/api/user/types'
 import { useAuth } from '@/contexts/auth'
+import { useLogin } from '@/hooks/api'
 
-import React, { useContext, useState } from 'react'
-import Toast from 'react-native-toast-message'
+import React, { useContext } from 'react'
 
 export interface LoginPresenterContextData {
-  loading: boolean
-  login(input: IAuthenticateUserUseCase.Input): Promise<void>
+  isLoggingIn: boolean
+  login(input: ILoginEndpoint.Request): Promise<void>
 }
 
 const LoginPresenterContext = React.createContext(
@@ -18,28 +16,16 @@ const LoginPresenterContext = React.createContext(
 export const LoginPresenter: React.FC = ({ children }) => {
   const auth = useAuth()
 
-  const [loading, setLoading] = useState(false)
+  const { isLoggingIn, login } = useLogin()
 
-  const login = async ({ email, password }: IAuthenticateUserUseCase.Input) => {
-    setLoading(true)
+  const handleLogin = async ({ email, password }: ILoginEndpoint.Request) => {
+    const { token } = await login({ email, password })
 
-    try {
-      await auth.login(email, password)
-    } catch (err) {
-      const error = err as BaseError
-
-      Toast.show({
-        type: 'error',
-        text1: 'Erro ao fazer login.',
-        text2: error.message,
-      })
-    } finally {
-      setLoading(false)
-    }
+    auth.onTokenChange(token)
   }
 
   return (
-    <LoginPresenterContext.Provider value={{ loading, login }}>
+    <LoginPresenterContext.Provider value={{ isLoggingIn, login: handleLogin }}>
       {children}
     </LoginPresenterContext.Provider>
   )

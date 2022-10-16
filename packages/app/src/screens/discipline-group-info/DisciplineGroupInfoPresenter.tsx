@@ -1,15 +1,17 @@
 import { IDisciplineGroup } from '@shared/entities'
 
-import api from '@/api'
 import { FullLoading } from '@/components/FullLoading'
-import { BaseError, useNavigation } from '@/helpers'
+import { useNavigation } from '@/helpers'
+import {
+  useGetDisciplineGroup,
+  useSubscribeStudent,
+  useUnsubscribeStudent,
+} from '@/hooks/api'
 import { AppNavigation } from '@/types/navigation'
 
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useContext } from 'react'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
-import Toast from 'react-native-toast-message'
 
 export interface DisciplineGroupInfoPresenterContextData {
   subscribing: boolean
@@ -28,81 +30,43 @@ export const DisciplineGroupInfoPresenter: React.FC<{
 }> = ({ disciplineGroupId, children }) => {
   const navigation = useNavigation()
 
-  const queryClient = useQueryClient()
+  const { isLoading, disciplineGroup } = useGetDisciplineGroup({
+    disciplineGroupId,
+  })
 
-  const { isLoading, data } = useQuery(
-    ['disciplineGroup', disciplineGroupId],
-    () => api.disciplineGroup.getDisciplineGroup(disciplineGroupId),
-  )
+  const { isSubscribing, subscribe } = useSubscribeStudent()
+  const { isUnsubscribing, unsubscribe } = useUnsubscribeStudent()
 
-  const { isLoading: isSubscribing, mutateAsync: subscribeStudent } =
-    useMutation(
-      async () => {
-        try {
-          await api.disciplineGroup.subscribeStudent({ disciplineGroupId })
+  const handleSubscribeStudent = async () => {
+    await subscribe({ disciplineGroupId })
 
-          navigation.dispatch(
-            StackActions.replace('DisciplineGroupTabsScreen', {
-              disciplineGroupId,
-            }),
-          )
-        } catch (err) {
-          const error = err as BaseError
-
-          Toast.show({
-            type: 'error',
-            text1: 'Erro ao inscrever estudante nesta turma.',
-            text2: error.message,
-          })
-        }
-      },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries('disciplineGroups')
-          queryClient.invalidateQueries('lastMessages')
-        },
-      },
+    navigation.dispatch(
+      StackActions.replace('DisciplineGroupTabsScreen', {
+        disciplineGroupId,
+      }),
     )
+  }
 
-  const { isLoading: isUnsubscribing, mutateAsync: unsubscribeStudent } =
-    useMutation(
-      async () => {
-        try {
-          await api.disciplineGroup.unsubscribeStudent({ disciplineGroupId })
+  const handleUnsubscribeStudent = async () => {
+    await unsubscribe({ disciplineGroupId })
 
-          await queryClient.invalidateQueries([
-            'disciplineGroup',
-            disciplineGroupId,
-          ])
-        } catch (err) {
-          const error = err as BaseError
-
-          Toast.show({
-            type: 'error',
-            text1: 'Erro ao desinscrever estudante nesta turma.',
-            text2: error.message,
-          })
-        }
-      },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries('disciplineGroups')
-          queryClient.invalidateQueries('lastMessages')
-        },
-      },
+    navigation.dispatch(
+      StackActions.replace('DisciplineGroupTabsScreen', {
+        disciplineGroupId,
+      }),
     )
+  }
 
   if (isLoading) return <FullLoading />
-  if (!data) return null
 
   return (
     <DisciplineGroupInfoPresenterContext.Provider
       value={{
         subscribing: isSubscribing,
         unsubscribing: isUnsubscribing,
-        disciplineGroup: data.disciplineGroup,
-        subscribeStudent,
-        unsubscribeStudent,
+        disciplineGroup,
+        subscribeStudent: handleSubscribeStudent,
+        unsubscribeStudent: handleUnsubscribeStudent,
       }}
     >
       {children}

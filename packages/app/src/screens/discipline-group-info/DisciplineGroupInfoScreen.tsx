@@ -1,4 +1,3 @@
-import { FullLoading } from '@/components/FullLoading'
 import { useMe } from '@/contexts/me'
 import { useStatusBar } from '@/contexts/status-bar'
 
@@ -102,27 +101,31 @@ const DisciplineGroupInfoScreen: React.FC = () => {
         </ClassSchedulesContainer>
       </ScrollContainer>
 
-      {!isSubscribed ? (
-        <ButtonContainer>
-          <SubscribeButton
-            title="Inscrever-se"
-            loading={subscribing}
-            disabled={subscribing}
-            onPress={() => subscribeStudent()}
-            // loadingProps={{ testID: 'login-loading' }}
-          />
-        </ButtonContainer>
-      ) : (
-        <ButtonContainer>
-          <UnsubscribeButton
-            color="error"
-            title="Desinscrever-se"
-            loading={unsubscribing}
-            disabled={unsubscribing}
-            onPress={() => unsubscribeStudent()}
-            // loadingProps={{ testID: 'login-loading' }}
-          />
-        </ButtonContainer>
+      {user?.type === 'STUDENT' && (
+        <>
+          {!isSubscribed ? (
+            <ButtonContainer>
+              <SubscribeButton
+                title="Inscrever-se"
+                loading={subscribing}
+                disabled={subscribing}
+                onPress={() => subscribeStudent()}
+                // loadingProps={{ testID: 'login-loading' }}
+              />
+            </ButtonContainer>
+          ) : (
+            <ButtonContainer>
+              <UnsubscribeButton
+                color="error"
+                title="Desinscrever-se"
+                loading={unsubscribing}
+                disabled={unsubscribing}
+                onPress={() => unsubscribeStudent()}
+                // loadingProps={{ testID: 'login-loading' }}
+              />
+            </ButtonContainer>
+          )}
+        </>
       )}
     </Container>
   )

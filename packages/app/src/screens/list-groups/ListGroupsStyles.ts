@@ -1,5 +1,4 @@
 import { Button } from '@/components/Button'
-import { Form } from '@/components/Form'
 import { Input } from '@/components/Input'
 import { Layout } from '@/components/Layout'
 import styled from 'styled-components/native'

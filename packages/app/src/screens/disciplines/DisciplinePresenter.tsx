@@ -1,13 +1,10 @@
 import { IDiscipline } from '@shared/entities'
 
-import api from '@/api'
 import { FullLoading } from '@/components/FullLoading'
-import { BaseError } from '@/helpers'
+import { useGetAllDisciplines } from '@/hooks/api'
 import { IFilterParams } from '@/types/list'
 
 import React, { useContext } from 'react'
-import { useInfiniteQuery } from 'react-query'
-import Toast from 'react-native-toast-message'
 
 export interface DisciplinePresenterContextData {
   isFetchingMore: boolean
@@ -29,62 +26,30 @@ const initialFilter: IFilterParams = {
 export const DisciplinePresenter: React.FC = ({ children }) => {
   const {
     isLoading,
-    data,
-    fetchNextPage,
+    isFetchingMore,
+    isRefreshing,
+    disciplines,
     hasNextPage,
-    refetch,
-    isRefetching,
-    isFetchingNextPage,
-  } = useInfiniteQuery(
-    'disciplines',
-    async ({ pageParam = initialFilter }) => {
-      return api.discipline.getDisciplines({
-        page: pageParam.page,
-        limit: pageParam.limit,
-      })
-    },
-    {
-      keepPreviousData: true,
-      getNextPageParam: (lastPage, pages) => {
-        const allResults = pages.reduce(
-          (acc, page) => [...acc, ...page.results],
-          [] as IDiscipline[],
-        )
-
-        if (allResults.length >= lastPage.total) return undefined
-
-        return { ...initialFilter, page: pages.length }
-      },
-      onError: (error: BaseError) => {
-        Toast.show({
-          type: 'error',
-          text1: `Erro ao retornar lista de disciplinas`,
-          text2: error.message,
-        })
-      },
-    },
-  )
+    fetchNextPage,
+    refresh,
+  } = useGetAllDisciplines(initialFilter)
 
   const handleNextPage = () => {
-    if (!isFetchingNextPage && hasNextPage) fetchNextPage()
+    if (!isFetchingMore && hasNextPage) fetchNextPage()
   }
 
   const handleRefresh = () => {
-    refetch()
+    refresh()
   }
 
   if (isLoading) return <FullLoading />
-  if (!data) return null
 
   return (
     <DisciplinePresenterContext.Provider
       value={{
-        isFetchingMore: isFetchingNextPage,
-        isRefreshing: isRefetching,
-        disciplines: data.pages.reduce(
-          (acc: IDiscipline[], page) => [...acc, ...page.results],
-          [],
-        ),
+        isFetchingMore,
+        isRefreshing,
+        disciplines,
         onNextPage: handleNextPage,
         onRefresh: handleRefresh,
       }}

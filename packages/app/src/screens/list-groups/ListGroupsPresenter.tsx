@@ -1,36 +1,13 @@
 import { IDiscipline, IDisciplineGroup } from '@shared/entities'
 
-import { BaseError, useNavigation } from '@/helpers'
+import { FullLoading } from '@/components/FullLoading'
+import { useNavigation } from '@/helpers'
+import { useGetAllDisciplines } from '@/hooks/api'
+import { IFilterParams } from '@/types/list'
 import { AppNavigation } from '@/types/navigation'
 
-import { RouteProp, useNavigationState, useRoute } from '@react-navigation/core'
-import { CommonActions } from '@react-navigation/native'
-import { StackScreenProps } from '@react-navigation/stack'
-import React, { useContext } from 'react'
-import {
-  noWait,
-  useGetRecoilValueInfo_UNSTABLE,
-  useRecoilCallback,
-  useRecoilSnapshot,
-  useRecoilState,
-  useRecoilValue,
-  useRecoilValueLoadable,
-  waitForAll,
-} from 'recoil'
-import {
-  getDisciplineGroupQuery,
-  subscribeStudentQuery,
-} from '@/state/discipline-group'
-import { FullLoading } from '@/components/FullLoading'
-import { getRecoil } from 'recoil-nexus'
-import { useEffect } from 'react'
-import { useState } from 'react'
-import Toast from 'react-native-toast-message'
-import { getAllDisciplinesQuery } from '@/state/discipline'
-import { IFilterParams, IPaginatedList } from '@/types/list'
-import { useInfiniteQuery } from 'react-query'
-import api from '@/api'
-import { useRef } from 'react'
+import { RouteProp, useRoute } from '@react-navigation/core'
+import React, { useContext, useState } from 'react'
 
 export type IListGroupsFilter = IFilterParams & {
   code?: string
@@ -41,8 +18,11 @@ export type IListGroupsFilterUpdater = (
 ) => IListGroupsFilter
 
 export interface ListGroupsPresenterContextData {
-  loading: boolean
-  disciplines: IPaginatedList<IDiscipline>
+  isFetchingMore: boolean
+  isRefreshing: boolean
+  disciplines: IDiscipline[]
+  onNextPage: () => void
+  onRefresh: () => void
   onCodeChange: (code: string) => void
   onDisciplineGroupSelected: (
     discipline: IDiscipline,
@@ -65,24 +45,23 @@ export const ListGroupsPresenter: React.FC = ({ children }) => {
 
   const [code, setCode] = useState<string>('')
 
-  const { isLoading, data } = useInfiniteQuery(
-    ['disciplines', code],
-    async ({ pageParam = initialFilter }) => {
-      return api.discipline.getDisciplines({
-        page: pageParam.page,
-        limit: pageParam.limit,
-        code,
-      })
-    },
-    {
-      keepPreviousData: true,
-      staleTime: 0,
-      cacheTime: 0,
-      getNextPageParam: (_, pages) => {
-        return { ...initialFilter, page: pages.length }
-      },
-    },
-  )
+  const {
+    isLoading,
+    isFetchingMore,
+    isRefreshing,
+    disciplines,
+    hasNextPage,
+    fetchNextPage,
+    refresh,
+  } = useGetAllDisciplines({ ...initialFilter, code })
+
+  const handleNextPage = () => {
+    if (!isFetchingMore && hasNextPage) fetchNextPage()
+  }
+
+  const handleRefresh = () => {
+    refresh()
+  }
 
   const handleDisciplineGroupSelected = (
     discipline: IDiscipline,
@@ -97,20 +76,17 @@ export const ListGroupsPresenter: React.FC = ({ children }) => {
     setCode(code)
   }
 
-  if (!data) return null
+  if (isLoading) return <FullLoading />
 
   return (
     <ListGroupsPresenterContext.Provider
       value={{
-        loading: isLoading,
+        isFetchingMore,
+        isRefreshing,
+        disciplines,
+        onNextPage: handleNextPage,
+        onRefresh: handleRefresh,
         onCodeChange: handleCodeChange,
-        disciplines: data.pages.reduce(
-          (acc, page) => ({
-            results: [...acc.results, ...page.results],
-            total: Math.max(acc.total, page.total),
-          }),
-          { results: [], total: 0 },
-        ),
         onDisciplineGroupSelected: handleDisciplineGroupSelected,
       }}
     >

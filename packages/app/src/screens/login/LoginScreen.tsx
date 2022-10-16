@@ -40,7 +40,7 @@ const loginSchema = Joi.object({
 })
 
 const LoginScreen: React.FC<LoginScreenProps> = () => {
-  const presenter = useLoginPresenter()
+  const { isLoggingIn, login } = useLoginPresenter()
 
   const form = useForm<ILoginFormValues>({
     mode: 'onChange',
@@ -52,7 +52,7 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
   const handleSubmit = async (values: ILoginFormValues) => {
     Keyboard.dismiss()
 
-    await presenter.login(values)
+    await login(values)
   }
 
   const submitForm = form.handleSubmit(handleSubmit)
@@ -114,8 +114,8 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
       <ButtonContainer>
         <Button
           title="Entrar"
-          loading={presenter.loading}
-          disabled={presenter.loading || form.formState.isSubmitting}
+          loading={isLoggingIn}
+          disabled={isLoggingIn || form.formState.isSubmitting}
           onPress={submitForm}
           loadingProps={{ testID: 'login-loading' }}
         />

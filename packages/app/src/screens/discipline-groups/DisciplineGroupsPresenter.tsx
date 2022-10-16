@@ -1,14 +1,11 @@
 import { IDisciplineGroup } from '@shared/entities'
 
-import api from '@/api'
 import { FullLoading } from '@/components/FullLoading'
 import { useMe } from '@/contexts/me'
-import { BaseError } from '@/helpers'
+import { useGetAllDisciplineGroups, useUnsubscribeStudent } from '@/hooks/api'
 import { IFilterParams } from '@/types/list'
 
 import React, { useContext } from 'react'
-import { useInfiniteQuery, useMutation, useQueryClient } from 'react-query'
-import Toast from 'react-native-toast-message'
 
 export interface DisciplineGroupsPresenterContextData {
   isFetchingMore: boolean
@@ -32,99 +29,44 @@ const initialFilter: IFilterParams = {
 export const DisciplineGroupsPresenter: React.FC = ({ children }) => {
   const { user } = useMe()
 
-  const queryClient = useQueryClient()
-
   const {
     isLoading,
-    data,
+    isFetchingMore,
+    isRefreshing,
+    disciplineGroups,
     fetchNextPage,
     hasNextPage,
-    refetch,
-    isRefetching,
-    isFetchingNextPage,
-  } = useInfiniteQuery(
-    'disciplineGroups',
-    async ({ pageParam = initialFilter }) => {
-      return api.disciplineGroup.getDisciplineGroups({
-        query: { studentId: user?.student?.id },
-        page: pageParam.page,
-        limit: pageParam.limit,
-      })
-    },
-    {
-      enabled: !!user?.student?.id,
-      keepPreviousData: true,
-      getNextPageParam: (lastPage, pages) => {
-        const allResults = pages.reduce(
-          (acc, page) => [...acc, ...page.results],
-          [] as IDisciplineGroup[],
-        )
+    refresh,
+  } = useGetAllDisciplineGroups({
+    ...initialFilter,
+    studentId: user?.student?.id,
+    teacherId: user?.teacher?.id,
+  })
 
-        if (allResults.length >= lastPage.total) return undefined
-
-        return { ...initialFilter, page: pages.length }
-      },
-      onError: (error: BaseError) => {
-        Toast.show({
-          type: 'error',
-          text1: `Erro ao retornar lista de turmas`,
-          text2: error.message,
-        })
-      },
-    },
-  )
-
-  const { isLoading: isUnsubscribing, mutateAsync: unsubscribeStudent } =
-    useMutation(
-      async (disciplineGroupId: string) => {
-        try {
-          await api.disciplineGroup.unsubscribeStudent({ disciplineGroupId })
-
-          await queryClient.invalidateQueries([
-            'disciplineGroup',
-            disciplineGroupId,
-          ])
-        } catch (err) {
-          const error = err as BaseError
-
-          Toast.show({
-            type: 'error',
-            text1: 'Erro ao desinscrever estudante nesta turma.',
-            text2: error.message,
-          })
-        }
-      },
-      {
-        onSuccess: (_, disciplineGroupId: string) => {
-          queryClient.invalidateQueries(['disciplineGroups', disciplineGroupId])
-          queryClient.invalidateQueries('disciplineGroups')
-          queryClient.invalidateQueries('lastMessages')
-        },
-      },
-    )
+  const { isUnsubscribing, unsubscribe } = useUnsubscribeStudent()
 
   const handleNextPage = () => {
-    if (!isFetchingNextPage && hasNextPage) fetchNextPage()
+    if (!isFetchingMore && hasNextPage) fetchNextPage()
   }
 
   const handleRefresh = () => {
-    refetch()
+    refresh()
+  }
+
+  const handleUnsubscribeStudent = async (disciplineGroupId: string) => {
+    await unsubscribe({ disciplineGroupId })
   }
 
   if (isLoading) return <FullLoading />
-  if (!data) return null
 
   return (
     <DisciplineGroupsPresenterContext.Provider
       value={{
-        isFetchingMore: isFetchingNextPage,
-        isRefreshing: isRefetching,
+        isFetchingMore,
+        isRefreshing,
         isUnsubscribing,
-        disciplineGroups: data.pages.reduce(
-          (acc: IDisciplineGroup[], page) => [...acc, ...page.results],
-          [],
-        ),
-        unsubscribeStudent,
+        disciplineGroups,
+        unsubscribeStudent: handleUnsubscribeStudent,
         onNextPage: handleNextPage,
         onRefresh: handleRefresh,
       }}
