@@ -9,6 +9,7 @@ export namespace IGetDisciplineGroupsEndpoint {
   export interface Request {
     query?: {
       studentId?: string
+      teacherId?: string
     }
     page?: number
     limit?: number

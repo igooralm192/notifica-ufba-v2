@@ -39,6 +39,7 @@ export const getDisciplineGroups = async ({
   const response = await api.get('/discipline-groups', {
     params: {
       studentIds_has: query?.studentId || undefined,
+      teacherId: query?.teacherId,
       page,
       limit,
     },
