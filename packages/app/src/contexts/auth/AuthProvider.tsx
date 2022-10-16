@@ -10,34 +10,30 @@ import { AuthState } from '@/store/auth/types'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import React, { useContext, useEffect } from 'react'
 import Toast from 'react-native-toast-message'
+import { useQueryClient } from 'react-query'
 
 export interface AuthContextData {
   state: AuthState
-
-  login(email: string, password: string): Promise<void>
-  logout(): Promise<void>
+  onTokenChange: (token: string | null) => void
 }
 
 const AuthContext = React.createContext({} as AuthContextData)
 
 const AuthProviderBase: React.FC = ({ children }) => {
   const store = useAuthStore()
-
   const authState = useAuthStateSelector()
 
-  const changeToken = (token: string | null) => {
+  const queryClient = useQueryClient()
+
+  const handleTokenChange = (token: string | null) => {
     store.setToken(token)
   }
 
-  const login = async (email: string, password: string) => {
-    const { token } = await api.user.login({ email, password })
-
-    changeToken(token)
-  }
-
-  const logout = async () => {
-    changeToken(null)
-  }
+  useEffect(() => {
+    queryClient.invalidateQueries('user')
+    queryClient.invalidateQueries('disciplineGroups', { refetchActive: false })
+    queryClient.invalidateQueries('lastMessages', { refetchActive: false })
+  }, [authState])
 
   useEffect(() => {
     AsyncStorage.getItem('TOKEN').then(store.setToken)
@@ -55,7 +51,7 @@ const AuthProviderBase: React.FC = ({ children }) => {
       undefined,
       async (error: BaseError) => {
         if (error.code === 'ExpiredTokenError') {
-          await logout()
+          handleTokenChange(null)
 
           Toast.show({
             type: 'error',
@@ -71,10 +67,10 @@ const AuthProviderBase: React.FC = ({ children }) => {
     return () => api.instance.interceptors.response.eject(interceptorId)
   }, [])
 
-  console.log('AUTH STATE', store)
-
   return (
-    <AuthContext.Provider value={{ state: authState, login, logout }}>
+    <AuthContext.Provider
+      value={{ state: authState, onTokenChange: handleTokenChange }}
+    >
       {children}
     </AuthContext.Provider>
   )
