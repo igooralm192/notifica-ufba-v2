@@ -5,9 +5,7 @@ import { Request, Response } from 'express'
 export class ExpressRouteAdapter {
   static adapt(controller: BaseController) {
     return async (request: Request, response: Response) => {
-      console.log(
-        `${request.method} ${request.url}`,
-      )
+      console.log(`${request.method} ${request.url}`)
 
       const controllerResponse = await controller.perform({
         body: request.body,
@@ -17,7 +15,10 @@ export class ExpressRouteAdapter {
       })
 
       if (controllerResponse.statusCode >= 400) {
-        console.error(controllerResponse.body)
+        console.error({
+          url: request.url,
+          error: controllerResponse.body,
+        })
       }
 
       return response

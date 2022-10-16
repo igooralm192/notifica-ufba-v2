@@ -19,7 +19,7 @@ export class ReadDisciplineGroupsUseCase
     listInput: { filter, paginate },
   }: IReadDisciplineGroupsUseCase.Input): Promise<
     Either<BaseError, IReadDisciplineGroupsUseCase.Output>
-  > {
+    > {
     const [results, total] = await Promise.all([
       this.findAllDisciplineGroupRepository.findAll({
         where: filter,

@@ -1,7 +1,4 @@
-import {
-  IQueryFilterDTO,
-  IQueryPaginateDTO
-} from '@/domain/dtos'
+import { IQueryFilterDTO, IQueryPaginateDTO } from '@/domain/dtos'
 import { IListParamsParser } from '@/application/protocols'
 
 export class ListParamsParser<T> implements IListParamsParser<T> {
@@ -22,11 +19,11 @@ export class ListParamsParser<T> implements IListParamsParser<T> {
       if (key.endsWith('_has')) {
         const field = key.replace('_has', '')
         filter[field] = { has: value }
-      }
-      
-      if (key.endsWith('_contains')) {
+      } else if (key.endsWith('_contains')) {
         const field = key.replace('_contains', '')
         filter[field] = { contains: value }
+      } else if (key != 'page' && key != 'limit') {
+        filter[key] = { equals: value }
       }
     })
 
