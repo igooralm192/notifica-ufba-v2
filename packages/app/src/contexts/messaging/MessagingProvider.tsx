@@ -1,9 +1,8 @@
-import api from '@/api'
 import { useAuth } from '@/contexts/auth'
 import { useNavigation } from '@/helpers'
+import { useUpdateMyUser } from '@/hooks/api'
 import { AuthState } from '@/store/auth/types'
 
-import * as Device from 'expo-device'
 import * as Notifications from 'expo-notifications'
 import React, { useContext, useEffect } from 'react'
 import { Platform } from 'react-native'
@@ -16,6 +15,8 @@ const MessagingContext = React.createContext({} as MessagingContextData)
 export const MessagingProvider: React.FC = ({ children }) => {
   const auth = useAuth()
   const navigation = useNavigation()
+
+  const { update } = useUpdateMyUser()
 
   const requestPermissions = async () => {
     const { status: currentStatus } = await Notifications.getPermissionsAsync()
@@ -42,7 +43,9 @@ export const MessagingProvider: React.FC = ({ children }) => {
     if (!permissionsGranted) {
       Toast.show({
         type: 'error',
-        text1: 'Failed to get push token for push notification!',
+        text1: 'Permissão insuficiente para notificaćões',
+        text2:
+          'Para receber notificações, ative as permissões para este app nas configurações do seu celular.',
       })
 
       return null
@@ -74,7 +77,7 @@ export const MessagingProvider: React.FC = ({ children }) => {
     if (auth.state !== AuthState.AUTHENTICATED) return
 
     requestPermissionsAndGetToken().then(pushToken => {
-      if (pushToken) return api.user.patchMyUser({ pushToken })
+      if (pushToken) return update({ pushToken })
     })
   }, [auth.state])
 
@@ -107,7 +110,7 @@ export const MessagingProvider: React.FC = ({ children }) => {
       Notifications.removeNotificationSubscription(onForegroundListener)
       Notifications.removeNotificationSubscription(onTapListener)
     }
-  }, [])
+  }, [auth.state])
 
   return (
     <MessagingContext.Provider value={{}}>{children}</MessagingContext.Provider>
