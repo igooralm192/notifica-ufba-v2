@@ -14,6 +14,7 @@ export class ExpoMessagingService implements ICreateMessagingService {
       body,
       data,
       sound: 'default',
+      priority: 'high'
     }
 
     await this.client.sendPushNotificationsAsync([message])

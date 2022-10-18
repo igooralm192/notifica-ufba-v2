@@ -27,9 +27,8 @@ export class PostMessageUseCase implements IPostMessageUseCase {
     userId,
     disciplineGroupId,
     message,
-  }: IPostMessageUseCase.Input): Promise<
-    Either<BaseError, IPostMessageUseCase.Output>
-  > {
+    onlyNotify = false,
+  }: IPostMessageUseCase.Input): Promise<Either<BaseError, void>> {
     const user = await this.findOneUserRepository.findOne({ id: userId })
 
     if (!user) {
@@ -56,7 +55,7 @@ export class PostMessageUseCase implements IPostMessageUseCase {
       .filter(({ user }) => user.id != userId)
       .map(({ userId }) => userId)
 
-    const disciplineGroupMessage =
+    if (!onlyNotify)
       await this.createDisciplineGroupMessageRepository.create({
         body: message,
         sentBy: user.name,
@@ -67,10 +66,17 @@ export class PostMessageUseCase implements IPostMessageUseCase {
     // TODO: Add event
     this.createMessagingService.create({
       title: `${disciplineGroup.discipline?.code} - ${disciplineGroup.code}`,
-      body: 'Há uma nova mensagem para esta disciplina!',
+      body: message,
+      data: {
+        type: 'message',
+        disciplineGroupId: disciplineGroup.id,
+        disciplineGroupCode: disciplineGroup.code,
+        disciplineCode: disciplineGroup.discipline?.code,
+        disciplineName: disciplineGroup.discipline?.name,
+      },
       tokens: allUserIds,
     })
 
-    return right(disciplineGroupMessage)
+    return right(undefined)
   }
 }

@@ -8,10 +8,12 @@ import { useEffect } from 'react'
 import { InfiniteData, useInfiniteQuery, useQueryClient } from 'react-query'
 import Toast from 'react-native-toast-message'
 import { IUseGetAllDisciplineGroupMessages } from './types'
+import { getMessageStore } from '@/state/zustand/message'
 
 export const useGetAllDisciplineGroupMessages = (
   params: IUseGetAllDisciplineGroupMessages.Params,
   query: IUseGetAllDisciplineGroupMessages.Query,
+  callback?: IUseGetAllDisciplineGroupMessages.Callback,
 ): IUseGetAllDisciplineGroupMessages.Output => {
   const queryClient = useQueryClient()
 
@@ -48,7 +50,7 @@ export const useGetAllDisciplineGroupMessages = (
   useEffect(() => {
     const unsubscribe = api.disciplineGroup.disciplineGroupMessageListener(
       { disciplineGroupId: params.disciplineGroupId },
-      disciplineGroupMessages => {
+      disciplineGroupMessage => {
         queryClient.invalidateQueries('lastMessages')
 
         queryClient.setQueryData<
@@ -59,9 +61,18 @@ export const useGetAllDisciplineGroupMessages = (
           const restPages = oldData.pages.slice(0, oldData.pages.length - 1)
           const lastPage = oldData.pages[oldData.pages.length - 1]
 
+          if (
+            !lastPage.results.find(
+              message => message.id === disciplineGroupMessage.id,
+            )
+          ) {
+            getMessageStore().setState({ lastMessage: disciplineGroupMessage })
+            callback?.(disciplineGroupMessage)
+          }
+
           lastPage.results = joinData(
             lastPage.results,
-            disciplineGroupMessages,
+            [disciplineGroupMessage],
             (a, b) => a.id === b.id,
             'sentAt',
             'desc',

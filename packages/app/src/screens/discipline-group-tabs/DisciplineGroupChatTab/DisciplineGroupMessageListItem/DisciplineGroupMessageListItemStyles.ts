@@ -3,17 +3,18 @@ import styled from 'styled-components/native'
 
 export const Container = styled.View`
   max-width: 300px;
-  min-width: 100px;
+  /* min-width: 100px; */
   padding: 0 16px;
 `
 
 export const MessageContainer = styled.View`
   padding: 12px 16px;
   border-radius: 16px;
+  min-width: 50px;
 `
 
 export const SentBy = styled(Text)`
-  font-family: 'Quicksand_600SemiBold';
+  font-family: 'Quicksand_700Bold';
   font-size: 14px;
 `
 
@@ -32,6 +33,7 @@ export const SentAt = styled(Text)`
 
 export const ReceivedContainer = styled(Container)`
   align-self: flex-start;
+  align-items: flex-start;
 `
 
 export const ReceivedMessageContainer = styled(MessageContainer)`
@@ -49,6 +51,7 @@ export const ReceivedMessage = styled(Message)`
 
 export const SentContainer = styled(Container)`
   align-self: flex-end;
+  align-items: flex-end;
 `
 
 export const SentMessageContainer = styled(MessageContainer)`

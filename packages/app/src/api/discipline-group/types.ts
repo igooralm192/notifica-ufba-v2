@@ -65,8 +65,20 @@ export namespace IDisciplineGroupMessageListener {
   }
 
   export type Callback = (
-    disciplineGroupMessages: IDisciplineGroupMessage[],
+    disciplineGroupMessage: IDisciplineGroupMessage,
   ) => void
+}
+
+export namespace ICreateMessageEndpoint {
+  export interface Params {
+    disciplineGroupId: string
+    userId: string
+    userName: string
+  }
+
+  export interface Body {
+    message: string
+  }
 }
 
 export namespace IGetMyLastMessagesEndpoint {

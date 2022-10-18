@@ -7,6 +7,7 @@ export namespace IPostMessageUseCase {
     userId: string
     disciplineGroupId: string
     message: string
+    onlyNotify: boolean
   }
 
   export type Output = IDisciplineGroupMessage
@@ -14,5 +15,5 @@ export namespace IPostMessageUseCase {
 
 export type IPostMessageUseCase = UseCase<
   IPostMessageUseCase.Input,
-  Either<BaseError, IPostMessageUseCase.Output>
+  Either<BaseError, void>
 >

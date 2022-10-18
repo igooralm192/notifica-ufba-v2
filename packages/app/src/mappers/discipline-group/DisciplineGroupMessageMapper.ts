@@ -1,6 +1,6 @@
 import { IDisciplineGroupMessage } from '@shared/entities'
 
-import { DocumentData } from 'firebase/firestore'
+import { DocumentData, Timestamp } from 'firebase/firestore'
 
 export class DisciplineGroupMessageMapper {
   static toEntity(data: DocumentData): IDisciplineGroupMessage {
@@ -18,5 +18,16 @@ export class DisciplineGroupMessageMapper {
     return data.map((item: DocumentData) =>
       DisciplineGroupMessageMapper.toEntity(item),
     )
+  }
+
+  static toDocument(data: IDisciplineGroupMessage): DocumentData {
+    return {
+      id: data.id,
+      body: data.body,
+      sentBy: data.sentBy,
+      sentById: data.sentById,
+      disciplineGroupId: data.disciplineGroupId,
+      sentAt: Timestamp.fromDate(data.sentAt),
+    }
   }
 }

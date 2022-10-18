@@ -11,6 +11,7 @@ import { IValidation } from '@/validation/protocols'
 export namespace IPostMessageController {
   export type Body = {
     message?: string
+    onlyNotify?: boolean
   }
 
   export type Params = {
@@ -52,6 +53,7 @@ export class PostMessageController extends BaseController {
       userId,
       disciplineGroupId,
       message: request.body!.message!,
+      onlyNotify: request.body!.onlyNotify || false,
     })
 
     if (result.isRight()) {

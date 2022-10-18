@@ -78,13 +78,14 @@ const DisciplineGroupTabsScreen: React.FC = () => {
         </TabView.Item>
       </TabView>
 
-      <FAB
-        visible={user?.type === 'TEACHER'}
-        icon={{ name: 'add', color: 'white' }}
-        color={theme.colors.primary}
-        style={{ position: 'absolute', bottom: 30, right: 24 }}
-        onPress={navigateToCreatePost}
-      />
+      {user?.type === 'TEACHER' && (
+        <FAB
+          icon={{ name: 'add', color: 'white' }}
+          color={theme.colors.primary}
+          style={{ position: 'absolute', bottom: 30, right: 24 }}
+          onPress={navigateToCreatePost}
+        />
+      )}
     </Container>
   )
 }

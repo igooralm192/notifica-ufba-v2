@@ -1,3 +1,5 @@
+import { IDisciplineGroupMessage } from '@shared/entities'
+
 import { db } from '@/config/firebase'
 import {
   DisciplineGroupMapper,
@@ -16,11 +18,13 @@ import {
   limit as limitFirestore,
   getDoc,
   getDocs,
+  setDoc,
   onSnapshot,
 } from 'firebase/firestore'
 
 import {
   ICreatePostEndpoint,
+  ICreateMessageEndpoint,
   IGetDisciplineGroupEndpoint,
   IGetDisciplineGroupsEndpoint,
   IGetDisciplineGroupPostsEndpoint,
@@ -167,10 +171,41 @@ export const disciplineGroupMessageListener = (
       querySnapshot.docs.map(doc => doc.data()),
     )
 
-    callback(disciplineGroupMessages)
+    if (disciplineGroupMessages.length > 0) {
+      callback(disciplineGroupMessages[0])
+    }
+
   })
 
   return unsubscribe
+}
+
+export const createMessage = async (
+  { disciplineGroupId, userId, userName }: ICreateMessageEndpoint.Params,
+  { message }: ICreateMessageEndpoint.Body,
+) => {
+  const docId = 'any-string' + Date.now()
+
+  const docRef = doc(
+    db,
+    'disciplineGroupMessages',
+    disciplineGroupId,
+    'messages',
+    docId,
+  )
+
+  const newMessage: IDisciplineGroupMessage = {
+    id: docId,
+    body: message,
+    sentBy: userName,
+    sentById: userId,
+    sentAt: new Date(),
+    disciplineGroupId,
+  }
+
+  await setDoc(docRef, DisciplineGroupMessageMapper.toDocument(newMessage))
+
+  api.post(`/discipline-groups/${disciplineGroupId}/messages`, { message, onlyNotify: true })
 }
 
 export const createPost = async (

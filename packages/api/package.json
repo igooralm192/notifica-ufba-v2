@@ -4,6 +4,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn --notify false --prefer-ts --ignore-watch node_modules --transpile-only src/main/server.ts",
+    "start": "node ../../dist/api/src/main/server.js",
+    "build": "tsc --build",
     "prisma:generate": "yarn prisma generate --schema=src/infra/database/prisma/schemas/mongodb-schema.prisma",
     "prisma:push": "yarn prisma db push --schema=src/infra/database/prisma/schemas/mongodb-schema.prisma"
   },
@@ -20,6 +22,7 @@
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
+    "module-alias": "^2.2.2",
     "mongodb": "^4.5.0",
     "pg": "^8.7.1",
     "prisma": "^3.12.0",

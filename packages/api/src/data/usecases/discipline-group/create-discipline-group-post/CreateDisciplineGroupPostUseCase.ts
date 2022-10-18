@@ -77,6 +77,7 @@ export class CreateDisciplineGroupPostUseCase
       title: `${disciplineGroup.discipline?.code} - ${disciplineGroup.code}`,
       body: 'Há uma nova postagem para esta turma!',
       data: {
+        type: 'post',
         disciplineGroupId: disciplineGroup.id,
         disciplineGroupCode: disciplineGroup.code,
         disciplineCode: disciplineGroup.discipline?.code,

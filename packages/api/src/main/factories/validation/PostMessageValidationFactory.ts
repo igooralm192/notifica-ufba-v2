@@ -9,6 +9,7 @@ export const makePostMessageValidation = () => {
         'any.required': `Campo obrigatório.`,
         'string.empty': 'Campo obrigatório.',
       }),
+      onlyNotify: Joi.boolean(),
     }),
   )
 }
