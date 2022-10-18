@@ -5,7 +5,9 @@
     "packages/*"
   ],
   "scripts": {
-    "api:start": "yarn workspace api dev",
+    "api:dev": "yarn workspace api dev",
+    "api:build": "yarn workspace api build",
+    "api:start": "yarn workspace api start",
     "app:start": "yarn workspace app start"
   },
   "dependencies": {
