@@ -1,7 +1,10 @@
-import { API_URL } from '@env'
+// import { API_URL } from '@env'
+import Constants from 'expo-constants'
 
-console.log(API_URL)
+const API_URL =
+  Constants?.manifest2?.extra?.expoClient?.extra?.API_URL ||
+  'http://10.0.2.2:3333/api'
 
 export default {
-  API_URL: API_URL,
+  API_URL,
 }
