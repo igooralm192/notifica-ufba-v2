@@ -15,7 +15,7 @@ export default {
     },
     updates: {
       fallbackToCacheTimeout: 0,
-      url: "https://u.expo.dev/da53ce08-1795-4e29-b51f-24a667e5ddab"
+      url: "https://u.expo.dev/40b5b6cf-6fef-4d26-b431-b2577f3ef390"
     },
     assetBundlePatterns: ["**/*"],
     ios: {
@@ -35,7 +35,7 @@ export default {
     },
     extra: {
       eas: {
-        projectId: "da53ce08-1795-4e29-b51f-24a667e5ddab"
+        projectId: "40b5b6cf-6fef-4d26-b431-b2577f3ef390"
       },
       API_URL: process.env.API_URL
     },
