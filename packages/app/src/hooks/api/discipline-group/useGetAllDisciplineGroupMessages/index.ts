@@ -33,7 +33,7 @@ export const useGetAllDisciplineGroupMessages = (
         enabled: !!params.disciplineGroupId,
         keepPreviousData: true,
         getNextPageParam: lastPage => {
-          if (!lastPage.nextCursor) return undefined
+          if (!lastPage || !lastPage.nextCursor) return undefined
 
           return { ...query, nextCursor: lastPage.nextCursor }
         },
@@ -58,11 +58,11 @@ export const useGetAllDisciplineGroupMessages = (
         >(['disciplineGroupMessages', params.disciplineGroupId], oldData => {
           if (!oldData) return { pages: [], pageParams: [] }
 
-          const restPages = oldData.pages.slice(0, oldData.pages.length - 1)
-          const lastPage = oldData.pages[oldData.pages.length - 1]
+          const firstPage = oldData.pages[0]
+          const restPages = oldData.pages.slice(1, oldData.pages.length)
 
           if (
-            !lastPage.results.find(
+            !firstPage.results.find(
               message => message.id === disciplineGroupMessage.id,
             )
           ) {
@@ -70,16 +70,18 @@ export const useGetAllDisciplineGroupMessages = (
             callback?.(disciplineGroupMessage)
           }
 
-          lastPage.results = joinData(
-            lastPage.results,
+          firstPage.results = joinData(
+            firstPage.results,
             [disciplineGroupMessage],
             (a, b) => a.id === b.id,
             'sentAt',
             'desc',
           )
 
+          restPages.splice(0, 0, firstPage)
+
           return {
-            pages: [...restPages, lastPage],
+            pages: restPages,
             pageParams: oldData.pageParams,
           }
         })

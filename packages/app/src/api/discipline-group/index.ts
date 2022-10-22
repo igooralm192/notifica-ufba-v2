@@ -139,10 +139,21 @@ export const getDisciplineGroupMessages = async (
 
   const querySnapshot = await getDocs(queryRef)
 
-  const lastCursor =
+  const lastDocument =
     querySnapshot.docs.length > 0
       ? querySnapshot.docs[querySnapshot.docs.length - 1]
       : undefined
+
+  const nextDocs = lastDocument
+    ? await getDocs(
+        query(
+          collectionRef,
+          orderBy('sentAt', 'desc'),
+          startAfter(lastDocument),
+          limitFirestore(1),
+        ),
+      )
+    : undefined
 
   const disciplineGroupMessages = DisciplineGroupMessageMapper.toEntityList(
     querySnapshot.docs.map(doc => doc.data()),
@@ -150,7 +161,7 @@ export const getDisciplineGroupMessages = async (
 
   return {
     results: disciplineGroupMessages,
-    nextCursor: lastCursor?.id,
+    nextCursor: nextDocs && !nextDocs.empty ? nextDocs.docs[0].id : undefined,
   }
 }
 
@@ -168,8 +179,6 @@ export const disciplineGroupMessageListener = (
   )
 
   const unsubscribe = onSnapshot(queryRef, querySnapshot => {
-    console.log(JSON.stringify(querySnapshot))
-    
     Sentry.Native.captureMessage('QUERY SNAPSHOT')
 
     const disciplineGroupMessages = DisciplineGroupMessageMapper.toEntityList(
