@@ -168,9 +168,9 @@ export const disciplineGroupMessageListener = (
   )
 
   const unsubscribe = onSnapshot(queryRef, querySnapshot => {
-    Sentry.Native.captureMessage('QUERY SNAPSHOT', {
-      extra: { query: JSON.stringify(querySnapshot) },
-    })
+    console.log(JSON.stringify(querySnapshot))
+    
+    Sentry.Native.captureMessage('QUERY SNAPSHOT')
 
     const disciplineGroupMessages = DisciplineGroupMessageMapper.toEntityList(
       querySnapshot.docs.map(doc => doc.data()),
