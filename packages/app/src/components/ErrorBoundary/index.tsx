@@ -2,6 +2,7 @@ import { BaseError } from '@/helpers'
 import { Text } from '@rneui/themed'
 import React from 'react'
 import Toast from 'react-native-toast-message'
+import * as Sentry from 'sentry-expo'
 
 export class ErrorBoundary extends React.Component {
   constructor(props: any) {
@@ -16,6 +17,9 @@ export class ErrorBoundary extends React.Component {
 
   componentDidCatch(err: any, errorInfo: any) {
     console.log('ERRO', err)
+
+    Sentry.Native.captureException(err)
+
     if (err.code !== undefined) {
       const error = err as BaseError
 
