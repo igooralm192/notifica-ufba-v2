@@ -21,6 +21,7 @@ import {
   setDoc,
   onSnapshot,
 } from 'firebase/firestore'
+import * as Sentry from 'sentry-expo'
 
 import {
   ICreatePostEndpoint,
@@ -167,6 +168,10 @@ export const disciplineGroupMessageListener = (
   )
 
   const unsubscribe = onSnapshot(queryRef, querySnapshot => {
+    Sentry.Native.captureMessage('QUERY SNAPSHOT', {
+      extra: { query: JSON.stringify(querySnapshot) },
+    })
+
     const disciplineGroupMessages = DisciplineGroupMessageMapper.toEntityList(
       querySnapshot.docs.map(doc => doc.data()),
     )
@@ -174,7 +179,6 @@ export const disciplineGroupMessageListener = (
     if (disciplineGroupMessages.length > 0) {
       callback(disciplineGroupMessages[0])
     }
-
   })
 
   return unsubscribe
@@ -205,7 +209,10 @@ export const createMessage = async (
 
   await setDoc(docRef, DisciplineGroupMessageMapper.toDocument(newMessage))
 
-  api.post(`/discipline-groups/${disciplineGroupId}/messages`, { message, onlyNotify: true })
+  api.post(`/discipline-groups/${disciplineGroupId}/messages`, {
+    message,
+    onlyNotify: true,
+  })
 }
 
 export const createPost = async (

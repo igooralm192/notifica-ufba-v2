@@ -64,6 +64,7 @@
     "react-redux": "^8.0.1",
     "recoil": "^0.7.5",
     "recoil-nexus": "^0.4.0",
+    "sentry-expo": "^4.0.0",
     "styled-components": "^5.3.5",
     "text-encoding-polyfill": "^0.6.7",
     "use-http": "^1.0.26",

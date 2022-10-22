@@ -49,12 +49,6 @@ export const DisciplineGroupInfoPresenter: React.FC<{
 
   const handleUnsubscribeStudent = async () => {
     await unsubscribe({ disciplineGroupId })
-
-    navigation.dispatch(
-      StackActions.replace('DisciplineGroupTabsScreen', {
-        disciplineGroupId,
-      }),
-    )
   }
 
   if (isLoading) return <FullLoading />

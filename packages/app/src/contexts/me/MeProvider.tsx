@@ -6,6 +6,10 @@ import { useAuthStateSelector } from '@/state/zustand/auth'
 import { AuthState } from '@/store/auth/types'
 
 import React, { useContext } from 'react'
+import { useEffect } from 'react'
+import * as Sentry from 'sentry-expo'
+import { collection, doc, onSnapshot, query } from '@firebase/firestore'
+import { db } from '@/config/firebase'
 
 export interface MeContextData {
   user: IUser | null

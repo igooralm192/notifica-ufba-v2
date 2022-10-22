@@ -6,7 +6,7 @@ export const useGetDisciplineGroup = (
   params: IUseGetDisciplineGroup.Params,
 ): IUseGetDisciplineGroup.Output => {
   const { isLoading, data } = useQuery(
-    ['disciplineGroup', params.disciplineGroupId],
+    ['disciplineGroups', params.disciplineGroupId],
     () => api.disciplineGroup.getDisciplineGroup(params.disciplineGroupId),
   )
 

@@ -41,6 +41,7 @@ export default {
     },
     runtimeVersion: {
       policy: "sdkVersion"
-    }
+    },
+    plugins: ["sentry-expo"]
   }
 };
