@@ -36,7 +36,7 @@ const DisciplineGroupChatTab: React.FC = () => {
 
     if (formattedMessage.length == 0) {
       setMessage(formattedMessage)
-      return 
+      return
     }
 
     api.disciplineGroup.createMessage(
@@ -51,8 +51,6 @@ const DisciplineGroupChatTab: React.FC = () => {
     )
 
     setMessage('')
-
-
   }
 
   return (
