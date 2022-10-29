@@ -1,4 +1,4 @@
-import { IStudent, IUser } from '@shared/entities'
+import { IUser } from '@shared/entities'
 
 export namespace ILoginEndpoint {
   export interface Request {
@@ -9,6 +9,14 @@ export namespace ILoginEndpoint {
   export interface Response {
     token: string
   }
+}
+
+export namespace IForgotPasswordEndpoint {
+  export interface Request {
+    email: string
+  }
+
+  export interface Response {}
 }
 
 export namespace IPatchMyUserEndpoint {

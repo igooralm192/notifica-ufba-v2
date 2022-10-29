@@ -12,5 +12,6 @@ export * from './discipline-group/useUnsubscribeStudent'
 export * from './student/useCreateStudent'
 
 export * from './user/useGetMyUser'
+export * from './user/useForgotPassword'
 export * from './user/useLogin'
 export * from './user/useUpdateMyUser'

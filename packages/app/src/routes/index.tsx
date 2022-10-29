@@ -1,5 +1,6 @@
 import { useAuth } from '@/contexts/auth'
 import { MeProvider } from '@/contexts/me'
+import { MessagingProvider } from '@/contexts/messaging'
 import { BottomTabsNavigator } from '@/routes/bottom-tabs'
 import { AppNavigation } from '@/types/navigation'
 import {
@@ -11,25 +12,17 @@ import {
   SplashScreen,
   WelcomeScreen,
   DisciplineGroupTabsScreen,
+  ForgotPasswordScreen
 } from '@/screens'
 import { AuthState } from '@/store/auth/types'
 
 import { createStackNavigator } from '@react-navigation/stack'
 import React from 'react'
-import { useRecoilCallback, useRecoilValue } from 'recoil'
-import { loaderState } from '@/state/loader'
-import { authStateQuery } from '@/state/auth'
-import { useEffect } from 'react'
-import { useNavigation } from '@/helpers'
-import { MessagingProvider } from '@/contexts/messaging'
-import { useAuthStore } from '@/state/zustand/auth'
 
 const Stack = createStackNavigator<AppNavigation>()
 
 const Routes: React.FC = () => {
   const { state: authState } = useAuth()
-
-  console.log(authState)
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -42,6 +35,7 @@ const Routes: React.FC = () => {
           />
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+          <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} />
         </Stack.Group>
       ) : authState === AuthState.AUTHENTICATED ? (
         <Stack.Screen name="AuthenticatedNavigator">

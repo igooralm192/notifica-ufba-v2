@@ -11,7 +11,7 @@ export const Logo = styled(LogoSVG)`
   margin: 16px 0 32px;
 `
 
-export const WelcomeText = styled(Text)`
+export const ForgotPasswordText = styled(Text)`
   margin: 16px 0 48px;
   font-family: 'Quicksand_400Regular';
   font-size: 16px;
@@ -24,13 +24,4 @@ export const InputContainer = styled.View`
 
 export const ButtonContainer = styled.View`
   margin-top: 16px;
-`
-
-export const ForgotPasswordLink = styled(Text)`
-  margin: 8px 0;
-  align-self: flex-end;
-  color: ${({ theme }) => theme.colors.primary};
-  font-family: 'Quicksand_600SemiBold';
-  font-size: 14px;
-  text-align: right;
 `

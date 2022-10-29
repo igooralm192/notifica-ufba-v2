@@ -1,11 +1,12 @@
 import { Button } from '@/components/Button'
 import { Input } from '@/components/Input'
+import { useNavigation } from '@/helpers'
 
 import { joiResolver } from '@hookform/resolvers/joi'
 import Joi from 'joi'
 import React, { useRef } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Keyboard, TextInput } from 'react-native'
+import { Keyboard, TextInput, View } from 'react-native'
 
 import { useLoginPresenter, withLoginPresenter } from './LoginPresenter'
 import {
@@ -14,6 +15,7 @@ import {
   WelcomeText,
   InputContainer,
   ButtonContainer,
+  ForgotPasswordLink,
 } from './LoginStyles'
 
 interface LoginScreenProps {}
@@ -41,6 +43,8 @@ const loginSchema = Joi.object({
 
 const LoginScreen: React.FC<LoginScreenProps> = () => {
   const { isLoggingIn, login } = useLoginPresenter()
+
+  const navigation = useNavigation()
 
   const form = useForm<ILoginFormValues>({
     mode: 'onChange',
@@ -110,6 +114,12 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
           )}
         />
       </InputContainer>
+
+      <ForgotPasswordLink
+        onPress={() => navigation.navigate('ForgotPasswordScreen')}
+      >
+        Esqueci minha senha
+      </ForgotPasswordLink>
 
       <ButtonContainer>
         <Button

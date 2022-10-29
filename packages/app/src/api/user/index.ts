@@ -5,6 +5,7 @@ import {
   IGetMyUserEndpoint,
   ILoginEndpoint,
   IPatchMyUserEndpoint,
+  IForgotPasswordEndpoint
 } from './types'
 
 export const login = async ({
@@ -17,6 +18,13 @@ export const login = async ({
 
   return { token }
 }
+
+export const forgotPassword = async ({
+  email,
+}: IForgotPasswordEndpoint.Request): Promise<void> => {
+  await api.post('/auth/user/forgot', { email })
+}
+
 
 export const patchMyUser = async ({
   pushToken,

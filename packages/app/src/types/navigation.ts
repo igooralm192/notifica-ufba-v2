@@ -9,6 +9,7 @@ export type AppNavigation = {
   WelcomeScreen: undefined
   LoginScreen: undefined
   RegisterScreen: undefined
+  ForgotPasswordScreen: undefined
 
   // Authenticated
   AuthenticatedNavigator: undefined
