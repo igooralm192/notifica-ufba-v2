@@ -11,8 +11,6 @@ import jwt from 'jsonwebtoken'
 export class JwtTokenCryptography
   implements IGenerateTokenCryptography, IDecodeTokenCryptography
 {
-  private EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d'
-
   constructor(
     private readonly SECRET_KEY = process.env.JWT_SECRET_KEY || 'MY_SECRET',
   ) {}
@@ -28,10 +26,11 @@ export class JwtTokenCryptography
     }
   }
 
-  async generate({
-    payload,
-  }: IGenerateTokenCryptography.Input): Promise<IGenerateTokenCryptography.Output> {
-    return jwt.sign(payload, this.SECRET_KEY, { expiresIn: this.EXPIRES_IN })
+  async generate(
+    { payload }: IGenerateTokenCryptography.Input,
+    { expiresIn }: IGenerateTokenCryptography.Options,
+  ): Promise<IGenerateTokenCryptography.Output> {
+    return jwt.sign(payload, this.SECRET_KEY, { expiresIn: expiresIn || '7d' })
   }
 
   async decode<T = any>({

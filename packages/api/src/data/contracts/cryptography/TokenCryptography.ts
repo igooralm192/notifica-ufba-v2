@@ -7,12 +7,17 @@ export namespace IGenerateTokenCryptography {
     payload: any
   }
 
+  export type Options = {
+    expiresIn?: string
+  }
+
   export type Output = string
 }
 
 export interface IGenerateTokenCryptography {
   generate(
     input: IGenerateTokenCryptography.Input,
+    options: IGenerateTokenCryptography.Options
   ): Promise<IGenerateTokenCryptography.Output>
 }
 

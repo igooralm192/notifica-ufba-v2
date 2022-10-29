@@ -8,4 +8,5 @@ export * from './repositories/DisciplineRepository'
 export * from './repositories/StudentRepository'
 export * from './repositories/UserRepository'
 
+export * from './services/EmailService'
 export * from './services/MessagingService'

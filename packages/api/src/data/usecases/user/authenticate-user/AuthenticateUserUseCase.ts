@@ -37,9 +37,10 @@ export class AuthenticateUserUseCase implements IAuthenticateUserUseCase {
       return left(new WrongPasswordError())
     }
 
-    const token = await this.generateTokenCryptography.generate({
-      payload: { id: user.id },
-    })
+    const token = await this.generateTokenCryptography.generate(
+      { payload: { id: user.id } },
+      { expiresIn: '7d' },
+    )
 
     return right({ token, user })
   }

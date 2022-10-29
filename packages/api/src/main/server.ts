@@ -2,7 +2,8 @@
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config()
-require('module-alias/register')
+
+if (process.env.NODE_ENV === 'production') require('module-alias/register')
 
 console.log(process.env.NODE_ENV)
 

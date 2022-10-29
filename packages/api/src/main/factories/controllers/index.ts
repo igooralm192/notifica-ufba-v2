@@ -13,5 +13,6 @@ export * from './student/CreateStudentControllerFactory'
 
 export * from './user/AuthenticateUserControllerFactory'
 export * from './user/CreateUserControllerFactory'
+export * from './user/ForgotPasswordControllerFactory'
 export * from './user/GetMyUserControllerFactory'
 export * from './user/PatchMyUserControllerFactory'

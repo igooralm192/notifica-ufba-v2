@@ -13,6 +13,7 @@ export * from './student/CreateStudentUseCaseFactory'
 
 export * from './user/AuthenticateUserUseCaseFactory'
 export * from './user/CreateUserUseCaseFactory'
+export * from './user/ForgotPasswordUseCaseFactory'
 export * from './user/GetUserByIdUseCaseFactory'
 export * from './user/GetUserIdByTokenUseCaseFactory'
 export * from './user/PatchUserUseCaseFactory'
