@@ -30,7 +30,7 @@ export class JwtTokenCryptography
     { payload }: IGenerateTokenCryptography.Input,
     { expiresIn }: IGenerateTokenCryptography.Options,
   ): Promise<IGenerateTokenCryptography.Output> {
-    return jwt.sign(payload, this.SECRET_KEY, { expiresIn: expiresIn || '7d' })
+    return jwt.sign(payload, this.SECRET_KEY, { expiresIn: expiresIn || '7d',  })
   }
 
   async decode<T = any>({

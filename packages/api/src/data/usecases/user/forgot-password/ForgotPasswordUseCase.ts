@@ -30,7 +30,7 @@ export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
       { payload: { userId: user.id } },
       { expiresIn: '1h' },
     )
-
+ 
     const generatedLink = `${this.forgotPasswordUrl}?token=${token}`
 
     await this.sendMailEmailService.sendMail({

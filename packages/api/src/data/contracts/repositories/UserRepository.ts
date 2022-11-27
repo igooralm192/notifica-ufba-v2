@@ -19,6 +19,7 @@ export namespace IUserRepository {
     export type Input = {
       where: { id?: string }
       data: {
+        password?: string
         pushToken?: string
       }
     }
