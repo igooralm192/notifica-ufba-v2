@@ -18,12 +18,14 @@ import {
   DefaultTheme,
   NavigationContainer,
   createNavigationContainerRef,
+  LinkingOptions,
 } from '@react-navigation/native'
 import { ThemeProvider, useTheme } from '@rneui/themed'
 
 import AppLoading from 'expo-app-loading'
-import React from 'react'
-import { Suspense } from 'react'
+import * as Linking from 'expo-linking'
+import React, { useEffect } from 'react'
+import { useState } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
 import { Provider as ReduxProvider } from 'react-redux'
@@ -65,7 +67,18 @@ export const AlertProvider: React.FC = ({ children }) => {
 
 export const navigationRef = createNavigationContainerRef<AppNavigation>()
 
+const urlPrefix = Linking.createURL('/')
+
 export const NavigationProvider: React.FC = ({ children }) => {
+  const linking: LinkingOptions<AppNavigation> = {
+    prefixes: [urlPrefix, 'https://notificaufba.page.link'],
+    config: {
+      screens: {
+        ResetPasswordScreen: 'forgot-password',
+      },
+    },
+  }
+
   const theme = {
     ...DefaultTheme,
     colors: {
@@ -74,8 +87,18 @@ export const NavigationProvider: React.FC = ({ children }) => {
     },
   }
 
+  Linking.getInitialURL().then(async url => {
+    if (!url) return
+
+    const canOpen = await Linking.canOpenURL(url)
+
+    if (canOpen) {
+      Linking.openURL(url)
+    }
+  })
+
   return (
-    <NavigationContainer ref={navigationRef} theme={theme}>
+    <NavigationContainer ref={navigationRef} linking={linking} theme={theme}>
       {children}
     </NavigationContainer>
   )
@@ -83,11 +106,11 @@ export const NavigationProvider: React.FC = ({ children }) => {
 
 export const AllProviders: React.FC = ({ children }) => {
   return (
-    <NavigationProvider>
-      <ReduxProvider store={store}>
-        <LayoutProvider>
-          <UIProvider>
-            <StyleProvider>
+    <ReduxProvider store={store}>
+      <LayoutProvider>
+        <UIProvider>
+          <StyleProvider>
+            <NavigationProvider>
               <AlertProvider>
                 <AuthProvider>
                   <ApiProvider>
@@ -95,10 +118,10 @@ export const AllProviders: React.FC = ({ children }) => {
                   </ApiProvider>
                 </AuthProvider>
               </AlertProvider>
-            </StyleProvider>
-          </UIProvider>
-        </LayoutProvider>
-      </ReduxProvider>
-    </NavigationProvider>
+            </NavigationProvider>
+          </StyleProvider>
+        </UIProvider>
+      </LayoutProvider>
+    </ReduxProvider>
   )
 }

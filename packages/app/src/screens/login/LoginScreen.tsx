@@ -116,7 +116,9 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
       </InputContainer>
 
       <ForgotPasswordLink
-        onPress={() => navigation.navigate('ForgotPasswordScreen')}
+        onPress={() =>
+          navigation.navigate('ForgotPasswordScreen')
+        }
       >
         Esqueci minha senha
       </ForgotPasswordLink>

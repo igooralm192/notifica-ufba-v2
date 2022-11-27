@@ -10,6 +10,9 @@ export type AppNavigation = {
   LoginScreen: undefined
   RegisterScreen: undefined
   ForgotPasswordScreen: undefined
+  ResetPasswordScreen: {
+    token?: string
+  }
 
   // Authenticated
   AuthenticatedNavigator: undefined

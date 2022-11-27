@@ -12,7 +12,8 @@ import {
   SplashScreen,
   WelcomeScreen,
   DisciplineGroupTabsScreen,
-  ForgotPasswordScreen
+  ForgotPasswordScreen,
+  ResetPasswordScreen
 } from '@/screens'
 import { AuthState } from '@/store/auth/types'
 
@@ -36,6 +37,7 @@ const Routes: React.FC = () => {
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
           <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} />
+          <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
         </Stack.Group>
       ) : authState === AuthState.AUTHENTICATED ? (
         <Stack.Screen name="AuthenticatedNavigator">

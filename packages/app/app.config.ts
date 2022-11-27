@@ -4,6 +4,7 @@ export default {
   expo: {
     name: "notifica-ufba-v2",
     slug: "notifica-ufba-v2",
+    scheme: "nufba",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/icon.png",
@@ -28,7 +29,24 @@ export default {
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#FFFFFF"
-      }
+      },
+      intentFilters: [
+        {
+          action: "VIEW",
+          autoVerify: true,
+          data: [
+            {
+              scheme: "https",
+              host: "notificaufba.page.link",
+            },
+            {
+              scheme: "nufba",
+              host: "notificaufba",
+            }
+          ],
+          category: ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     web: {
       favicon: "./assets/favicon.png"

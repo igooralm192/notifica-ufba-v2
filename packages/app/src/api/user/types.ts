@@ -19,6 +19,16 @@ export namespace IForgotPasswordEndpoint {
   export interface Response {}
 }
 
+export namespace IResetPasswordEndpoint {
+  export interface Request {
+    newPassword: string
+    token: string
+  }
+
+  export interface Response {}
+}
+
+
 export namespace IPatchMyUserEndpoint {
   export interface Request {
     pushToken?: string
