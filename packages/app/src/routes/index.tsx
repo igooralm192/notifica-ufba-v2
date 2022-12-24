@@ -13,7 +13,8 @@ import {
   WelcomeScreen,
   DisciplineGroupTabsScreen,
   ForgotPasswordScreen,
-  ResetPasswordScreen
+  ResetPasswordScreen,
+  EditProfileScreen,
 } from '@/screens'
 import { AuthState } from '@/store/auth/types'
 
@@ -36,8 +37,14 @@ const Routes: React.FC = () => {
           />
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-          <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} />
-          <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
+          <Stack.Screen
+            name="ForgotPasswordScreen"
+            component={ForgotPasswordScreen}
+          />
+          <Stack.Screen
+            name="ResetPasswordScreen"
+            component={ResetPasswordScreen}
+          />
         </Stack.Group>
       ) : authState === AuthState.AUTHENTICATED ? (
         <Stack.Screen name="AuthenticatedNavigator">
@@ -69,6 +76,11 @@ const Routes: React.FC = () => {
                     name="ListGroupsScreen"
                     component={ListGroupsScreen}
                     options={{ headerShown: false, presentation: 'modal' }}
+                  />
+
+                  <Stack.Screen
+                    name="EditProfileScreen"
+                    component={EditProfileScreen}
                   />
                 </Stack.Navigator>
               </MessagingProvider>

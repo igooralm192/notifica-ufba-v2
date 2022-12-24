@@ -54,3 +54,21 @@ export interface IFindOneStudentRepository {
     input: IFindOneStudentRepository.Input,
   ): Promise<IFindOneStudentRepository.Output>
 }
+
+export namespace IUpdateStudentRepository {
+  export type Input = {
+    where: { id?: string, userId?: string }
+    data: {
+      matriculation?: string
+      course?: string
+    }
+  }
+
+  export type Output = IStudent
+}
+
+export interface IUpdateStudentRepository {
+  update(
+    input: IUpdateStudentRepository.Input,
+  ): Promise<IUpdateStudentRepository.Output>
+}

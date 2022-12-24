@@ -27,7 +27,7 @@ export type NotificationData = {
 
 const MessagingContext = React.createContext({} as MessagingContextData)
 
-export const MessagingProvider: React.FC = ({ children }) => {
+export const MessagingProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const auth = useAuth()
   const navigation = useNavigation()
   const state = useNavigationState(state => state)

@@ -10,6 +10,7 @@ export * from './discipline-group/SubscribeStudentToDisciplineGroupControllerFac
 export * from './discipline-group/UnsubscribeStudentControllerFactory'
 
 export * from './student/CreateStudentControllerFactory'
+export * from './student/PatchMyStudentControllerFactory'
 
 export * from './user/AuthenticateUserControllerFactory'
 export * from './user/CreateUserControllerFactory'

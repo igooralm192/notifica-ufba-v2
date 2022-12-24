@@ -6,18 +6,13 @@ import { useAuthStateSelector } from '@/state/zustand/auth'
 import { AuthState } from '@/store/auth/types'
 
 import React, { useContext } from 'react'
-import { useEffect } from 'react'
-import * as Sentry from 'sentry-expo'
-import { collection, doc, onSnapshot, query } from '@firebase/firestore'
-import { db } from '@/config/firebase'
-
 export interface MeContextData {
   user: IUser | null
 }
 
 const MeContext = React.createContext({} as MeContextData)
 
-const MeProviderBase: React.FC = ({ children }) => {
+const MeProviderBase: React.FC<React.PropsWithChildren> = ({ children }) => {
   const authState = useAuthStateSelector()
 
   const { isLoading, user } = useGetMyUser({

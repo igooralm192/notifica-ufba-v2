@@ -10,6 +10,7 @@ export * from './discipline-group/SubscribeStudentToDisciplineGroupUseCase'
 export * from './discipline-group/UnsubscribeStudentUseCase'
 
 export * from './student/CreateStudentUseCase'
+export * from './student/UpdateStudentUseCase'
 
 export * from './user/AuthenticateUserUseCase'
 export * from './user/CreateUserUseCase'

@@ -1,9 +1,7 @@
 import { Spacer } from '@/components/Spacer'
 import { FooterLoading } from '@/components/FooterLoading'
-import { useAuth } from '@/contexts/auth'
 import { useStatusBar } from '@/contexts/status-bar'
 
-import { Button } from '@rneui/themed'
 import React from 'react'
 import { FlatList, RefreshControl } from 'react-native'
 
@@ -15,8 +13,6 @@ import { DisciplinesListItem } from './DisciplinesListItem'
 import { Container } from './DisciplinesStyles'
 
 const DisciplinesScreen: React.FC = () => {
-  const auth = useAuth()
-
   const { isFetchingMore, isRefreshing, disciplines, onNextPage, onRefresh } =
     useDisciplinePresenter()
 
@@ -38,8 +34,6 @@ const DisciplinesScreen: React.FC = () => {
           />
         }
       />
-
-      <Button title={'Logout'} onPress={() => auth.onTokenChange(null)} />
     </Container>
   )
 }

@@ -10,6 +10,7 @@ export * from './discipline-group/useSubscribeStudent'
 export * from './discipline-group/useUnsubscribeStudent'
 
 export * from './student/useCreateStudent'
+export * from './student/useUpdateMyStudent'
 
 export * from './user/useGetMyUser'
 export * from './user/useForgotPassword'

@@ -2,6 +2,7 @@ import {
   ICreateStudentRepository,
   IFindAllStudentRepository,
   IFindOneStudentRepository,
+  IUpdateStudentRepository,
 } from '@/data/contracts'
 import { PrismaRepository } from '@/infra/database/prisma/helpers'
 
@@ -10,7 +11,8 @@ export class PrismaStudentRepository
   implements
     ICreateStudentRepository,
     IFindAllStudentRepository,
-    IFindOneStudentRepository
+  IFindOneStudentRepository,
+    IUpdateStudentRepository
 {
   async create({
     matriculation,
@@ -62,6 +64,22 @@ export class PrismaStudentRepository
       .catch(() => null)
 
     if (!student) return null
+
+    return {
+      ...student,
+      user: student.user || undefined,
+    }
+  }
+
+  async update({
+    where,
+    data,
+  }: IUpdateStudentRepository.Input): Promise<IUpdateStudentRepository.Output> {
+    const student = await this.client.student.update({
+      where,
+      data,
+      include: { user: true },
+    })
 
     return {
       ...student,

@@ -1,4 +1,4 @@
-import { IDiscipline, IDisciplineGroup } from "@shared/entities";
+import { IDiscipline, IDisciplineGroup } from '@shared/entities'
 
 export type AppNavigation = {
   // Unknown
@@ -20,12 +20,16 @@ export type AppNavigation = {
   LastMessagesScreen: undefined
   DisciplinesScreen: undefined
   DisciplineGroupsScreen: undefined
+  ProfileScreen: undefined
   CreatePostScreen: {
     discipline?: IDiscipline
     disciplineGroup?: IDisciplineGroup
   }
   ListGroupsScreen: {
-    onDisciplineGroupSelected: (discipline: IDiscipline, disciplineGroup: IDisciplineGroup) => void
+    onDisciplineGroupSelected: (
+      discipline: IDiscipline,
+      disciplineGroup: IDisciplineGroup,
+    ) => void
   }
 
   DisciplineGroupTabsScreen: {
@@ -34,6 +38,6 @@ export type AppNavigation = {
   }
   DisciplineGroupPostsScreen: { disciplineGroupId: string }
   DisciplineGroupMessagesScreen: { disciplineGroupId: string }
-
   DisciplineGroupInfoScreen: { disciplineGroupId: string }
+  EditProfileScreen: { userId: string }
 }

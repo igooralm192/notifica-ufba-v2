@@ -6,6 +6,7 @@ export namespace IUpdateUserUseCase {
   export type Input = {
     id: { userId?: string }
     data: {
+      name?: string
       pushToken?: string
     }
   }

@@ -3,6 +3,7 @@ import {
   DisciplineGroupsScreen,
   DisciplinesScreen,
   LastMessagesScreen,
+  ProfileScreen,
 } from '@/screens'
 import { AppNavigation } from '@/types/navigation'
 
@@ -21,9 +22,28 @@ export const BottomTabsNavigator = () => {
     <BottomTab.Navigator
       screenOptions={{
         headerShown: false,
+        // tabBarShowLabel: false,
         tabBarActiveTintColor: theme.colors.primary,
-        tabBarStyle: { height: tabBarHeight },
+        tabBarStyle: {
+          position: 'absolute',
+          // top: 20,
+          bottom: 20,
+          left: 20,
+          right: 20,
+          elevation: 0,
+          borderRadius: 16,
+          borderTopColor: '#F5F5F5',
+          borderColor: '#F5F5F5',
+          borderTopWidth: 2,
+          borderWidth: 2,
+          height: 70,
+          paddingBottom: 0,
+        },
         tabBarItemStyle: { padding: 12 },
+        tabBarLabelStyle: {
+          fontFamily: 'Quicksand_700Bold',
+          fontSize: 10,
+        },
       }}
     >
       <BottomTab.Screen
@@ -31,7 +51,12 @@ export const BottomTabsNavigator = () => {
         options={{
           title: 'Turmas',
           tabBarIcon: ({ color, size }) => (
-            <Icon name="book" color={color} size={size} />
+            <Icon
+              name="menu-book"
+              color={color}
+              size={size + 2}
+              style={{ marginTop: -4 }}
+            />
           ),
         }}
         component={DisciplineGroupsScreen}
@@ -51,10 +76,20 @@ export const BottomTabsNavigator = () => {
         options={{
           title: 'Disciplinas',
           tabBarIcon: ({ color, size }) => (
-            <Icon name="subject" color={color} size={size} />
+            <Icon name="subject" color={color} size={size} style={{ marginTop: -4 }} />
           ),
         }}
         component={DisciplinesScreen}
+      />
+      <BottomTab.Screen
+        name="ProfileScreen"
+        options={{
+          title: 'Perfil',
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="person-pin" color={color} size={size} style={{ marginTop: -2 }} />
+          ),
+        }}
+        component={ProfileScreen}
       />
     </BottomTab.Navigator>
   )
