@@ -26,6 +26,7 @@ export default {
       package: "com.notifica_ufba",
       versionCode: 1,
       softwareKeyboardLayoutMode: "pan",
+      googleServicesFile: "./google-services.json",
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#FFFFFF"
