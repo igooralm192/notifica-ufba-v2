@@ -70,8 +70,8 @@ export class CreateDisciplineGroupPostUseCase
     })
 
     const allUserPushTokens = allStudents
-      .filter(({ user }) => user.id != userId)
-      .map(({ user }) => user?.pushToken || '')
+      .filter(({ user }) => user.id != userId && !!user.pushToken === true)
+      .map(({ user }) => user!.pushToken)
 
     this.createMessagingService.create({
       title: `${disciplineGroup.discipline?.code} - ${disciplineGroup.code}`,
