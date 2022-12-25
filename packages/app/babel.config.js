@@ -15,10 +15,10 @@ module.exports = function (api) {
           extensions: [".ts", ".tsx", ".jsx", ".js", ".json"],
           alias: {
             "@": "./src",
-            "@shared": "../shared/src",
+            "@shared": "../shared/src"
           }
         }
-      ]
+      ],
     ]
   };
 };

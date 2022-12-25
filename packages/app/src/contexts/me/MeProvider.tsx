@@ -12,7 +12,7 @@ export interface MeContextData {
 
 const MeContext = React.createContext({} as MeContextData)
 
-const MeProviderBase: React.FC<React.PropsWithChildren> = ({ children }) => {
+const MeProviderBase: React.FC = ({ children }) => {
   const authState = useAuthStateSelector()
 
   const { isLoading, user } = useGetMyUser({
