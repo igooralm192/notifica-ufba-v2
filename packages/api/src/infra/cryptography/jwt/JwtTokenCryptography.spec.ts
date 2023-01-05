@@ -34,7 +34,7 @@ describe('JwtTokenCryptography', () => {
     }
     const { SUT, jwtSignSpy, secretKey } = makeSUT()
 
-    await SUT.generate({ payload })
+    await SUT.generate({ payload }, { expiresIn: '7d' })
 
     expect(jwtSignSpy).toHaveBeenCalledWith(payload, secretKey, {
       expiresIn: '7d',
