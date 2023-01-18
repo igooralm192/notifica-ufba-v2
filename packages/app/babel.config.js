@@ -3,12 +3,7 @@ module.exports = function (api) {
   return {
     presets: ["babel-preset-expo"],
     plugins: [
-      // [
-      //   "module:react-native-dotenv",
-      //   {
-      //     moduleName: "@env"
-      //   }
-      // ],
+      "inline-dotenv",
       [
         "module-resolver",
         {
@@ -18,7 +13,7 @@ module.exports = function (api) {
             "@shared": "../shared/src"
           }
         }
-      ],
+      ]
     ]
   };
 };

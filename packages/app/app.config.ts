@@ -1,4 +1,7 @@
-import "dotenv/config";
+// @ts-ignore
+// import { API_URL } from "react-native-dotenv";
+
+// console.log(API_URL)
 
 export default {
   expo: {
@@ -12,15 +15,15 @@ export default {
     splash: {
       image: "./assets/splash.png",
       resizeMode: "contain",
-      backgroundColor: "#ffffff"
+      backgroundColor: "#ffffff",
     },
     updates: {
       fallbackToCacheTimeout: 0,
-      url: "https://u.expo.dev/40b5b6cf-6fef-4d26-b431-b2577f3ef390"
+      url: "https://u.expo.dev/40b5b6cf-6fef-4d26-b431-b2577f3ef390",
     },
     assetBundlePatterns: ["**/*"],
     ios: {
-      supportsTablet: true
+      supportsTablet: true,
     },
     android: {
       package: "com.notifica_ufba",
@@ -29,7 +32,7 @@ export default {
       googleServicesFile: "./google-services.json",
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
-        backgroundColor: "#FFFFFF"
+        backgroundColor: "#FFFFFF",
       },
       intentFilters: [
         {
@@ -43,24 +46,24 @@ export default {
             {
               scheme: "nufba",
               host: "notificaufba",
-            }
+            },
           ],
-          category: ["BROWSABLE", "DEFAULT"]
-        }
-      ]
+          category: ["BROWSABLE", "DEFAULT"],
+        },
+      ],
     },
     web: {
-      favicon: "./assets/favicon.png"
+      favicon: "./assets/favicon.png",
     },
     extra: {
       eas: {
-        projectId: "40b5b6cf-6fef-4d26-b431-b2577f3ef390"
+        projectId: "40b5b6cf-6fef-4d26-b431-b2577f3ef390",
       },
-      API_URL: process.env.API_URL
+      // API_URL: ,
     },
     runtimeVersion: {
-      policy: "sdkVersion"
+      policy: "sdkVersion",
     },
-    plugins: ["sentry-expo"]
-  }
+    plugins: ["sentry-expo"],
+  },
 };

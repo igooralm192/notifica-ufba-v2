@@ -6,6 +6,11 @@ import React from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import * as Sentry from 'sentry-expo'
 import * as SentryNative from '@sentry/react-native'
+import env from '@/config/env'
+import { Text } from 'react-native'
+
+
+console.log({API_URL: process.env.API_URL})
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 3 } },
@@ -22,6 +27,7 @@ const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary>
         <AllProviders>
+          <Text>{env.API_URL}</Text>
           <Routes />
         </AllProviders>
       </ErrorBoundary>
