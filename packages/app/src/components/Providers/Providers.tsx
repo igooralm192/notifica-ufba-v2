@@ -94,16 +94,6 @@ export const NavigationProvider: React.FC = ({ children }) => {
     }
   })
 
-  const [error, setError] = useState(false)
-
-  useEffect(() => {
-    setTimeout(() => {
-      setError(true)
-    }, 3000)
-  }, [])
-
-  if (error) throw new Error('Eae')
-
   return (
     <NavigationContainer ref={navigationRef} linking={linking} theme={theme}>
       {children}
