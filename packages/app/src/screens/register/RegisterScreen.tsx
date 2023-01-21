@@ -1,5 +1,7 @@
 import { Button } from '@/components/Button'
+import DropdownInput from '@/components/DropdownInput'
 import { Input } from '@/components/Input'
+import { coursesList } from '@/utils/domain'
 
 import { joiResolver } from '@hookform/resolvers/joi'
 import Joi from 'joi'
@@ -167,12 +169,14 @@ const RegisterScreen: React.FC<RegisterScreenProps> = () => {
           name="course"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Input
+            <DropdownInput
               ref={courseRef}
               placeholder="Curso"
               leftIcon={{ name: 'library-books' }}
+              title='Selecione o seu curso'
+              options={coursesList}
               value={field.value}
-              onChangeText={field.onChange}
+              onSelectOption={(value) => form.setValue('course', value)}
               onBlur={field.onBlur}
               onSubmitEditing={() => passwordRef?.current?.focus()}
               errorMessage={fieldState.error?.message}

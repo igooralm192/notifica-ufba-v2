@@ -5,7 +5,8 @@ import styled from 'styled-components/native'
 
 export const Container = styled.ScrollView.attrs({
   contentContainerStyle: {
-    paddingVertical: 32,
+    paddingTop: 32,
+    paddingBottom: 16,
     paddingHorizontal: 24,
   },
 })``
