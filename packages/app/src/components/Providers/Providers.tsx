@@ -1,10 +1,7 @@
-import { FullLoading } from '@/components/FullLoading'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { ApiProvider } from '@/contexts/api'
 import { AuthProvider } from '@/contexts/auth'
-import { MeProvider } from '@/contexts/me'
-import { MessagingProvider } from '@/contexts/messaging'
 import { StatusBarProvider } from '@/contexts/status-bar'
-import store from '@/store'
 import { themeOptions } from '@/styles/theme'
 import { AppNavigation } from '@/types/navigation'
 import {
@@ -28,7 +25,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
-import { Provider as ReduxProvider } from 'react-redux'
+import { QueryClient, QueryClientProvider } from 'react-query'
 import { ThemeProvider as StyledProvider } from 'styled-components/native'
 
 export const LayoutProvider: React.FC = ({ children }) => {
@@ -71,7 +68,7 @@ const urlPrefix = Linking.createURL('nufba')
 
 export const NavigationProvider: React.FC = ({ children }) => {
   const linking: LinkingOptions<AppNavigation> = {
-    prefixes: [urlPrefix, "nufba://nufba", 'https://notificaufba.page.link'],
+    prefixes: [urlPrefix, 'nufba://nufba', 'https://notificaufba.page.link'],
     config: {
       screens: {
         ResetPasswordScreen: 'forgot-password',
@@ -97,6 +94,16 @@ export const NavigationProvider: React.FC = ({ children }) => {
     }
   })
 
+  const [error, setError] = useState(false)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setError(true)
+    }, 3000)
+  }, [])
+
+  if (error) throw new Error('Eae')
+
   return (
     <NavigationContainer ref={navigationRef} linking={linking} theme={theme}>
       {children}
@@ -104,24 +111,40 @@ export const NavigationProvider: React.FC = ({ children }) => {
   )
 }
 
+export const HttpProvider: React.FC = ({ children }) => {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: 3 } },
+  })
+
+  return (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  )
+}
+
+export const ErrorProvider: React.FC = ({ children }) => {
+  return <ErrorBoundary>{children}</ErrorBoundary>
+}
+
 export const AllProviders: React.FC = ({ children }) => {
   return (
-    <ReduxProvider store={store}>
+    <HttpProvider>
       <LayoutProvider>
         <UIProvider>
           <StyleProvider>
-            <NavigationProvider>
-              <AlertProvider>
-                <AuthProvider>
-                  <ApiProvider>
-                    <StatusBarProvider>{children}</StatusBarProvider>
-                  </ApiProvider>
-                </AuthProvider>
-              </AlertProvider>
-            </NavigationProvider>
+            <AlertProvider>
+              <StatusBarProvider>
+                <ErrorProvider>
+                  <NavigationProvider>
+                    <AuthProvider>
+                      <ApiProvider>{children}</ApiProvider>
+                    </AuthProvider>
+                  </NavigationProvider>
+                </ErrorProvider>
+              </StatusBarProvider>
+            </AlertProvider>
           </StyleProvider>
         </UIProvider>
       </LayoutProvider>
-    </ReduxProvider>
+    </HttpProvider>
   )
 }

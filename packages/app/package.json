@@ -50,6 +50,7 @@
     "module-alias": "^2.2.2",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-error-boundary": "^3.1.4",
     "react-hook-form": "^7.25.3",
     "react-native": "0.68.2",
     "react-native-dotenv": "^3.3.1",
@@ -131,5 +132,9 @@
     "tsconfig-paths": "^3.14.1",
     "tsconfig-paths-webpack-plugin": "3.5.2",
     "typescript": "~4.3.5"
+  },
+  "resolutions": {
+    "@types/react": "17.0.2",
+    "@types/react-dom": "17.0.2"
   }
 }

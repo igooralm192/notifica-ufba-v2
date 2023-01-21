@@ -1,45 +1,58 @@
-import { BaseError } from '@/helpers'
-import { Text } from '@rneui/themed'
 import React from 'react'
-import Toast from 'react-native-toast-message'
+import {
+  ErrorBoundary as ReactErrorBoundary,
+  FallbackProps,
+} from 'react-error-boundary'
+import { useQueryErrorResetBoundary } from 'react-query'
 import * as Sentry from 'sentry-expo'
 
-export class ErrorBoundary extends React.Component {
-  constructor(props: any) {
-    super(props)
-    this.state = { hasError: false }
+import {
+  Container,
+  ErrorImage,
+  Title,
+  Message,
+  ButtonContainer,
+  ResetButton,
+} from './styles'
+
+const ErrorFallback: React.FC<FallbackProps> = ({
+  resetErrorBoundary: reset,
+}) => {
+  return (
+    <Container>
+      <ErrorImage />
+
+      <Title>Eita! Ocorreu um erro!</Title>
+
+      <Message>
+        Ups! Parece que algo deu errado. Não se preocupe, estamos trabalhando
+        para resolver isso o mais rápido possível. {'\n\n'}Por favor, tente
+        novamente mais tarde ou entre em contato conosco se precisar de ajuda.
+        Obrigado pela sua paciência.
+      </Message>
+
+      <ButtonContainer>
+        <ResetButton onPress={reset}>Tentar novamente</ResetButton>
+      </ButtonContainer>
+    </Container>
+  )
+}
+
+export const ErrorBoundary: React.FC = ({ children }) => {
+  const { reset } = useQueryErrorResetBoundary()
+
+  const handleError = (error: Error) => {
+    console.log('ERRO', error)
+    Sentry.Native.captureException(error)
   }
 
-  static getDerivedStateFromError(error: any) {
-    // Update state so the next render will show the fallback UI.
-    return { hasError: true }
-  }
-
-  componentDidCatch(err: any, errorInfo: any) {
-    console.log('ERRO', err)
-
-    Sentry.Native.captureException(err)
-
-    if (err.code !== undefined) {
-      const error = err as BaseError
-
-      Toast.show({
-        type: 'error',
-        text1: error.description ?? 'Erro ao realizar operacão.',
-        text2: error.message,
-      })
-    }
-  }
-
-  render() {
-    // @ts-ignore
-    if (this.state.hasError) {
-      // You can render any custom fallback UI
-      return <Text>Something went wrong.</Text>
-    }
-
-    // @ts-ignore
-    // eslint-disable-next-line react/prop-types
-    return this.props.children
-  }
+  return (
+    <ReactErrorBoundary
+      FallbackComponent={ErrorFallback}
+      onReset={reset}
+      onError={(error: Error) => handleError(error)}
+    >
+      {children}
+    </ReactErrorBoundary>
+  )
 }

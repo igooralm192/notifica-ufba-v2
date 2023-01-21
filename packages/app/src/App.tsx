@@ -1,15 +1,9 @@
-import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { AllProviders } from '@/components/Providers'
 import Routes from '@/routes'
 
 import React from 'react'
-import { QueryClient, QueryClientProvider } from 'react-query'
 import * as Sentry from 'sentry-expo'
 import * as SentryNative from '@sentry/react-native'
-
-const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: 3 } },
-})
 
 Sentry.init({
   dsn: 'https://f1c9e1659ccd415eb67af0751dc68303@o4504024240029696.ingest.sentry.io/4504024240881664',
@@ -19,13 +13,9 @@ Sentry.init({
 
 const App: React.FC = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ErrorBoundary>
-        <AllProviders>
-          <Routes />
-        </AllProviders>
-      </ErrorBoundary>
-    </QueryClientProvider>
+    <AllProviders>
+      <Routes />
+    </AllProviders>
   )
 }
 
