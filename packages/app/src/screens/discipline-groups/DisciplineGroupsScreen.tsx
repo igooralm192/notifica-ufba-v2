@@ -32,6 +32,9 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
 
   const [open, setOpen] = React.useState(false)
 
+  const showMenu = () => setOpen(true)
+  const hideMenu = () => setOpen(false)
+
   useStatusBar('primary')
 
   return (
@@ -60,16 +63,21 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
         isOpen={open}
         icon={{ name: 'menu', color: '#fff' }}
         openIcon={{ name: 'close', color: '#fff' }}
-        onOpen={() => setOpen(!open)}
-        onClose={() => setOpen(!open)}
+        onOpen={showMenu}
+        onClose={hideMenu}
         color={theme.colors.primary}
-        containerStyle={{ marginBottom: tabBarHeight + (Platform.OS === "ios" ? 20 : 40) }}
+        containerStyle={{
+          marginBottom: tabBarHeight + (Platform.OS === 'ios' ? 20 : 40),
+        }}
       >
         <SpeedDial.Action
           icon={{ name: 'add', color: '#fff' }}
           color={theme.colors.primary}
           title="Criar turma"
-          onPress={() => navigation.navigate('CreateGroupScreen', {})}
+          onPress={() => {
+            navigation.navigate('CreateGroupScreen', {})
+            hideMenu()
+          }}
         />
         <></>
       </SpeedDial>
