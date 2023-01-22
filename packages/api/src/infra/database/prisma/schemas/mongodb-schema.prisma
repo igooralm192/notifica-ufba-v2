@@ -77,7 +77,7 @@ model DisciplineGroup {
   description String
   place       String
   menuUrl     String
-  classTime   DateTime
+  classTime   DateTime?
 
   teacherId String?  @db.ObjectId
   teacher   Teacher? @relation(fields: [teacherId], references: [id])

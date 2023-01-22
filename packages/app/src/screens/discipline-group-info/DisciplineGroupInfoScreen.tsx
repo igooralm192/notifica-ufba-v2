@@ -95,10 +95,14 @@ const DisciplineGroupInfoScreen: React.FC = () => {
           <MenuUrl>{disciplineGroup?.menuUrl}</MenuUrl>
         </MenuContainer>
 
-        <ClassSchedulesContainer>
-          <ClassSchedulesLabel>Horários</ClassSchedulesLabel>
-          <ClassSchedule>{disciplineGroup?.classTime.toString()}</ClassSchedule>
-        </ClassSchedulesContainer>
+        {!!disciplineGroup?.classTime && (
+          <ClassSchedulesContainer>
+            <ClassSchedulesLabel>Horários</ClassSchedulesLabel>
+            <ClassSchedule>
+              {disciplineGroup?.classTime.toString()}
+            </ClassSchedule>
+          </ClassSchedulesContainer>
+        )}
       </ScrollContainer>
 
       {user?.type === 'STUDENT' && (

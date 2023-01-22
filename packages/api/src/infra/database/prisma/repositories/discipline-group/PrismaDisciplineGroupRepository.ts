@@ -41,7 +41,6 @@ export class PrismaDisciplineGroupRepository
         description,
         menuUrl,
         place,
-        classTime: new Date(),
       },
     })
 
