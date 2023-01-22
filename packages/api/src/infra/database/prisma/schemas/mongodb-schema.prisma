@@ -13,13 +13,13 @@ datasource db {
 model User {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  name     String
-  email    String                @unique
-  password String
-  type     UserType              @default(STUDENT)
-  teacher  Teacher?
-  student  Student?
-  posts    DisciplineGroupPost[]
+  name      String
+  email     String                @unique
+  password  String
+  type      UserType              @default(STUDENT)
+  teacher   Teacher?
+  student   Student?
+  posts     DisciplineGroupPost[]
   pushToken String?
 
   createdAt DateTime @default(now())
@@ -79,10 +79,10 @@ model DisciplineGroup {
   menuUrl     String
   classTime   DateTime
 
-  teacherId String?  @unique @db.ObjectId
+  teacherId String?  @db.ObjectId
   teacher   Teacher? @relation(fields: [teacherId], references: [id])
 
-  disciplineId String?     @unique @db.ObjectId
+  disciplineId String?     @db.ObjectId
   discipline   Discipline? @relation(fields: [disciplineId], references: [id])
 
   studentIds String[]  @db.ObjectId
@@ -94,7 +94,7 @@ model DisciplineGroup {
 }
 
 model DisciplineGroupPost {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  id      String  @id @default(auto()) @map("_id") @db.ObjectId
   title   String?
   content String
 

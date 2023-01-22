@@ -1,4 +1,4 @@
-import { makeReadDisciplinesRoute } from '@/main/routes/discipline'
+import { makeCreateDisciplineGroupRoute, makeReadDisciplinesRoute } from '@/main/routes/discipline'
 import {
   makeCreateDisciplineGroupPostRoute,
   makePostMessageRoute,
@@ -27,6 +27,7 @@ export const makeRoutes = (app: Express) => {
 
   makeAuthenticateUserRoute(router)
   makeCreateDisciplineGroupPostRoute(router)
+  makeCreateDisciplineGroupRoute(router)
   makeCreateStudentRoute(router)
   makeGetMyUserRoute(router)
   makeForgotPasswordRoute(router)

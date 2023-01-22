@@ -94,3 +94,29 @@ export interface IRemoveStudentDisciplineGroupRepository {
   ): Promise<IRemoveStudentDisciplineGroupRepository.Output>
 }
 
+export namespace ICreateDisciplineGroupRepository {
+  export type Params = {
+    disciplineId: string
+    teacherId: string
+  }
+
+  export type Body = {
+    code: string
+    semester: string
+    description: string
+    menuUrl: string
+    place: string
+  }
+
+  export type Output = IDisciplineGroup
+}
+
+export interface ICreateDisciplineGroupRepository {
+  create(
+    params: ICreateDisciplineGroupRepository.Params,
+    body: ICreateDisciplineGroupRepository.Body,
+  ): Promise<ICreateDisciplineGroupRepository.Output>
+}
+
+
+

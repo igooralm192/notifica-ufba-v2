@@ -60,3 +60,22 @@ export interface IFindAllDisciplineRepository {
     input?: IFindAllDisciplineRepository.Input,
   ): Promise<IFindAllDisciplineRepository.Output>
 }
+
+export namespace IFindOneDisciplineRepository {
+  export type Input = {
+    where: {
+      id?: string
+    }
+    include?: {
+      groups?: boolean
+    }
+  }
+  export type Output = IDiscipline
+}
+
+export interface IFindOneDisciplineRepository {
+  findOne(
+    input?: IFindOneDisciplineRepository.Input,
+  ): Promise<IFindOneDisciplineRepository.Output>
+}
+

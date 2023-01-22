@@ -1,3 +1,4 @@
+export * from './discipline/CreateDisciplineGroupUseCase'
 export * from './discipline/ReadDisciplinesUseCase'
 
 export * from './discipline-group/CreateDisciplineGroupPostUseCase'

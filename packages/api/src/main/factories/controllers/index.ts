@@ -1,3 +1,4 @@
+export * from './discipline/CreateDisciplineGroupControllerFactory'
 export * from './discipline/ReadDisciplinesControllerFactory'
 
 export * from './discipline-group/CreateDisciplineGroupPostControllerFactory'

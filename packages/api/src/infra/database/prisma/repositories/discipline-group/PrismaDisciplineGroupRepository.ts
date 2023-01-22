@@ -1,6 +1,7 @@
 import { IDisciplineGroup } from '@shared/entities'
 import {
   ICountDisciplineGroupRepository,
+  ICreateDisciplineGroupRepository,
   IDisciplineGroupRepositoryListInput,
   IFindAllDisciplineGroupRepository,
   IFindOneDisciplineGroupRepository,
@@ -14,12 +15,39 @@ import { DisciplineGroup } from '@prisma/client'
 export class PrismaDisciplineGroupRepository
   extends PrismaRepository
   implements
+    ICreateDisciplineGroupRepository,
     ICountDisciplineGroupRepository,
     IFindAllDisciplineGroupRepository,
     IFindOneDisciplineGroupRepository,
     IPushStudentDisciplineGroupRepository,
     IRemoveStudentDisciplineGroupRepository
 {
+  async create(
+    { disciplineId, teacherId }: ICreateDisciplineGroupRepository.Params,
+    {
+      code,
+      semester,
+      description,
+      menuUrl,
+      place,
+    }: ICreateDisciplineGroupRepository.Body,
+  ): Promise<IDisciplineGroup> {
+    const disciplineGroup = await this.client.disciplineGroup.create({
+      data: {
+        disciplineId,
+        teacherId,
+        code,
+        semester,
+        description,
+        menuUrl,
+        place,
+        classTime: new Date(),
+      },
+    })
+
+    return this.parseDisciplineGroup(disciplineGroup)
+  }
+
   async count({ where }: IDisciplineGroupRepositoryListInput): Promise<number> {
     return this.client.disciplineGroup.count({ where })
   }
