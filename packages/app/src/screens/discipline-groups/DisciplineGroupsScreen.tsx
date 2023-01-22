@@ -1,9 +1,12 @@
 import { FooterLoading } from '@/components/FooterLoading'
 import { Spacer } from '@/components/Spacer'
 import { useStatusBar } from '@/contexts/status-bar'
+import { useNavigation } from '@/helpers'
+import { useTabBarHeight } from '@/hooks'
+import { SpeedDial, useTheme } from '@rneui/themed'
 
 import React from 'react'
-import { FlatList, RefreshControl } from 'react-native'
+import { FlatList, Platform, RefreshControl } from 'react-native'
 
 import { DisciplineGroupListItem } from './DisciplineGroupListItem'
 import {
@@ -23,10 +26,16 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
     onRefresh,
   } = useDisciplineGroupsPresenter()
 
+  const tabBarHeight = useTabBarHeight()
+  const { theme } = useTheme()
+  const navigation = useNavigation()
+
+  const [open, setOpen] = React.useState(false)
+
   useStatusBar('primary')
 
   return (
-    <Container headerProps={{ title: 'Turmas', back: false }}>
+    <Container headerProps={{ title: 'Suas turmas', back: false }}>
       <ListContainer>
         <FlatList
           data={disciplineGroups}
@@ -46,6 +55,24 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
           }
         />
       </ListContainer>
+
+      <SpeedDial
+        isOpen={open}
+        icon={{ name: 'menu', color: '#fff' }}
+        openIcon={{ name: 'close', color: '#fff' }}
+        onOpen={() => setOpen(!open)}
+        onClose={() => setOpen(!open)}
+        color={theme.colors.primary}
+        containerStyle={{ marginBottom: tabBarHeight + (Platform.OS === "ios" ? 20 : 40) }}
+      >
+        <SpeedDial.Action
+          icon={{ name: 'add', color: '#fff' }}
+          color={theme.colors.primary}
+          title="Criar turma"
+          onPress={() => navigation.navigate('CreateGroupScreen', {})}
+        />
+        <></>
+      </SpeedDial>
     </Container>
   )
 }

@@ -12,3 +12,17 @@ export namespace IGetDisciplinesEndpoint {
     total: number
   }
 }
+
+export namespace ICreateGroupEndpoint {
+  export type Params = {
+    disciplineId: string
+  }
+
+  export type Body = {
+    code: string
+    semester: string
+    description: string
+    menuUrl: string
+    place: string
+  }
+}

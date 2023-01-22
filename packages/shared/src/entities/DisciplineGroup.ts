@@ -9,7 +9,7 @@ export interface IDisciplineGroup {
   description: string
   place: string
   menuUrl: string
-  classTime: Date
+  classTime: Date // Maybe useless
 
   teacherId?: string
   disciplineId?: string

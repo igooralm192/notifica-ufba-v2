@@ -15,6 +15,8 @@ import {
   ForgotPasswordScreen,
   ResetPasswordScreen,
   EditProfileScreen,
+  CreateGroupScreen,
+  ListDisciplinesScreen,
 } from '@/screens'
 import { AuthState } from '@/store/auth/types'
 
@@ -70,6 +72,17 @@ const Routes: React.FC = () => {
                   <Stack.Screen
                     name="CreatePostScreen"
                     component={CreatePostScreen}
+                  />
+
+                  <Stack.Screen
+                    name="CreateGroupScreen"
+                    component={CreateGroupScreen}
+                    />
+                    
+                    <Stack.Screen
+                    name="ListDisciplinesScreen"
+                    component={ListDisciplinesScreen}
+                    options={{ headerShown: false, presentation: 'modal' }}
                   />
 
                   <Stack.Screen

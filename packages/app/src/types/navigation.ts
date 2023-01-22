@@ -21,9 +21,17 @@ export type AppNavigation = {
   DisciplinesScreen: undefined
   DisciplineGroupsScreen: undefined
   ProfileScreen: undefined
+  CreateGroupScreen: {
+    discipline?: IDiscipline
+  }
   CreatePostScreen: {
     discipline?: IDiscipline
     disciplineGroup?: IDisciplineGroup
+  }
+  ListDisciplinesScreen: {
+    onDisciplineSelected: (
+      discipline: IDiscipline,
+    ) => void
   }
   ListGroupsScreen: {
     onDisciplineGroupSelected: (

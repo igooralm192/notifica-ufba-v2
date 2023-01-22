@@ -10,6 +10,7 @@ import { AppNavigation } from '@/types/navigation'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { useTheme } from '@rneui/themed'
 import React from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 const BottomTab = createBottomTabNavigator<AppNavigation>()
@@ -17,6 +18,8 @@ const BottomTab = createBottomTabNavigator<AppNavigation>()
 export const BottomTabsNavigator = () => {
   const { theme } = useTheme()
   const tabBarHeight = useTabBarHeight()
+
+  const insets = useSafeAreaInsets()
 
   return (
     <BottomTab.Navigator
@@ -27,7 +30,7 @@ export const BottomTabsNavigator = () => {
         tabBarStyle: {
           position: 'absolute',
           // top: 20,
-          bottom: 20,
+          bottom: insets.bottom + 20,
           left: 20,
           right: 20,
           elevation: 0,

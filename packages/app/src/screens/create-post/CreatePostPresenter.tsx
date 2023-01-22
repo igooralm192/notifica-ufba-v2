@@ -24,11 +24,6 @@ export const CreatePostPresenter: React.FC = ({ children }) => {
   ) => {
     await create({ disciplineGroupId, content })
 
-    Toast.show({
-      type: 'success',
-      text1: 'Postagem criada com sucesso!',
-    })
-
     navigation.goBack()
   }
 
