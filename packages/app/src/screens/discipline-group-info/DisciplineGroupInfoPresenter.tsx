@@ -8,8 +8,9 @@ import {
   useUnsubscribeStudent,
 } from '@/hooks/api'
 import { AppNavigation } from '@/types/navigation'
+import { removeRoute } from '@/utils/navigation'
 
-import { StackActions } from '@react-navigation/native'
+import { StackActions, CommonActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useContext } from 'react'
 
@@ -41,6 +42,15 @@ export const DisciplineGroupInfoPresenter: React.FC<{
     await subscribe({ disciplineGroupId })
 
     navigation.dispatch(
+      CommonActions.reset(
+        removeRoute(
+          navigation.getState(),
+          r => r.name === 'DisciplineGroupTabsScreen',
+        ),
+      ),
+    )
+
+    navigation.dispatch(
       StackActions.replace('DisciplineGroupTabsScreen', {
         disciplineGroupId,
       }),
@@ -49,6 +59,15 @@ export const DisciplineGroupInfoPresenter: React.FC<{
 
   const handleUnsubscribeStudent = async () => {
     await unsubscribe({ disciplineGroupId })
+
+    navigation.dispatch(
+      CommonActions.reset(
+        removeRoute(
+          navigation.getState(),
+          r => r.name === 'DisciplineGroupTabsScreen',
+        ),
+      ),
+    )
   }
 
   if (isLoading) return <FullLoading />

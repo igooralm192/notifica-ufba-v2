@@ -1,13 +1,10 @@
-import api from '@/api'
 import { useAuth } from '@/contexts/auth'
-import { useMe } from '@/contexts/me'
 import { useNavigation } from '@/helpers'
 import { useUpdateMyUser } from '@/hooks/api'
-import { getMessageStore } from '@/state/zustand/message'
 import { AuthState } from '@/store/auth/types'
 import { getRouteByName } from '@/utils/navigation'
-import { useNavigationState } from '@react-navigation/core'
 
+import { useNavigationState } from '@react-navigation/core'
 import * as Notifications from 'expo-notifications'
 import React, { useContext, useEffect } from 'react'
 import { Platform } from 'react-native'
@@ -27,10 +24,9 @@ export type NotificationData = {
 
 const MessagingContext = React.createContext({} as MessagingContextData)
 
-export const MessagingProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
+export const MessagingProvider: React.FC = ({ children }) => {
   const auth = useAuth()
   const navigation = useNavigation()
-  const state = useNavigationState(state => state)
 
   const { update } = useUpdateMyUser()
 
@@ -39,17 +35,11 @@ export const MessagingProvider: React.FC<React.PropsWithChildren> = ({ children 
       type: 'info',
       text1: title || undefined,
       text2: body || undefined,
-      // onPress: () => {
-      //   navigateToDisciplineGroupTabs(data)
-      //   Toast.hide()
-      // },
     })
   }
 
   const requestPermissions = async () => {
     const { status: currentStatus } = await Notifications.getPermissionsAsync()
-
-    
 
     if (currentStatus === 'granted') return true
 
@@ -59,18 +49,7 @@ export const MessagingProvider: React.FC<React.PropsWithChildren> = ({ children 
   }
 
   const requestPermissionsAndGetToken = async () => {
-    // if (!Device.isDevice) {
-    //   Toast.show({
-    //     type: 'error',
-    //     text1: 'Must use physical device for Push Notifications',
-    //   })
-
-    //   return null
-    // }
-
     const permissionsGranted = await requestPermissions()
-
-    console.log('PERMITIDO', permissionsGranted)
 
     if (!permissionsGranted) {
       Toast.show({
@@ -114,24 +93,14 @@ export const MessagingProvider: React.FC<React.PropsWithChildren> = ({ children 
     })
   }, [auth.state])
 
-  // useEffect(() => {
-  //   const unsubscribe = getMessageStore().subscribe(({ lastMessage }) => {
-  //     console.log('CHEGOU DENTRO', user, lastMessage)
-  //     if (!user || !lastMessage || user.id === lastMessage.sentById) return
-
-  //     showNotification('Mensagem nova', lastMessage.body)
-  //   })
-
-  //   return () => unsubscribe()
-  // }, [user])
-
   useEffect(() => {
     const onForegroundListener = Notifications.addNotificationReceivedListener(
       notification => {
         const { title, body, data } = notification.request.content
 
         if (!data.type) return
-        if (getRouteByName(navigation.getState(), 'DisciplineGroupTabsScreen')) return
+        if (getRouteByName(navigation.getState(), 'DisciplineGroupTabsScreen'))
+          return
 
         Toast.show({
           type: 'info',

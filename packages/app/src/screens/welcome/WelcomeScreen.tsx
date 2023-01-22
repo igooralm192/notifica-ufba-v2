@@ -2,7 +2,7 @@ import WelcomePNG from '@/assets/welcome.png'
 import { useNavigation } from '@/helpers'
 
 import React from 'react'
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import {
   Container,
@@ -17,14 +17,13 @@ import {
 } from './WelcomeStyles'
 
 const WelcomeScreen: React.FC = () => {
-  const insets = useSafeAreaInsets()
   const navigation = useNavigation()
 
   const navigateToLogin = () => navigation.navigate('LoginScreen')
   const navigateToRegister = () => navigation.navigate('RegisterScreen')
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView>
       <Container>
         <Title>Bem vindo!</Title>
 
