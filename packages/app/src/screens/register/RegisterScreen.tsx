@@ -1,6 +1,7 @@
 import { Button } from '@/components/Button'
 import DropdownInput from '@/components/DropdownInput'
 import { Input } from '@/components/Input'
+import NumericInput from '@/components/NumericInput'
 import { coursesList } from '@/utils/domain'
 
 import { joiResolver } from '@hookform/resolvers/joi'
@@ -33,10 +34,21 @@ export interface IRegisterFormValues {
 }
 
 const registerSchema = Joi.object({
-  name: Joi.string().required().messages({
-    'any.required': `Campo obrigatório.`,
-    'string.empty': 'Campo obrigatório.',
-  }),
+  name: Joi.string()
+    .trim()
+    .min(2)
+    .max(255)
+    .pattern(/^[a-zA-Z\sÀ-ÿ]+$/)
+    .required()
+    .messages({
+      'any.required': 'Campo obrigatório.',
+      'string.empty': 'Campo obrigatório.',
+      'string.min': 'Precisa ter no mínimo {{#limit}} caracteres.',
+      'string.max': 'Precisa ter no máximo {{#limit}} caracteres.',
+      'string.trim': 'Não pode haver espaços no início e no fim.',
+      'string.pattern.base':
+        'Não pode have números e certos caracteres especiais.',
+    }),
   email: Joi.string()
     .email({ tlds: { allow: false } })
     .required()
@@ -147,7 +159,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = () => {
           name="matriculation"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Input
+            <NumericInput
               ref={matriculationRef}
               placeholder="Matrícula"
               leftIcon={{ name: 'app-registration' }}
@@ -158,6 +170,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = () => {
               errorMessage={fieldState.error?.message}
               renderErrorMessage={!!fieldState.error}
               autoCapitalize="none"
+              maxLength={9}
               testID="register-matriculation-input"
             />
           )}
@@ -173,10 +186,10 @@ const RegisterScreen: React.FC<RegisterScreenProps> = () => {
               ref={courseRef}
               placeholder="Curso"
               leftIcon={{ name: 'library-books' }}
-              title='Selecione o seu curso'
+              title="Selecione o seu curso"
               options={coursesList}
               value={field.value}
-              onSelectOption={(value) => form.setValue('course', value)}
+              onSelectOption={value => form.setValue('course', value)}
               onBlur={field.onBlur}
               onSubmitEditing={() => passwordRef?.current?.focus()}
               errorMessage={fieldState.error?.message}

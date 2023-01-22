@@ -2,10 +2,12 @@ import styled from 'styled-components/native'
 import { Input, InputProps } from '@rneui/themed'
 
 export const Container = styled(Input).attrs<InputProps>(
-  ({ theme, leftIcon, inputContainerStyle, renderErrorMessage }) => {
+  ({ theme, leftIcon, inputContainerStyle, renderErrorMessage, ...props }) => {
     return {
+      ...props,
       containerStyle: {
         paddingHorizontal: 0,
+        ...(props.containerStyle?.valueOf() as any),
       },
       inputContainerStyle: {
         width: '100%',
