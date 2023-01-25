@@ -1,8 +1,7 @@
-import { useMe } from '@/contexts/me'
 import { useStatusBar } from '@/contexts/status-bar'
 import { useNavigation } from '@/helpers'
 
-import { FAB, Tab, TabView, useTheme } from '@rneui/themed'
+import { Tab, TabView, useTheme } from '@rneui/themed'
 import React, { useState } from 'react'
 
 import { DisciplineGroupChatTab } from './DisciplineGroupChatTab'
@@ -14,10 +13,8 @@ import {
 import { Container } from './DisciplineGroupTabsStyles'
 
 const DisciplineGroupTabsScreen: React.FC = () => {
-  const { initialIndex, disciplineGroup, navigateToCreatePost } =
-    useDisciplineGroupTabsPresenter()
+  const { initialIndex, disciplineGroup } = useDisciplineGroupTabsPresenter()
 
-  const { user } = useMe()
   const navigation = useNavigation()
   const { theme } = useTheme()
 
@@ -77,15 +74,6 @@ const DisciplineGroupTabsScreen: React.FC = () => {
           <DisciplineGroupChatTab />
         </TabView.Item>
       </TabView>
-
-      {user?.type === 'TEACHER' && (
-        <FAB
-          icon={{ name: 'add', color: 'white' }}
-          color={theme.colors.primary}
-          style={{ position: 'absolute', bottom: 30, right: 24 }}
-          onPress={navigateToCreatePost}
-        />
-      )}
     </Container>
   )
 }

@@ -1,7 +1,6 @@
 import { IDisciplineGroup } from '@shared/entities'
 
 import { FullLoading } from '@/components/FullLoading'
-import { useNavigation } from '@/helpers'
 import { useGetDisciplineGroup } from '@/hooks/api'
 import { AppNavigation } from '@/types/navigation'
 
@@ -16,7 +15,6 @@ interface DisciplineGroupTabsPresenterProps {
 export interface DisciplineGroupTabsPresenterContextData {
   initialIndex: number
   disciplineGroup: IDisciplineGroup
-  navigateToCreatePost: () => void
 }
 
 const DisciplineGroupTabsPresenterContext = React.createContext(
@@ -26,17 +24,9 @@ const DisciplineGroupTabsPresenterContext = React.createContext(
 export const DisciplineGroupTabsPresenter: React.FC<
   DisciplineGroupTabsPresenterProps
 > = ({ disciplineGroupId, initialTab, children }) => {
-  const navigation = useNavigation()
-
   const { isLoading, disciplineGroup } = useGetDisciplineGroup({
     disciplineGroupId,
   })
-
-  const navigateToCreatePost = () =>
-    navigation.navigate('CreatePostScreen', {
-      discipline: disciplineGroup?.discipline,
-      disciplineGroup: disciplineGroup || undefined,
-    })
 
   if (isLoading) return <FullLoading />
   if (!disciplineGroup) return null
@@ -46,7 +36,6 @@ export const DisciplineGroupTabsPresenter: React.FC<
       value={{
         initialIndex: initialTab === 'chat' ? 1 : 0,
         disciplineGroup,
-        navigateToCreatePost,
       }}
     >
       {children}

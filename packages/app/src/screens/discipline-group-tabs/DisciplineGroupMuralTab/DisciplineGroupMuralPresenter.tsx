@@ -7,6 +7,8 @@ import { IFilterParams } from '@/types/list'
 import React, { useContext } from 'react'
 
 import { useDisciplineGroupTabsPresenter } from '../DisciplineGroupTabsPresenter'
+import { useNavigation } from '@/helpers'
+
 
 export interface DisciplineGroupMuralPresenterContextData {
   isFetchingMore: boolean
@@ -14,6 +16,7 @@ export interface DisciplineGroupMuralPresenterContextData {
   disciplineGroupPosts: IDisciplineGroupPost[]
   onNextPage: () => void
   onRefresh: () => void
+  navigateToCreatePost: () => void
 }
 
 const DisciplineGroupMuralPresenterContext = React.createContext(
@@ -26,6 +29,8 @@ const initialFilter: IFilterParams = {
 }
 
 export const DisciplineGroupMuralPresenter: React.FC = ({ children }) => {
+const navigation = useNavigation()
+
   const { disciplineGroup } = useDisciplineGroupTabsPresenter()
 
   const {
@@ -49,6 +54,12 @@ export const DisciplineGroupMuralPresenter: React.FC = ({ children }) => {
     refresh()
   }
 
+const navigateToCreatePost = () =>
+  navigation.navigate('CreatePostScreen', {
+    discipline: disciplineGroup?.discipline,
+    disciplineGroup: disciplineGroup || undefined,
+  })
+
   if (isLoading) return <FullLoading />
 
   return (
@@ -59,6 +70,7 @@ export const DisciplineGroupMuralPresenter: React.FC = ({ children }) => {
         disciplineGroupPosts,
         onNextPage: handleNextPage,
         onRefresh: handleRefresh,
+        navigateToCreatePost
       }}
     >
       {children}
