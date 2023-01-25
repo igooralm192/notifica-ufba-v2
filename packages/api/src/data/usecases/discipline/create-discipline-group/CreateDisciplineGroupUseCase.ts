@@ -1,6 +1,7 @@
 import { Either, left, right } from '@shared/utils'
 
 import {
+  DisciplineGroupAlreadyExistsError,
   DisciplineGroupDoesNotExistError,
   UserDoesNotExistError,
 } from '@/domain/errors'
@@ -11,6 +12,7 @@ import {
   IUserRepository,
   IFindOneDisciplineRepository,
   ICreateDisciplineGroupRepository,
+  IFindOneDisciplineGroupRepository,
 } from '@/data/contracts'
 
 export class CreateDisciplineGroupUseCase
@@ -19,6 +21,7 @@ export class CreateDisciplineGroupUseCase
   constructor(
     private readonly findOneUserRepository: IUserRepository.FindOne,
     private readonly findOneDisciplineRepository: IFindOneDisciplineRepository,
+    private readonly findOneDisciplineGroupRepository: IFindOneDisciplineGroupRepository,
     private readonly createDisciplineGroupRepository: ICreateDisciplineGroupRepository,
   ) {}
 
@@ -40,11 +43,19 @@ export class CreateDisciplineGroupUseCase
       return left(new DisciplineGroupDoesNotExistError())
     }
 
-    const disciplineGroup = await this.createDisciplineGroupRepository.create(
+    const findDisciplineGroup = await this.findOneDisciplineGroupRepository.findOne({
+      where: { code: body.code },
+    })
+
+    if (findDisciplineGroup) {
+      return left(new DisciplineGroupAlreadyExistsError())
+    }
+
+    const disciplineGroupCreated = await this.createDisciplineGroupRepository.create(
       { disciplineId: discipline.id, teacherId: user.teacher.id },
       body,
     )
 
-    return right(disciplineGroup)
+    return right(disciplineGroupCreated)
   }
 }

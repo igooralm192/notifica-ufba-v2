@@ -1,5 +1,6 @@
 import {
   DisciplineDoesNotExistError,
+  DisciplineGroupAlreadyExistsError,
   UserDoesNotExistError,
 } from '@/domain/errors'
 import { ICreateDisciplineGroupUseCase } from '@/domain/usecases'
@@ -56,6 +57,8 @@ export class CreateDisciplineGroupController extends BaseController {
       case DisciplineDoesNotExistError:
       case UserDoesNotExistError:
         return this.notFound(result.value)
+      case DisciplineGroupAlreadyExistsError:
+        return this.forbidden(result.value)
       default:
         return this.fail(result.value)
     }
