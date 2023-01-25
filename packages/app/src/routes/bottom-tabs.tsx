@@ -1,3 +1,4 @@
+import { useMe } from '@/contexts/me'
 import {
   DisciplineGroupsScreen,
   DisciplinesScreen,
@@ -16,6 +17,8 @@ const BottomTab = createBottomTabNavigator<AppNavigation>()
 
 export const BottomTabsNavigator = () => {
   const { theme } = useTheme()
+
+  const { user } = useMe()
 
   const insets = useSafeAreaInsets()
 
@@ -62,22 +65,29 @@ export const BottomTabsNavigator = () => {
         }}
         component={DisciplineGroupsScreen}
       />
-      <BottomTab.Screen
-        name="LastMessagesScreen"
-        options={{
-          title: 'Mensagens',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="message" color={color} size={size} />
-          ),
-        }}
-        component={LastMessagesScreen}
-      />
+      {user?.type === 'STUDENT' && (
+        <BottomTab.Screen
+          name="LastMessagesScreen"
+          options={{
+            title: 'Mensagens',
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="message" color={color} size={size} />
+            ),
+          }}
+          component={LastMessagesScreen}
+        />
+      )}
       <BottomTab.Screen
         name="DisciplinesScreen"
         options={{
           title: 'Disciplinas',
           tabBarIcon: ({ color, size }) => (
-            <Icon name="subject" color={color} size={size} style={{ marginTop: -4 }} />
+            <Icon
+              name="subject"
+              color={color}
+              size={size}
+              style={{ marginTop: -4 }}
+            />
           ),
         }}
         component={DisciplinesScreen}
@@ -87,7 +97,12 @@ export const BottomTabsNavigator = () => {
         options={{
           title: 'Perfil',
           tabBarIcon: ({ color, size }) => (
-            <Icon name="person-pin" color={color} size={size} style={{ marginTop: -2 }} />
+            <Icon
+              name="person-pin"
+              color={color}
+              size={size}
+              style={{ marginTop: -2 }}
+            />
           ),
         }}
         component={ProfileScreen}

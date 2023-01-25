@@ -9,7 +9,7 @@ import { Keyboard, TextInput } from 'react-native'
 
 import { Container, InputContainer, ButtonContainer } from './styles'
 
-export interface EditProfileStudentFormProps extends React.PropsWithChildren {
+export interface EditProfileStudentFormProps {
   initialValues: Partial<IEditProfileStudentFormValues>
   onSubmit: (data: IEditProfileStudentFormValues) => Promise<void>
 }
@@ -130,7 +130,7 @@ export const EditProfileStudentForm: React.FC<EditProfileStudentFormProps> = ({
           loading={form.formState.isSubmitting}
           disabled={form.formState.isSubmitting}
           onPress={submitForm}
-          loadingProps={{ testID: 'register-loading' }}
+          // loadingProps={{ testID: 'register-loading' }}
         />
       </ButtonContainer>
     </Container>

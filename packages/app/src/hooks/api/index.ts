@@ -13,6 +13,8 @@ export * from './discipline-group/useUnsubscribeStudent'
 export * from './student/useCreateStudent'
 export * from './student/useUpdateMyStudent'
 
+export * from './teacher/useUpdateMyTeacher'
+
 export * from './user/useGetMyUser'
 export * from './user/useForgotPassword'
 export * from './user/useLogin'

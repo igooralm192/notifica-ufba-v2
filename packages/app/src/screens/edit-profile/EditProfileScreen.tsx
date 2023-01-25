@@ -3,6 +3,10 @@ import {
   EditProfileStudentForm,
   IEditProfileStudentFormValues,
 } from '@/screens/edit-profile/EditProfileStudentForm'
+import {
+  EditProfileTeacherForm,
+  IEditProfileTeacherFormValues,
+} from '@/screens/edit-profile/EditProfileTeacherForm'
 
 import React from 'react'
 
@@ -15,12 +19,16 @@ import { Container } from './EditProfileStyles'
 export interface EditProfileScreenProps {}
 
 const EditProfileScreen: React.FC<EditProfileScreenProps> = () => {
-  const { user, updateStudent } = useEditProfilePresenter()
+  const { user, updateStudent, updateTeacher } = useEditProfilePresenter()
 
   useStatusBar('primary')
 
   const handleStudentSubmit = async (data: IEditProfileStudentFormValues) => {
     await updateStudent(data)
+  }
+
+  const handleTeacherSubmit = async (data: IEditProfileTeacherFormValues) => {
+    await updateTeacher(data)
   }
 
   return (
@@ -34,7 +42,14 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = () => {
           }}
           onSubmit={handleStudentSubmit}
         />
-      ) : null}
+      ) : (
+        <EditProfileTeacherForm
+          initialValues={{
+            name: user.name,
+          }}
+          onSubmit={handleTeacherSubmit}
+        />
+      )}
     </Container>
   )
 }
