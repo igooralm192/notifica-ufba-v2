@@ -19,6 +19,7 @@ import {
   DisciplineName,
   DisciplineGroupTeacher,
 } from './DisciplineGroupListItemStyles'
+import { useMe } from '@/contexts/me'
 
 export interface DisciplineGroupListItemProps {
   disciplineGroup: IDisciplineGroup
@@ -30,13 +31,15 @@ const DisciplineGroupListItem: React.FC<DisciplineGroupListItemProps> = ({
   const { isUnsubscribing, unsubscribeStudent } = useDisciplineGroupsPresenter()
 
   const navigation = useNavigation()
+  const { user } = useMe()
 
   const [visible, setVisible] = useState(false)
 
   const options = [
     {
-      label: 'Remover disciplina',
+      label: 'Remover turma',
       onPress: () => unsubscribeStudent(disciplineGroup.id),
+      shouldShow: user?.type === 'STUDENT',
     },
   ]
 
@@ -78,43 +81,45 @@ const DisciplineGroupListItem: React.FC<DisciplineGroupListItemProps> = ({
           {disciplineGroup.discipline?.code} - {disciplineGroup.code}
         </DisciplineCode>
 
-        {options.map((option, i) => (
-          <ListItem
-            key={i}
-            containerStyle={{
-              // backgroundColor: '#F6F6F6',
-              borderRadius: 8,
-              padding: 12,
-              paddingHorizontal: 0,
-            }}
-            onPress={option.onPress}
-          >
-            <ListItem.Content
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'flex-start',
-                alignItems: 'center',
+        {options
+          .filter(option => option.shouldShow)
+          .map((option, i) => (
+            <ListItem
+              key={i}
+              containerStyle={{
+                // backgroundColor: '#F6F6F6',
+                borderRadius: 8,
+                padding: 12,
+                paddingHorizontal: 0,
               }}
+              onPress={option.onPress}
             >
-              <Icon
-                name="delete-outline"
-                color="red"
-                size={22}
-                onPress={() => setVisible(true)}
-              />
-              <ListItem.Title
+              <ListItem.Content
                 style={{
-                  justifyContent: 'center',
-                  marginLeft: 8,
-                  color: 'red',
-                  fontFamily: 'Quicksand_600SemiBold',
+                  flexDirection: 'row',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
                 }}
               >
-                {option.label}
-              </ListItem.Title>
-            </ListItem.Content>
-          </ListItem>
-        ))}
+                <Icon
+                  name="delete-outline"
+                  color="red"
+                  size={22}
+                  onPress={() => setVisible(true)}
+                />
+                <ListItem.Title
+                  style={{
+                    justifyContent: 'center',
+                    marginLeft: 8,
+                    color: 'red',
+                    fontFamily: 'Quicksand_600SemiBold',
+                  }}
+                >
+                  {option.label}
+                </ListItem.Title>
+              </ListItem.Content>
+            </ListItem>
+          ))}
 
         <ListItem onPress={() => setVisible(false)}>
           <ListItem.Content
