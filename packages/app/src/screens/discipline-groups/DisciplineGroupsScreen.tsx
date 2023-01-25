@@ -7,6 +7,7 @@ import { SpeedDial, useTheme } from '@rneui/themed'
 
 import React from 'react'
 import { FlatList, Platform, RefreshControl } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { DisciplineGroupListItem } from './DisciplineGroupListItem'
 import {
@@ -29,6 +30,7 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
   const tabBarHeight = useTabBarHeight()
   const { theme } = useTheme()
   const navigation = useNavigation()
+  const insets = useSafeAreaInsets()
 
   const [open, setOpen] = React.useState(false)
 
@@ -39,25 +41,28 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
 
   return (
     <Container headerProps={{ title: 'Suas turmas', back: false }}>
-      <ListContainer>
-        <FlatList
-          data={disciplineGroups}
-          renderItem={({ item }) => (
-            <DisciplineGroupListItem disciplineGroup={item} />
-          )}
-          ItemSeparatorComponent={Spacer}
-          contentContainerStyle={{ padding: 16 }}
-          onEndReached={onNextPage}
-          onEndReachedThreshold={0.15}
-          ListFooterComponent={isFetchingMore ? FooterLoading : undefined}
-          refreshControl={
-            <RefreshControl
-              refreshing={!isFetchingMore && isRefreshing}
-              onRefresh={onRefresh}
-            />
-          }
-        />
-      </ListContainer>
+      <FlatList
+        data={disciplineGroups}
+        renderItem={({ item }) => (
+          <DisciplineGroupListItem disciplineGroup={item} />
+        )}
+        ItemSeparatorComponent={Spacer}
+        contentContainerStyle={{
+          padding: 16,
+          // Safe area bottom + safe area bottom tab padding + bottom tab height + list padding bottom
+          paddingBottom: insets.bottom + 20 + 70 + 16,
+        }}
+        onEndReached={onNextPage}
+        onEndReachedThreshold={0.15}
+        ListFooterComponent={isFetchingMore ? FooterLoading : undefined}
+        refreshControl={
+          <RefreshControl
+            refreshing={!isFetchingMore && isRefreshing}
+            onRefresh={onRefresh}
+          />
+        }
+        style={{ backgroundColor: theme.colors.grey1 }}
+      />
 
       <SpeedDial
         isOpen={open}

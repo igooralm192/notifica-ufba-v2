@@ -1,4 +1,3 @@
-import { useTabBarHeight } from '@/hooks'
 import {
   DisciplineGroupsScreen,
   DisciplinesScreen,
@@ -17,7 +16,6 @@ const BottomTab = createBottomTabNavigator<AppNavigation>()
 
 export const BottomTabsNavigator = () => {
   const { theme } = useTheme()
-  const tabBarHeight = useTabBarHeight()
 
   const insets = useSafeAreaInsets()
 
