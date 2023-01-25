@@ -13,6 +13,8 @@ export * from './discipline-group/UnsubscribeStudentUseCase'
 export * from './student/CreateStudentUseCase'
 export * from './student/UpdateStudentUseCase'
 
+export * from './teacher/UpdateTeacherUseCase'
+
 export * from './user/AuthenticateUserUseCase'
 export * from './user/CreateUserUseCase'
 export * from './user/GetUserByIdUseCase'

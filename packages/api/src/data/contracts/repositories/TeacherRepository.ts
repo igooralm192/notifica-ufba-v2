@@ -16,7 +16,7 @@ export type ITeacherRepositoryListInput = {
 export namespace ITeacherRepository {
   export namespace FindOne {
     export type Input = {
-      where: { userId?: string }
+      where: { id?: string; userId?: string }
     }
     export type Output = ITeacher | null
   }

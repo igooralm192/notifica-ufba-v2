@@ -10,6 +10,7 @@ import {
   makeUnsubscribeStudentRoute,
 } from '@/main/routes/discipline-group'
 import { makeCreateStudentRoute, makePatchMyStudentRoute } from '@/main/routes/student'
+import { makePatchMyTeacherRoute } from '@/main/routes/teacher'
 import {
   makeAuthenticateUserRoute,
   makeForgotPasswordRoute,
@@ -32,6 +33,7 @@ export const makeRoutes = (app: Express) => {
   makeGetMyUserRoute(router)
   makeForgotPasswordRoute(router)
   makePatchMyStudentRoute(router)
+  makePatchMyTeacherRoute(router)
   makePatchMyUserRoute(router)
   makePostMessageRoute(router)
   makeReadLastMessagesRoute(router)

@@ -13,6 +13,8 @@ export * from './discipline-group/UnsubscribeStudentUseCaseFactory'
 export * from './student/CreateStudentUseCaseFactory'
 export * from './student/UpdateStudentUseCaseFactory'
 
+export * from './teacher/UpdateTeacherUseCaseFactory'
+
 export * from './user/AuthenticateUserUseCaseFactory'
 export * from './user/CreateUserUseCaseFactory'
 export * from './user/ForgotPasswordUseCaseFactory'

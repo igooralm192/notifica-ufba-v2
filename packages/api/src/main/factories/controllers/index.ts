@@ -13,6 +13,8 @@ export * from './discipline-group/UnsubscribeStudentControllerFactory'
 export * from './student/CreateStudentControllerFactory'
 export * from './student/PatchMyStudentControllerFactory'
 
+export * from './teacher/PatchMyTeacherControllerFactory'
+
 export * from './user/AuthenticateUserControllerFactory'
 export * from './user/CreateUserControllerFactory'
 export * from './user/ForgotPasswordControllerFactory'
