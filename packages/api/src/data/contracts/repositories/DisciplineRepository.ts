@@ -1,26 +1,5 @@
-import { IDiscipline, ITeacher, IUser } from '@shared/entities'
+import { IDiscipline } from '@shared/entities'
 import { IDisciplineGroupRepositoryListInput } from './DisciplineGroupRepository'
-
-export type IUserRepositoryListInput = {
-  where?: any
-  take?: number
-  skip?: number
-  select?: {
-    [key in keyof IUser]?: boolean
-  }
-}
-
-export type ITeacherRepositoryListInput = {
-  where?: any
-  take?: number
-  skip?: number
-  select?: {
-    [key in keyof ITeacher]?: boolean
-  }
-  include?: {
-    user: boolean | IUserRepositoryListInput
-  }
-}
 
 export type IDisciplineRepositoryListInput = {
   where?: {
@@ -78,4 +57,3 @@ export interface IFindOneDisciplineRepository {
     input?: IFindOneDisciplineRepository.Input,
   ): Promise<IFindOneDisciplineRepository.Output>
 }
-

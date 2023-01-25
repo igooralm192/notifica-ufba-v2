@@ -1,28 +1,10 @@
-import { InternalServerError } from '@/application/errors'
 import { BaseError } from '@/domain/helpers'
-
-export namespace BaseMiddleware {
-  export type Request = {
-    body?: any
-    query?: any
-    params?: any
-    headers?: any
-  }
-
-  export type Response = {
-    statusCode: number
-    body: any
-  }
-}
-
+import { InternalServerError } from '@/application/errors'
+import { Request, Response } from '@/application/helpers/types'
 export abstract class BaseMiddleware {
-  abstract handle(
-    request: BaseMiddleware.Request,
-  ): Promise<BaseMiddleware.Response>
+  protected abstract handle(request: Request): Promise<Response>
 
-  public async perform(
-    request: BaseMiddleware.Request,
-  ): Promise<BaseMiddleware.Response> {
+  public async perform(request: Request): Promise<Response> {
     try {
       const response = await this.handle(request)
 
@@ -32,14 +14,14 @@ export abstract class BaseMiddleware {
     }
   }
 
-  private response(statusCode: number, body: any): BaseMiddleware.Response {
+  private response(statusCode: number, body: any): Response {
     return { statusCode, body }
   }
 
-  public errorResponse(
+  protected errorResponse(
     statusCode: number,
     error: BaseError,
-  ): BaseMiddleware.Response {
+  ): Response {
     return this.response(statusCode, {
       code: error.code,
       message: error.message,
@@ -48,27 +30,27 @@ export abstract class BaseMiddleware {
     })
   }
 
-  public ok(data: any) {
+  protected ok<T>(data: T) {
     return this.response(200, data)
   }
 
-  public badRequest(error: BaseError) {
+  protected badRequest(error: BaseError) {
     return this.errorResponse(400, error)
   }
 
-  public unauthorized(error: BaseError) {
+  protected unauthorized(error: BaseError) {
     return this.errorResponse(401, error)
   }
 
-  public forbidden(error: BaseError) {
+  protected forbidden(error: BaseError) {
     return this.errorResponse(403, error)
   }
 
-  public notFound(error: BaseError) {
+  protected notFound(error: BaseError) {
     return this.errorResponse(404, error)
   }
 
-  public fail(error: Error) {
+  protected fail(error: Error) {
     return this.errorResponse(500, new InternalServerError(error))
   }
 }

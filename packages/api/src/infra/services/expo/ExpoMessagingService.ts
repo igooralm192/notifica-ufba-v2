@@ -8,8 +8,10 @@ export class ExpoMessagingService implements ICreateMessagingService {
   async create(input: ICreateMessagingService.Input): Promise<void> {
     const { title, body, data, tokens } = input
 
+    if (tokens.length === 0) return
+
     const message: ExpoPushMessage = {
-      to: tokens || [],
+      to: tokens,
       title,
       body,
       data,

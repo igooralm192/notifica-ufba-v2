@@ -1,8 +1,15 @@
 import { AuthorizeUserMiddleware } from '@/application/middlewares'
-import { makeGetUserIdByTokenUseCase } from '@/main/factories/usecases'
+import {
+  makeGetUserByIdUseCase,
+  makeGetUserIdByTokenUseCase,
+} from '@/main/factories/usecases'
 
 export const makeAuthorizeUserMiddleware = () => {
-  const getUserIdByToken = makeGetUserIdByTokenUseCase()
+  const getUserIdByTokenUseCase = makeGetUserIdByTokenUseCase()
+  const getUserByIdUseCase = makeGetUserByIdUseCase()
 
-  return new AuthorizeUserMiddleware(getUserIdByToken)
+  return new AuthorizeUserMiddleware(
+    getUserIdByTokenUseCase,
+    getUserByIdUseCase,
+  )
 }

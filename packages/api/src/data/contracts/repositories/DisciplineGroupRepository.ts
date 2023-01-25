@@ -1,5 +1,5 @@
+import { ITeacherRepositoryListInput } from '@/data/contracts'
 import { IDisciplineGroup } from '@shared/entities'
-import { ITeacherRepositoryListInput } from './DisciplineRepository'
 
 export type IDisciplineGroupRepositoryListInput = {
   where?: {

@@ -7,6 +7,9 @@ export class ExpressMiddlewareAdapter {
     return async (request: Request, response: Response, next: NextFunction) => {
       const middlewareResponse = await middleware.perform({
         body: request.body,
+        query: request.query,
+        params: request.params,
+        context: request.context,
         headers: request.headers,
       })
 

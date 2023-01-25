@@ -1,6 +1,5 @@
 import {
   DisciplineGroupDoesNotExistError,
-  PermissionDeniedError,
   UserDoesNotExistError,
 } from '@/domain/errors'
 import { ICreateDisciplineGroupPostUseCase } from '@/domain/usecases'
@@ -65,8 +64,6 @@ export class CreateDisciplineGroupPostController extends BaseController {
       case DisciplineGroupDoesNotExistError:
       case UserDoesNotExistError:
         return this.notFound(result.value)
-      case PermissionDeniedError:
-        return this.forbidden(result.value)
       default:
         return this.fail(result.value)
     }

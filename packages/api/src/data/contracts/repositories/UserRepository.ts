@@ -1,5 +1,14 @@
 import { IUserType, IUser } from '@shared/entities'
 
+export type IUserRepositoryListInput = {
+  where?: any
+  take?: number
+  skip?: number
+  select?: {
+    [key in keyof IUser]?: boolean
+  }
+}
+
 export namespace IUserRepository {
   export namespace Create {
     export type Input = {

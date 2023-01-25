@@ -2,7 +2,6 @@ import { Either, left, right } from '@shared/utils'
 
 import {
   DisciplineGroupDoesNotExistError,
-  PermissionDeniedError,
   UserDoesNotExistError,
 } from '@/domain/errors'
 import { ICreateDisciplineGroupUseCase } from '@/domain/usecases'
@@ -32,8 +31,6 @@ export class CreateDisciplineGroupUseCase
     if (!user) {
       return left(new UserDoesNotExistError())
     }
-
-    if (user.type !== 'TEACHER') return left(new PermissionDeniedError())
 
     const discipline = await this.findOneDisciplineRepository.findOne({
       where: { id: disciplineId },
