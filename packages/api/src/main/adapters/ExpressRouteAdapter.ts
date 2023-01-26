@@ -5,7 +5,7 @@ import { Request, Response } from 'express'
 export class ExpressRouteAdapter {
   static adapt(controller: BaseController) {
     return async (request: Request, response: Response) => {
-      console.log(`${request.method} ${request.url}`)
+      console.log(`${request.method} ${request.originalUrl}`)
 
       const controllerResponse = await controller.perform({
         body: request.body,
