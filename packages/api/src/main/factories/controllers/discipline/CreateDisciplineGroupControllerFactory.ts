@@ -1,4 +1,4 @@
-import { CreateDisciplineGroupController } from "@/application/controllers/discipline/create-discipline-group"
+import { CreateDisciplineGroupController } from "@/application/controllers/discipline"
 import { makeCreateDisciplineGroupUseCase } from "@/main/factories/usecases"
 import { makeCreateDisciplineGroupValidation } from "@/main/factories/validation"
 
