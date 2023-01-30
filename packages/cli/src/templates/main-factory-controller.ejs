@@ -1,0 +1,13 @@
+import { <%= props.featureNameInPascal %>Controller } from '@/application/controllers/<%= props.featureModel %>'
+import { make<%= props.featureNameInPascal %>UseCase } from '@/main/factories/usecases'
+import { make<%= props.featureNameInPascal %>Validation } from '@/main/factories/validation'
+
+export const make<%= props.featureNameInPascal %>Controller = () => {
+  const <%= props.featureNameInCamel %>Validation = make<%= props.featureNameInPascal %>Validation()
+  const <%= props.featureNameInCamel %>UseCase = make<%= props.featureNameInPascal %>UseCase()
+
+  return new <%= props.featureNameInPascal %>Controller(
+    <%= props.featureNameInCamel %>Validation,
+    <%= props.featureNameInCamel %>UseCase,
+  )
+}

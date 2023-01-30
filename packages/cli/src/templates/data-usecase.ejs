@@ -1,0 +1,15 @@
+import { Either, left, right } from '@shared/utils'
+import { BaseError } from '@/domain/helpers'
+import { I<%= props.featureNameInPascal %>UseCase } from '@/domain/usecases'
+
+export class <%= props.featureNameInPascal %>UseCase implements I<%= props.featureNameInPascal %>UseCase {
+  constructor() {}
+
+  async <%= props.featureNameInCamel %>(
+    input: I<%= props.featureNameInPascal %>UseCase.Input
+  ): Promise<
+    Either<BaseError, I<%= props.featureNameInPascal %>UseCase.Output>
+  > {
+    
+  }
+}

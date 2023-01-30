@@ -1,0 +1,13 @@
+import { ExpressMiddlewareAdapter, ExpressRouteAdapter } from '@/main/adapters'
+import { make<%= props.featureNameInPascal %>Controller } from '@/main/factories/controllers'
+import { makeAuthorizeUserMiddleware } from '@/main/factories/middlewares'
+
+import { Router } from 'express'
+
+export const make<%= props.featureNameInPascal %>Route = (router: Router) => {
+  router.patch(
+    '/', // TODO: Set route path
+    ExpressMiddlewareAdapter.adapt(makeAuthorizeUserMiddleware()),
+    ExpressRouteAdapter.adapt(make<%= props.featureNameInPascal %>Controller()),
+  )
+}

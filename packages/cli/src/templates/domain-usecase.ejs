@@ -1,0 +1,14 @@
+import { BaseError } from '@/domain/helpers'
+import { Either } from '@shared/utils'
+
+export namespace I<%= props.featureNameInPascal %>UseCase {
+  export type Input = {}
+
+  export type Output = {}
+}
+
+export interface I<%= props.featureNameInPascal %>UseCase {
+  <%= props.featureNameInCamel %>: (
+    input: I<%= props.featureNameInPascal %>UseCase.Input,
+  ) => Promise<Either<BaseError, I<%= props.featureNameInPascal %>UseCase.Output>>
+}

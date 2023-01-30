@@ -1,0 +1,39 @@
+import { I<%= props.featureNameInPascal %>UseCase } from '@/domain/usecases'
+import { BaseController } from '@/application/helpers'
+import { IValidation } from '@/validation/protocols'
+
+export namespace I<%= props.featureNameInPascal %>Controller {
+  export type Body = I<%= props.featureNameInPascal %>UseCase.Input
+
+  export type Request = BaseController.Request<Body>
+}
+
+export class <%= props.featureNameInPascal %>Controller extends BaseController {
+  constructor(
+    private readonly validation: IValidation,
+    private readonly <%= props.featureNameInCamel %>UseCase: I<%= props.featureNameInPascal %>UseCase,
+  ) {
+    super()
+  }
+
+  async handle(
+    request: I<%= props.featureNameInPascal %>Controller.Request,
+  ): Promise<BaseController.Response> {
+    const validationError = this.validation.validate(request.body)
+
+    if (validationError) {
+      return this.badRequest(validationError)
+    }
+
+    const result = await this.<%= props.featureNameInCamel %>UseCase.<%= props.featureNameInCamel %>({})
+
+    if (result.isRight()) {
+      return this.ok(result.value)
+    }
+
+    switch (result.value.constructor) {
+      default:
+        return this.fail(result.value)
+    }
+  }
+}

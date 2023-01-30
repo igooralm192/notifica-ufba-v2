@@ -1,0 +1,9 @@
+import { JoiValidation } from '@/infra/validation/joi'
+
+import Joi from 'joi'
+
+export const make<%= props.featureNameInPascal %>Validation = () => {
+  return new JoiValidation(
+    Joi.object({}),
+  )
+}
