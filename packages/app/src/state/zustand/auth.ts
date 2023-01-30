@@ -1,5 +1,5 @@
 import { AuthState } from '@/store/auth/types'
-import create from 'zustand'
+import { create } from 'zustand'
 
 export interface IAuthStore {
   token?: Nullable<string>
