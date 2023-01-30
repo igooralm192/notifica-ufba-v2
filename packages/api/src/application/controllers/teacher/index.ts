@@ -1,1 +1,1 @@
-export * from './patch-my-teacher'
+export * from './patch-my-teacher/PatchMyTeacherController'

@@ -1,2 +1,2 @@
-export * from './create-discipline-group'
-export * from './read-disciplines'
+export * from './create-discipline-group/CreateDisciplineGroupController'
+export * from './read-disciplines/ReadDisciplinesController'

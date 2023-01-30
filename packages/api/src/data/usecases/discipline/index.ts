@@ -1,2 +1,2 @@
-export * from './create-discipline-group'
-export * from './read-disciplines'
+export * from './create-discipline-group/CreateDisciplineGroupUseCase'
+export * from './read-disciplines/ReadDisciplinesUseCase'

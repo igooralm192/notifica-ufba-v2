@@ -1,2 +1,2 @@
-export * from './create-student'
-export * from './patch-my-student'
+export * from './create-student/CreateStudentController'
+export * from './patch-my-student/PatchMyStudentController'

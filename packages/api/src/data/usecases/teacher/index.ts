@@ -1,1 +1,1 @@
-export * from './update-teacher'
+export * from './update-teacher/UpdateTeacherUseCase'
