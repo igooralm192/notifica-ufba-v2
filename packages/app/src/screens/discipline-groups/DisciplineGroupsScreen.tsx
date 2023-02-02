@@ -22,6 +22,8 @@ import Animated, {
   FadeIn,
   FadeOut,
   useAnimatedProps,
+  useSharedValue,
+  withSpring,
 } from 'react-native-reanimated'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
@@ -57,6 +59,8 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
   const tabBarHeight = useTabBarHeight()
   const { theme } = useTheme()
 
+  const iconSize = useSharedValue(20)
+
   const [searchOpen, setSearchOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -68,7 +72,7 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
   const showSearch = () => setSearchOpen(true)
   const hideSearch = () => setSearchOpen(false)
 
-  useStatusBar(Platform.OS === 'ios' ? 'light' : 'primary')
+  useStatusBar('primary')
 
   const teacherActions = [
     {
@@ -94,6 +98,7 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
 
   const searchButtonIconProps = useAnimatedProps(() => {
     return {
+      fontSize: withSpring(!searchOpen ? 24 : 20),
       color: withTiming(!searchOpen ? theme.colors.white : theme.colors.black, {
         duration: 300,
       }),
@@ -114,14 +119,18 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
 
   return (
     <Container>
-      <View
+      <Animated.View
         style={{
-          minHeight: insets.top + 80,
-          paddingTop: insets.top + 16,
+          // minHeight: insets.top + 84,
+          paddingTop: insets.top + 8,
+          paddingBottom: 16,
+          paddingHorizontal: 16,
           flexDirection: 'row',
           alignItems: 'flex-start',
           justifyContent: 'flex-end',
+          backgroundColor: theme.colors.primary,
         }}
+        layout={Layout.mass(0.3).springify()}
       >
         {!searchOpen && (
           <Animated.View
@@ -134,7 +143,7 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
             }}
           >
             <Title>Suas turmas</Title>
-            <Subtitle>Visualize e busque suas turmas.</Subtitle>
+            <Subtitle>Busque e visualize suas turmas.</Subtitle>
           </Animated.View>
         )}
 
@@ -164,7 +173,6 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
               style={{ alignSelf: 'center' }}
               animatedProps={searchButtonIconProps}
               name="search"
-              size={20}
             />
           </HeaderButton>
 
@@ -188,6 +196,7 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
                   height: 40,
                   justifyContent: 'center',
                   marginLeft: 8,
+                  backgroundColor: theme.colors.white,
                 },
               ]}
               onPress={hideSearch}
@@ -196,7 +205,7 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
             </HeaderButton>
           </Animated.View>
         )}
-      </View>
+      </Animated.View>
 
       <ListContainer>
         <Animated.FlatList
@@ -244,6 +253,7 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
               color={theme.colors.primary}
               title={action.title}
               onPress={action.onPress}
+              titleStyle={{ overflow: 'hidden' }}
             />
           ))}
         </SpeedDial>
