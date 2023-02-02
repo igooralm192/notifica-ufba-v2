@@ -4,6 +4,7 @@ import Routes from '@/routes'
 import React from 'react'
 import * as Sentry from 'sentry-expo'
 import * as SentryNative from '@sentry/react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 Sentry.init({
   dsn: 'https://f1c9e1659ccd415eb67af0751dc68303@o4504024240029696.ingest.sentry.io/4504024240881664',
@@ -13,9 +14,11 @@ Sentry.init({
 
 const App: React.FC = () => {
   return (
-    <AllProviders>
-      <Routes />
-    </AllProviders>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <AllProviders>
+        <Routes />
+      </AllProviders>
+    </GestureHandlerRootView>
   )
 }
 

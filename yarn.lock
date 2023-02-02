@@ -1951,6 +1951,21 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
+"@expo-google-fonts/inter@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@expo-google-fonts/inter/-/inter-0.2.2.tgz#bd5624be6c92e7621aa9ddb5bd72757604729121"
+  integrity sha512-dU6mSczI2xkRZbUhQQ5VB+D4AqLOF8ufCIfA1iBjrPZ/Qnka88E5Ez2Mvm41exdKR76norVvYD5GJIQYEEoO/Q==
+
+"@expo-google-fonts/montserrat@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@expo-google-fonts/montserrat/-/montserrat-0.2.2.tgz#1c2522b6fcacf7a3b561db2f3fd7a90a52613db1"
+  integrity sha512-kpK++6mnyPPNVuZQ5ScU/YmvNsbDQGNgxwPgkmAKFrctAhfwg4KxotmmuNnn2ZaKLPtGYjP8/M8JIO3/tAm9ag==
+
+"@expo-google-fonts/poppins@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@expo-google-fonts/poppins/-/poppins-0.2.2.tgz#d2a343fa69400ffbaf61ae97162791a59e215678"
+  integrity sha512-x0SzC8nWTC2pInIcBDiAuMJxhoglwqCGJYMM8ylI8HKDqBxMrfRTripB3xMGo6UtzROTcL+OX1w9nEcM5FK0PQ==
+
 "@expo-google-fonts/quicksand@^0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@expo-google-fonts/quicksand/-/quicksand-0.2.2.tgz#44f9ebd4f6d256dd6413f95d4e2df6200016e57c"
@@ -4375,6 +4390,11 @@
   dependencies:
     "@types/react" "*"
     hoist-non-react-statics "^3.3.0"
+
+"@types/invariant@^2.2.35":
+  version "2.2.35"
+  resolved "https://registry.yarnpkg.com/@types/invariant/-/invariant-2.2.35.tgz#cd3ebf581a6557452735688d8daba6cf0bd5a3be"
+  integrity sha512-DxX1V9P8zdJPYQat1gHyY0xj3efl8gnMVjiM9iCY6y27lj+PoQWkgjt8jDqmovPqULkKVpKRg8J36iQiA+EtEg==
 
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0", "@types/istanbul-lib-coverage@^2.0.1":
   version "2.0.4"
@@ -13476,14 +13496,14 @@ react-native-ratings@^8.1.0:
   dependencies:
     lodash "^4.17.15"
 
-react-native-reanimated@^2.14.4:
-  version "2.14.4"
-  resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-2.14.4.tgz#3fa3da4e7b99f5dfb28f86bcf24d9d1024d38836"
-  integrity sha512-DquSbl7P8j4SAmc+kRdd75Ianm8G+IYQ9T4AQ6lrpLVeDkhZmjWI0wkutKWnp6L7c5XNVUrFDUf69dwETLCItQ==
+react-native-reanimated@~2.8.0:
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-2.8.0.tgz#93c06ca84d91fb3865110b0857c49a24e316130e"
+  integrity sha512-kJvf/UWLBMaGCs9X66MKq5zdFMgwx8D0nHnolbHR7s8ZnbLdb7TlQ/yuzIXqn/9wABfnwtNRI3CyaP1aHWMmZg==
   dependencies:
     "@babel/plugin-transform-object-assign" "^7.16.7"
     "@babel/preset-typescript" "^7.16.7"
-    convert-source-map "^1.7.0"
+    "@types/invariant" "^2.2.35"
     invariant "^2.2.4"
     lodash.isequal "^4.5.0"
     setimmediate "^1.0.5"

@@ -1,8 +1,8 @@
 import { Header, HeaderProps } from '@/components/Header'
 
-import React, { PropsWithChildren } from 'react'
+import React from 'react'
 
-export interface LayoutProps extends PropsWithChildren {
+export interface LayoutProps {
   headerProps: HeaderProps
 }
 
