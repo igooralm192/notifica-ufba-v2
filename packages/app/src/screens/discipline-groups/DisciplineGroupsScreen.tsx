@@ -5,19 +5,42 @@ import { useStatusBar } from '@/contexts/status-bar'
 import { useNavigation } from '@/helpers'
 import { useTabBarHeight } from '@/hooks'
 
-import { SpeedDial, useTheme } from '@rneui/themed'
-import React from 'react'
-import { FlatList, Platform, RefreshControl } from 'react-native'
+import { Icon, SpeedDial, useTheme } from '@rneui/themed'
+import React, { useEffect, useRef, useState } from 'react'
+import {
+  Keyboard,
+  Platform,
+  RefreshControl,
+  TextInput,
+  View,
+} from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import Animated, {
+  useAnimatedStyle,
+  Layout,
+  withTiming,
+  FadeIn,
+  FadeOut,
+  useAnimatedProps,
+} from 'react-native-reanimated'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { DisciplineGroupListItem } from './DisciplineGroupListItem'
 import {
   useDisciplineGroupsPresenter,
   withDisciplineGroupsPresenter,
 } from './DisciplineGroupsPresenter'
-import { Container } from './DisciplineGroupsStyles'
+import {
+  Container,
+  Title,
+  Subtitle,
+  HeaderButton,
+  ListContainer,
+} from './DisciplineGroupsStyles'
 
 export interface DisciplineGroupsScreenProps {}
+
+const AnimatedIcon = Animated.createAnimatedComponent(MaterialIcon)
 
 const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
   const {
@@ -28,18 +51,24 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
     onRefresh,
   } = useDisciplineGroupsPresenter()
 
-  const { theme } = useTheme()
+  const { user } = useMe()
   const navigation = useNavigation()
   const insets = useSafeAreaInsets()
   const tabBarHeight = useTabBarHeight()
-  const { user } = useMe()
+  const { theme } = useTheme()
 
-  const [open, setOpen] = React.useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
-  const showMenu = () => setOpen(true)
-  const hideMenu = () => setOpen(false)
+  const searchInputRef = useRef() as React.MutableRefObject<TextInput | null>
 
-  useStatusBar('primary')
+  const showMenu = () => setMenuOpen(true)
+  const hideMenu = () => setMenuOpen(false)
+
+  const showSearch = () => setSearchOpen(true)
+  const hideSearch = () => setSearchOpen(false)
+
+  useStatusBar(Platform.OS === 'ios' ? 'light' : 'primary')
 
   const teacherActions = [
     {
@@ -52,36 +81,153 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
     },
   ]
 
-  const actions = user?.type === 'TEACHER' ? teacherActions : []
+  const menuActions = user?.type === 'TEACHER' ? teacherActions : []
+
+  const searchButtonStyles = useAnimatedStyle(() => {
+    return {
+      backgroundColor: withTiming(
+        !searchOpen ? theme.colors.primary : theme.colors.white,
+        { duration: 300 },
+      ),
+    }
+  })
+
+  const searchButtonIconProps = useAnimatedProps(() => {
+    return {
+      color: withTiming(!searchOpen ? theme.colors.white : theme.colors.black, {
+        duration: 300,
+      }),
+    }
+  })
+
+  useEffect(() => {
+    if (!searchInputRef?.current?.isFocused?.() && searchOpen) {
+      searchInputRef?.current?.focus()
+      return
+    }
+
+    if (searchInputRef?.current?.isFocused?.() && !searchOpen) {
+      Keyboard.dismiss()
+      return
+    }
+  }, [searchOpen])
 
   return (
-    <Container headerProps={{ title: 'Suas turmas', back: false }}>
-      <FlatList
-        data={disciplineGroups}
-        renderItem={({ item }) => (
-          <DisciplineGroupListItem disciplineGroup={item} />
-        )}
-        ItemSeparatorComponent={Spacer}
-        contentContainerStyle={{
-          padding: 16,
-          // Safe area bottom + safe area bottom tab padding + bottom tab height + list padding bottom
-          paddingBottom: insets.bottom + 20 + 70 + 16,
+    <Container>
+      <View
+        style={{
+          minHeight: insets.top + 80,
+          paddingTop: insets.top + 16,
+          flexDirection: 'row',
+          alignItems: 'flex-start',
+          justifyContent: 'flex-end',
         }}
-        onEndReached={onNextPage}
-        onEndReachedThreshold={0.15}
-        ListFooterComponent={isFetchingMore ? FooterLoading : undefined}
-        refreshControl={
-          <RefreshControl
-            refreshing={!isFetchingMore && isRefreshing}
-            onRefresh={onRefresh}
-          />
-        }
-        style={{ backgroundColor: theme.colors.grey1 }}
-      />
+      >
+        {!searchOpen && (
+          <Animated.View
+            entering={FadeIn.duration(500)}
+            exiting={FadeOut.duration(500)}
+            style={{
+              flexGrow: 1,
+              flexShrink: 0,
+              justifyContent: 'center',
+            }}
+          >
+            <Title>Suas turmas</Title>
+            <Subtitle>Visualize e busque suas turmas.</Subtitle>
+          </Animated.View>
+        )}
 
-      {actions.length > 0 && (
+        <Animated.View
+          layout={Layout.duration(500)}
+          style={{
+            height: 40,
+            flexDirection: 'row',
+            alignItems: 'center',
+            flexBasis: 40,
+            flexGrow: searchOpen ? 1 : 0,
+            flexShrink: 0,
+            backgroundColor: 'white',
+            borderRadius: 8,
+            overflow: 'hidden',
+          }}
+        >
+          <HeaderButton
+            style={[
+              { width: 40, height: 40, justifyContent: 'center' },
+              searchButtonStyles,
+            ]}
+            disabled={searchOpen}
+            onPress={showSearch}
+          >
+            <AnimatedIcon
+              style={{ alignSelf: 'center' }}
+              animatedProps={searchButtonIconProps}
+              name="search"
+              size={20}
+            />
+          </HeaderButton>
+
+          <TextInput
+            ref={searchInputRef}
+            placeholder="Digite o nome ou código da disciplina"
+            style={[{ flex: 1, fontSize: 14, paddingRight: 12 }]}
+          />
+        </Animated.View>
+
+        {searchOpen && (
+          <Animated.View
+            layout={Layout.duration(300)}
+            entering={FadeIn.duration(300).delay(500)}
+            exiting={FadeOut.duration(300)}
+          >
+            <HeaderButton
+              style={[
+                {
+                  width: 40,
+                  height: 40,
+                  justifyContent: 'center',
+                  marginLeft: 8,
+                },
+              ]}
+              onPress={hideSearch}
+            >
+              <Icon name="close" size={20} color="black" />
+            </HeaderButton>
+          </Animated.View>
+        )}
+      </View>
+
+      <ListContainer>
+        <Animated.FlatList
+          scrollEventThrottle={1}
+          onScrollBeginDrag={Keyboard.dismiss}
+          data={disciplineGroups}
+          renderItem={({ item }) => (
+            <DisciplineGroupListItem disciplineGroup={item} />
+          )}
+          ItemSeparatorComponent={Spacer}
+          contentContainerStyle={{
+            padding: 16,
+            // Safe area bottom + safe area bottom tab padding + bottom tab height + list padding bottom
+            paddingBottom: insets.bottom + 20 + 70 + 16,
+          }}
+          onEndReached={onNextPage}
+          onEndReachedThreshold={0.15}
+          ListFooterComponent={isFetchingMore ? FooterLoading : undefined}
+          refreshControl={
+            <RefreshControl
+              refreshing={!isFetchingMore && isRefreshing}
+              onRefresh={onRefresh}
+            />
+          }
+          showsVerticalScrollIndicator={false}
+        />
+      </ListContainer>
+
+      {menuActions.length > 0 && (
         <SpeedDial
-          isOpen={open}
+          isOpen={menuOpen}
           icon={{ name: 'menu', color: '#fff' }}
           openIcon={{ name: 'close', color: '#fff' }}
           onOpen={showMenu}
@@ -91,7 +237,7 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
             marginBottom: tabBarHeight + (Platform.OS === 'ios' ? 20 : 40),
           }}
         >
-          {actions.map(action => (
+          {menuActions.map(action => (
             <SpeedDial.Action
               key={action.title}
               icon={action.icon}

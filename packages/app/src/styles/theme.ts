@@ -7,7 +7,8 @@ export interface ITheme {
 
 const themeOptions = createTheme({
   lightColors: {
-    primary: '#43C651',
+    primary: '#71de7c',
+    secondary: '#1C2633',
     grey0: '#FAFAFA',
     grey1: '#F5F5F5',
     grey2: '#E9E9E9',
