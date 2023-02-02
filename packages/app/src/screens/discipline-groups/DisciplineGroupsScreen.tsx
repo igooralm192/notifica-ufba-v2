@@ -56,10 +56,7 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
   const { user } = useMe()
   const navigation = useNavigation()
   const insets = useSafeAreaInsets()
-  const tabBarHeight = useTabBarHeight()
   const { theme } = useTheme()
-
-  const iconSize = useSharedValue(20)
 
   const [searchOpen, setSearchOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -121,7 +118,6 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
     <Container>
       <Animated.View
         style={{
-          // minHeight: insets.top + 84,
           paddingTop: insets.top + 8,
           paddingBottom: 16,
           paddingHorizontal: 16,
@@ -216,11 +212,7 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
             <DisciplineGroupListItem disciplineGroup={item} />
           )}
           ItemSeparatorComponent={Spacer}
-          contentContainerStyle={{
-            padding: 16,
-            // Safe area bottom + safe area bottom tab padding + bottom tab height + list padding bottom
-            paddingBottom: insets.bottom + 20 + 70 + 16,
-          }}
+          contentContainerStyle={{ padding: 16 }}
           onEndReached={onNextPage}
           onEndReachedThreshold={0.15}
           ListFooterComponent={isFetchingMore ? FooterLoading : undefined}
@@ -242,9 +234,6 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
           onOpen={showMenu}
           onClose={hideMenu}
           color={theme.colors.primary}
-          containerStyle={{
-            marginBottom: tabBarHeight + (Platform.OS === 'ios' ? 20 : 40),
-          }}
         >
           {menuActions.map(action => (
             <SpeedDial.Action

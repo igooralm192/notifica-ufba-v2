@@ -16,9 +16,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 const BottomTab = createBottomTabNavigator<AppNavigation>()
 
 export const BottomTabsNavigator = () => {
-  const { theme } = useTheme()
-
   const { user } = useMe()
+  const { theme } = useTheme()
 
   const insets = useSafeAreaInsets()
 
@@ -26,28 +25,18 @@ export const BottomTabsNavigator = () => {
     <BottomTab.Navigator
       screenOptions={{
         headerShown: false,
-        // tabBarShowLabel: false,
         tabBarActiveTintColor: theme.colors.primary,
         tabBarStyle: {
-          position: 'absolute',
-          // top: 20,
-          bottom: insets.bottom + 20,
-          left: 20,
-          right: 20,
           elevation: 0,
-          borderRadius: 16,
+          backgroundColor: 'white',
           borderTopColor: '#F5F5F5',
-          borderColor: '#F5F5F5',
           borderTopWidth: 2,
-          borderWidth: 2,
-          height: 70,
-          paddingBottom: 0,
+          height: insets.bottom + 64,
         },
-        tabBarItemStyle: { padding: 12 },
-        tabBarLabelStyle: {
-          fontFamily: 'Quicksand_700Bold',
-          fontSize: 10,
+        tabBarItemStyle: {
+          padding: 12,
         },
+        tabBarShowLabel: false,
       }}
     >
       <BottomTab.Screen
