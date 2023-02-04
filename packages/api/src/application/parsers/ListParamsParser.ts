@@ -60,9 +60,9 @@ export class ListParamsParser<T> implements IListParamsParser<T> {
           query[key],
           {},
         ) as IQueryFilterDTO<T[keyof T]>
-      } else if (query[key].includes('%')) {
-        const likeValue = query[key].match(/%([a-zA-Z\sÀ-ÿ]+)%/)
-        result[key] = { contains: likeValue[1] }
+      } else if (key.includes('_contains')) {
+        const field = key.replace('_contains', '')
+        result[field] = { contains: query[key] }
       } else {
         result[key] = { equals: query[key] }
       }

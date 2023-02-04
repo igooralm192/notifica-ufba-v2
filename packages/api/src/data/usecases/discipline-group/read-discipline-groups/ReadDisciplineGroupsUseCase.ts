@@ -32,7 +32,7 @@ export class ReadDisciplineGroupsUseCase implements IReadDisciplineGroupsUseCase
         },
       }),
       this.countDisciplineGroupRepository.count({
-        where: { studentIds, teacherId },
+        where: { studentIds, teacherId, OR },
       }),
     ])
 
