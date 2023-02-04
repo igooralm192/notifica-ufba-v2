@@ -60,7 +60,7 @@ export const DisciplineGroupsPresenter: React.FC = ({ children }) => {
     teacherId: user?.teacher?.id,
   })
 
-  const dSearchText = useDebounce(filter.search ?? '', 2000)
+  const dSearchText = useDebounce(filter.search ?? '', 300)
 
   const {
     isLoading,
