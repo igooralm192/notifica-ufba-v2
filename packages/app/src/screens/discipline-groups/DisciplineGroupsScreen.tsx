@@ -3,17 +3,10 @@ import { Spacer } from '@/components/Spacer'
 import { useMe } from '@/contexts/me'
 import { useStatusBar } from '@/contexts/status-bar'
 import { useNavigation } from '@/helpers'
-import { useTabBarHeight } from '@/hooks'
 
 import { Icon, SpeedDial, useTheme } from '@rneui/themed'
-import React, { useEffect, useRef, useState } from 'react'
-import {
-  Keyboard,
-  Platform,
-  RefreshControl,
-  TextInput,
-  View,
-} from 'react-native'
+import React, { useEffect, useRef } from 'react'
+import { Keyboard, RefreshControl, TextInput } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Animated, {
   useAnimatedStyle,
@@ -22,8 +15,9 @@ import Animated, {
   FadeIn,
   FadeOut,
   useAnimatedProps,
-  useSharedValue,
   withSpring,
+  LightSpeedInLeft,
+  LightSpeedOutRight,
 } from 'react-native-reanimated'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
@@ -43,6 +37,7 @@ import {
 export interface DisciplineGroupsScreenProps {}
 
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialIcon)
+const AnimatedTextInput = Animated.createAnimatedComponent(TextInput)
 
 const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
   const {
@@ -51,6 +46,8 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
     disciplineGroups,
     onNextPage,
     onRefresh,
+    search,
+    menu,
   } = useDisciplineGroupsPresenter()
 
   const { user } = useMe()
@@ -58,36 +55,12 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
   const insets = useSafeAreaInsets()
   const { theme } = useTheme()
 
-  const [searchOpen, setSearchOpen] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
-
   const searchInputRef = useRef() as React.MutableRefObject<TextInput | null>
-
-  const showMenu = () => setMenuOpen(true)
-  const hideMenu = () => setMenuOpen(false)
-
-  const showSearch = () => setSearchOpen(true)
-  const hideSearch = () => setSearchOpen(false)
-
-  useStatusBar('primary')
-
-  const teacherActions = [
-    {
-      title: 'Criar turma',
-      icon: { name: 'add', color: '#fff' },
-      onPress: () => {
-        navigation.navigate('CreateGroupScreen', {})
-        hideMenu()
-      },
-    },
-  ]
-
-  const menuActions = user?.type === 'TEACHER' ? teacherActions : []
 
   const searchButtonStyles = useAnimatedStyle(() => {
     return {
       backgroundColor: withTiming(
-        !searchOpen ? theme.colors.primary : theme.colors.white,
+        !search.open ? theme.colors.primary : theme.colors.white,
         { duration: 300 },
       ),
     }
@@ -95,24 +68,42 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
 
   const searchButtonIconProps = useAnimatedProps(() => {
     return {
-      fontSize: withSpring(!searchOpen ? 24 : 20),
-      color: withTiming(!searchOpen ? theme.colors.white : theme.colors.black, {
-        duration: 300,
-      }),
+      fontSize: withSpring(!search.open ? 24 : 20),
+      color: withTiming(
+        !search.open ? theme.colors.white : theme.colors.black,
+        {
+          duration: 300,
+        },
+      ),
     }
   })
 
+  const teacherActions = [
+    {
+      title: 'Criar turma',
+      icon: { name: 'add', color: '#fff' },
+      onPress: () => {
+        navigation.navigate('CreateGroupScreen', {})
+        menu.hide()
+      },
+    },
+  ]
+
+  const menuActions = user?.type === 'TEACHER' ? teacherActions : []
+
   useEffect(() => {
-    if (!searchInputRef?.current?.isFocused?.() && searchOpen) {
+    if (!searchInputRef?.current?.isFocused?.() && search.open) {
       searchInputRef?.current?.focus()
       return
     }
 
-    if (searchInputRef?.current?.isFocused?.() && !searchOpen) {
+    if (searchInputRef?.current?.isFocused?.() && !search.open) {
       Keyboard.dismiss()
       return
     }
-  }, [searchOpen])
+  }, [search.open])
+
+  useStatusBar('primary')
 
   return (
     <Container>
@@ -128,7 +119,7 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
         }}
         layout={Layout.mass(0.3).springify()}
       >
-        {!searchOpen && (
+        {!search.open && (
           <Animated.View
             entering={FadeIn.duration(500)}
             exiting={FadeOut.duration(500)}
@@ -150,7 +141,7 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
             flexDirection: 'row',
             alignItems: 'center',
             flexBasis: 40,
-            flexGrow: searchOpen ? 1 : 0,
+            flexGrow: search.open ? 1 : 0,
             flexShrink: 0,
             backgroundColor: 'white',
             borderRadius: 8,
@@ -162,8 +153,8 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
               { width: 40, height: 40, justifyContent: 'center' },
               searchButtonStyles,
             ]}
-            disabled={searchOpen}
-            onPress={showSearch}
+            disabled={search.open}
+            onPress={search.show}
           >
             <AnimatedIcon
               style={{ alignSelf: 'center' }}
@@ -172,14 +163,29 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
             />
           </HeaderButton>
 
-          <TextInput
+          <AnimatedTextInput
             ref={searchInputRef}
+            style={[{ flex: 1, fontSize: 14 }]}
+            layout={Layout.mass(0.3).springify()}
             placeholder="Digite o nome ou código da disciplina"
-            style={[{ flex: 1, fontSize: 14, paddingRight: 12 }]}
+            value={search.text}
+            onChangeText={search.onChange}
           />
+
+          {search.text.length > 0 && (
+            <AnimatedIcon
+              style={{ marginHorizontal: 12 }}
+              entering={LightSpeedInLeft}
+              exiting={LightSpeedOutRight}
+              name="close"
+              size={14}
+              color={theme.colors.grey4}
+              onPress={() => search.onChange('')}
+            />
+          )}
         </Animated.View>
 
-        {searchOpen && (
+        {search.open && (
           <Animated.View
             layout={Layout.duration(300)}
             entering={FadeIn.duration(300).delay(500)}
@@ -195,7 +201,7 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
                   backgroundColor: theme.colors.white,
                 },
               ]}
-              onPress={hideSearch}
+              onPress={search.hide}
             >
               <Icon name="close" size={20} color="black" />
             </HeaderButton>
@@ -228,11 +234,11 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
 
       {menuActions.length > 0 && (
         <SpeedDial
-          isOpen={menuOpen}
+          isOpen={menu.open}
           icon={{ name: 'menu', color: '#fff' }}
           openIcon={{ name: 'close', color: '#fff' }}
-          onOpen={showMenu}
-          onClose={hideMenu}
+          onOpen={menu.show}
+          onClose={menu.hide}
           color={theme.colors.primary}
         >
           {menuActions.map(action => (

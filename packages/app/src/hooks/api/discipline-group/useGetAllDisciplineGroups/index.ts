@@ -24,6 +24,7 @@ export const useGetAllDisciplineGroups = (
         query: {
           studentId: pageParam.studentId,
           teacherId: pageParam.teacherId,
+          search: pageParam.search,
         },
         page: pageParam.page,
         limit: pageParam.limit,

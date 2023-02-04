@@ -43,7 +43,9 @@ export const getDisciplineGroups = async ({
 }: IGetDisciplineGroupsEndpoint.Request): Promise<IGetDisciplineGroupsEndpoint.Response> => {
   const response = await api.get('/discipline-groups', {
     params: {
-      studentIds_has: query?.studentId || undefined,
+      'or[0][discipline][code_contains]': query?.search,
+      'or[1][discipline][name_contains]': query?.search,
+      'studentIds[]': query?.studentId || undefined,
       teacherId: query?.teacherId,
       page,
       limit,
