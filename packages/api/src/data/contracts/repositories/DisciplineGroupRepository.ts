@@ -1,13 +1,9 @@
 import { ITeacherRepositoryListInput } from '@/data/contracts'
+import { IQueryFilterDTO } from '@/domain/dtos'
 import { IDisciplineGroup } from '@shared/entities'
 
 export type IDisciplineGroupRepositoryListInput = {
-  where?: {
-    studentIds?: {
-      equals?: string[]
-      has?: string
-    }
-  }
+  where?: IQueryFilterDTO<IDisciplineGroup>
   take?: number
   skip?: number
   select?: {
@@ -117,6 +113,3 @@ export interface ICreateDisciplineGroupRepository {
     body: ICreateDisciplineGroupRepository.Body,
   ): Promise<ICreateDisciplineGroupRepository.Output>
 }
-
-
-

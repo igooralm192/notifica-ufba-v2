@@ -7,6 +7,10 @@ export type IDisciplineRepositoryListInput = {
       contains?: string
       mode?: 'default' | 'insensitive'
     }
+    name?: {
+      contains?: string
+      mode?: 'default' | 'insensitive'
+    }
   }
   take?: number
   skip?: number

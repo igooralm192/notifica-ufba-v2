@@ -26,10 +26,11 @@ export class ReadDisciplineGroupsController extends BaseController {
       return this.forbidden(new MissingParamsError())
     }
 
-    const listParams = this.listParamsParser.parse(request.query)
+    const { filter, paginate } = this.listParamsParser.parse(request.query)
 
     const result = await this.readDisciplineGroupsUseCase.run({
-      listInput: listParams,
+      where: filter,
+      paginate,
     })
 
     if (result.isLeft()) {

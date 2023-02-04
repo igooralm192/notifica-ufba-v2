@@ -1,16 +1,12 @@
 import { IDisciplineGroup } from '@shared/entities'
-import { BaseError } from '@/domain/helpers'
 import { Either, UseCase } from '@shared/utils'
-import { IQueryPaginateDTO } from '@/domain/dtos'
+import { IQueryFilterDTO, IQueryPaginateDTO } from '@/domain/dtos'
+import { BaseError } from '@/domain/helpers'
 
 export namespace IReadDisciplineGroupsUseCase {
   export type Input = {
-    listInput: {
-      filter?: {
-        studentIds?: { has?: string }
-      }
-      paginate?: IQueryPaginateDTO
-    }
+    where: IQueryFilterDTO<IDisciplineGroup>
+    paginate?: IQueryPaginateDTO
   }
 
   export type Output = {

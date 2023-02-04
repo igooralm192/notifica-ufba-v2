@@ -1,4 +1,5 @@
 import { IDisciplineGroup } from '@shared/entities'
+import { IQueryFilterDTO } from '@/domain/dtos'
 import {
   ICountDisciplineGroupRepository,
   ICreateDisciplineGroupRepository,
@@ -10,7 +11,7 @@ import {
 } from '@/data/contracts'
 import { PrismaRepository } from '@/infra/database/prisma/helpers'
 
-import { DisciplineGroup } from '@prisma/client'
+import { DisciplineGroup, Prisma } from '@prisma/client'
 
 export class PrismaDisciplineGroupRepository
   extends PrismaRepository
@@ -48,7 +49,9 @@ export class PrismaDisciplineGroupRepository
   }
 
   async count({ where }: IDisciplineGroupRepositoryListInput): Promise<number> {
-    return this.client.disciplineGroup.count({ where })
+    return this.client.disciplineGroup.count({
+      where: this.parseWhere(where),
+    })
   }
 
   async findAll({
@@ -61,7 +64,7 @@ export class PrismaDisciplineGroupRepository
     const disciplineGroups = await this.client.disciplineGroup.findMany({
       take,
       skip: skip * take,
-      where,
+      where: this.parseWhere(where),
       include,
       orderBy,
     })
@@ -122,6 +125,38 @@ export class PrismaDisciplineGroupRepository
       ...disciplineGroup,
       teacherId: disciplineGroup.teacherId ?? undefined,
       disciplineId: disciplineGroup.disciplineId ?? undefined,
+    }
+  }
+
+  private parseWhere(
+    query: IQueryFilterDTO<IDisciplineGroup>,
+  ): Prisma.DisciplineGroupWhereInput {
+    return {
+      OR: query.OR ? query.OR?.map(qf => this.parseWhere(qf)): undefined,
+      discipline: query.discipline
+        ? {
+            code: query.discipline?.code
+              ? {
+                  mode: 'insensitive',
+                  equals: query.discipline?.code?.equals,
+                  contains: query.discipline?.code?.contains,
+                }
+              : undefined,
+            name: query.discipline?.name
+              ? {
+                  mode: 'insensitive',
+                  equals: query.discipline?.name?.equals,
+                  contains: query.discipline?.name?.contains,
+                }
+              : undefined,
+          }
+        : undefined,
+      studentIds: query.studentIds
+        ? { hasEvery: query.studentIds?.in ?? [] }
+        : undefined,
+      teacherId: query.teacherId
+        ? { equals: query.teacherId?.equals }
+        : undefined,
     }
   }
 }
