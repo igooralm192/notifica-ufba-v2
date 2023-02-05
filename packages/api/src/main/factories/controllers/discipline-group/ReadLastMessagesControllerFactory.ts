@@ -4,10 +4,10 @@ import { makeReadLastMessagesUseCase } from '@/main/factories/usecases'
 
 export const makeReadLastMessagesController = () => {
   const listParamsParser = makeListParamsParser()
-  const readDisciplinesUseCase = makeReadLastMessagesUseCase()
+  const readLastMessagesUseCase = makeReadLastMessagesUseCase()
 
   return new ReadLastMessagesController(
     listParamsParser,
-    readDisciplinesUseCase,
+    readLastMessagesUseCase,
   )
 }

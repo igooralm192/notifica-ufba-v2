@@ -38,12 +38,12 @@ export class ReadLastMessagesUseCase implements IReadLastMessagesUseCase {
       this.findAllDisciplineGroupRepository.findAll({
         skip: paginate?.page,
         take: paginate?.limit,
-        where: { studentIds: { has: student.id } },
+        where: { studentIds: { in: [student.id] } },
         include: { discipline: true },
         orderBy: { discipline: { code: 'desc' } },
       }),
       this.countDisciplineGroupRepository.count({
-        where: { studentIds: { has: student.id } },
+        where: { studentIds: { in: [student.id] } },
       }),
     ])
 
@@ -54,7 +54,7 @@ export class ReadLastMessagesUseCase implements IReadLastMessagesUseCase {
           take: 1,
           orderBy: { sentAt: 'desc' },
         })
-        .then((messages) => {
+        .then(messages => {
           return <ILastMessageDTO>{
             disciplineGroupId: disciplineGroup.id,
             disciplineCode: disciplineGroup.discipline!.code,
