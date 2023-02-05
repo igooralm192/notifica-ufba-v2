@@ -113,3 +113,16 @@ export interface ICreateDisciplineGroupRepository {
     body: ICreateDisciplineGroupRepository.Body,
   ): Promise<ICreateDisciplineGroupRepository.Output>
 }
+
+export namespace IDeleteDisciplineGroupRepository {
+  export type Input = {
+    where: {
+      id?: string
+      code?: string
+    }
+  }
+}
+
+export interface IDeleteDisciplineGroupRepository {
+  delete(input: IDeleteDisciplineGroupRepository.Input): Promise<void>
+}

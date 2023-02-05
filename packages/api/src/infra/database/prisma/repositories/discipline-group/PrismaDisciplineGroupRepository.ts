@@ -3,6 +3,7 @@ import { IQueryFilterDTO } from '@/domain/dtos'
 import {
   ICountDisciplineGroupRepository,
   ICreateDisciplineGroupRepository,
+  IDeleteDisciplineGroupRepository,
   IDisciplineGroupRepositoryListInput,
   IFindAllDisciplineGroupRepository,
   IFindOneDisciplineGroupRepository,
@@ -118,6 +119,14 @@ export class PrismaDisciplineGroupRepository
     return this.parseDisciplineGroup(disciplineGroup)
   }
 
+  async delete({
+    where,
+  }: IDeleteDisciplineGroupRepository.Input): Promise<void> {
+    await this.client.disciplineGroup
+      .delete({ where: { id: where.id } })
+      .catch(() => null)
+  }
+
   private parseDisciplineGroup(
     disciplineGroup: DisciplineGroup,
   ): IDisciplineGroup {
@@ -132,7 +141,7 @@ export class PrismaDisciplineGroupRepository
     query: IQueryFilterDTO<IDisciplineGroup>,
   ): Prisma.DisciplineGroupWhereInput {
     return {
-      OR: query.OR ? query.OR?.map(qf => this.parseWhere(qf)): undefined,
+      OR: query.OR ? query.OR?.map(qf => this.parseWhere(qf)) : undefined,
       discipline: query.discipline
         ? {
             code: query.discipline?.code
