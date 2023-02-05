@@ -20,6 +20,7 @@ export const useDeleteDisciplineGroup =
         onSuccess: _ => {
           queryClient.invalidateQueries(['disciplineGroups'])
           queryClient.invalidateQueries(['disciplines'])
+          queryClient.invalidateQueries(['lastMessages'])
 
           Toast.show({
             type: 'success',
