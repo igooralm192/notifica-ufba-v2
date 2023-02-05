@@ -25,23 +25,26 @@ export const LoadingModal: React.FC<LoadingModalProps> = ({
       >
         <View
           style={{
-            width: 250,
-            height: 200,
+            width: 220,
             backgroundColor: 'white',
             borderRadius: 16,
             alignItems: 'center',
             justifyContent: 'center',
-            padding: 16,
+            paddingVertical: 36,
+            paddingHorizontal: 16
           }}
         >
+
           <Spinner />
 
           <Spacer />
 
           <Text
             style={{
-              fontSize: 16,
-              fontFamily: 'Quicksand_600SemiBold',
+              fontSize: 14,
+              fontFamily: 'Montserrat_600SemiBold',
+              marginTop: 8,
+              textAlign: 'center'
             }}
           >
             {description}
