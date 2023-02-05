@@ -115,3 +115,9 @@ export namespace ICreatePostEndpoint {
     content: string
   }
 }
+
+export namespace IDeleteDisciplineGroupEndpoint {
+  export type Params = {
+    disciplineGroupId: string
+  }
+}

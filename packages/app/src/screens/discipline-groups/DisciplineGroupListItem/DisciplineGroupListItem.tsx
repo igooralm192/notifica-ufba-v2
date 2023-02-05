@@ -1,12 +1,15 @@
-import { IDisciplineGroup } from '@shared/entities'
+import { IDisciplineGroup, IUser } from '@shared/entities'
 
 import { BottomSheet } from '@/components/BottomSheet'
+import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { LoadingModal } from '@/components/LoadingModal'
 import { Spacer } from '@/components/Spacer'
+import { useMe } from '@/contexts/me'
 import { useNavigation } from '@/helpers'
+import { useBoolean } from '@/hooks/common'
 
 import { Icon, ListItem } from '@rneui/themed'
-import React, { useState } from 'react'
+import React from 'react'
 
 import { useDisciplineGroupsPresenter } from '../DisciplineGroupsPresenter'
 import {
@@ -19,7 +22,6 @@ import {
   DisciplineName,
   DisciplineGroupTeacher,
 } from './DisciplineGroupListItemStyles'
-import { useMe } from '@/contexts/me'
 
 export interface DisciplineGroupListItemProps {
   disciplineGroup: IDisciplineGroup
@@ -28,20 +30,38 @@ export interface DisciplineGroupListItemProps {
 const DisciplineGroupListItem: React.FC<DisciplineGroupListItemProps> = ({
   disciplineGroup,
 }) => {
-  const { isUnsubscribing, unsubscribeStudent } = useDisciplineGroupsPresenter()
+  const { unsubscribeStudent, deleteDisciplineGroup } =
+    useDisciplineGroupsPresenter()
 
-  const navigation = useNavigation()
   const { user } = useMe()
+  const navigation = useNavigation()
 
-  const [visible, setVisible] = useState(false)
+  const bottomMenuVisible = useBoolean()
+  const unsubscribeConfirmVisible = useBoolean()
+  const deleteGroupConfirmVisible = useBoolean()
 
   const options = [
     {
       label: 'Remover turma',
-      onPress: () => unsubscribeStudent(disciplineGroup.id),
-      shouldShow: user?.type === 'STUDENT',
+      onPress: unsubscribeConfirmVisible.on,
+      filterUser: (user: Nullable<IUser>) => user?.type === 'STUDENT',
+    },
+    {
+      label: 'Excluir turma',
+      onPress: deleteGroupConfirmVisible.on,
+      filterUser: (user: Nullable<IUser>) => user?.type === 'TEACHER',
     },
   ]
+
+  const handleUnsubscribeStudent = () => {
+    unsubscribeConfirmVisible.off()
+    unsubscribeStudent.unsubscribe(disciplineGroup.id)
+  }
+
+  const handleDeleteDisciplineGroup = () => {
+    deleteGroupConfirmVisible.off()
+    deleteDisciplineGroup.delete(disciplineGroup.id)
+  }
 
   return (
     <Container
@@ -72,17 +92,20 @@ const DisciplineGroupListItem: React.FC<DisciplineGroupListItemProps> = ({
         <Icon
           style={{ padding: 16 }}
           name="more-vert"
-          onPress={() => setVisible(true)}
+          onPress={bottomMenuVisible.on}
         />
       </RightContainer>
 
-      <BottomSheet visible={visible} onHide={() => setVisible(false)}>
+      <BottomSheet
+        visible={bottomMenuVisible.value}
+        onHide={bottomMenuVisible.off}
+      >
         <DisciplineCode style={{ marginBottom: 16 }}>
           {disciplineGroup.discipline?.code} - {disciplineGroup.code}
         </DisciplineCode>
 
         {options
-          .filter(option => option.shouldShow)
+          .filter(option => option.filterUser(user))
           .map((option, i) => (
             <ListItem
               key={i}
@@ -101,12 +124,7 @@ const DisciplineGroupListItem: React.FC<DisciplineGroupListItemProps> = ({
                   alignItems: 'center',
                 }}
               >
-                <Icon
-                  name="delete-outline"
-                  color="red"
-                  size={22}
-                  onPress={() => setVisible(true)}
-                />
+                <Icon name="delete-outline" color="red" size={22} />
                 <ListItem.Title
                   style={{
                     justifyContent: 'center',
@@ -121,7 +139,7 @@ const DisciplineGroupListItem: React.FC<DisciplineGroupListItemProps> = ({
             </ListItem>
           ))}
 
-        <ListItem onPress={() => setVisible(false)}>
+        <ListItem onPress={bottomMenuVisible.off}>
           <ListItem.Content
             style={{
               flexDirection: 'row',
@@ -141,10 +159,31 @@ const DisciplineGroupListItem: React.FC<DisciplineGroupListItemProps> = ({
           </ListItem.Content>
         </ListItem>
 
+        <ConfirmationModal
+          visible={unsubscribeConfirmVisible.value}
+          title="Remover turma"
+          body="Você tem certeza que deseja se desinscrever dessa turma?"
+          onConfirm={handleUnsubscribeStudent}
+          onBack={unsubscribeConfirmVisible.off}
+        />
+
+        <ConfirmationModal
+          visible={deleteGroupConfirmVisible.value}
+          title="Excluir turma"
+          body="Você tem certeza que deseja excluir essa turma?"
+          onConfirm={handleDeleteDisciplineGroup}
+          onBack={deleteGroupConfirmVisible.off}
+        />
+
         <LoadingModal
-          visible={isUnsubscribing}
+          visible={unsubscribeStudent.loading}
           description="Desinscrevendo estudante..."
-        ></LoadingModal>
+        />
+
+        <LoadingModal
+          visible={deleteDisciplineGroup.loading}
+          description="Removendo turma..."
+        />
       </BottomSheet>
     </Container>
   )

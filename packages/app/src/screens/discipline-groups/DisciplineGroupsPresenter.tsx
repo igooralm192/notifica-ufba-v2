@@ -2,7 +2,11 @@ import { IDisciplineGroup } from '@shared/entities'
 
 import { FullLoading } from '@/components/FullLoading'
 import { useMe } from '@/contexts/me'
-import { useGetAllDisciplineGroups, useUnsubscribeStudent } from '@/hooks/api'
+import {
+  useDeleteDisciplineGroup,
+  useGetAllDisciplineGroups,
+  useUnsubscribeStudent,
+} from '@/hooks/api'
 import { useDebounce } from '@/hooks/common'
 import { IFilterParams } from '@/types/list'
 
@@ -11,11 +15,19 @@ import React, { useContext, useState } from 'react'
 export interface DisciplineGroupsPresenterContextData {
   isFetchingMore: boolean
   isRefreshing: boolean
-  isUnsubscribing: boolean
   disciplineGroups: IDisciplineGroup[]
-  unsubscribeStudent: (disciplineGroupId: string) => Promise<void>
   onNextPage: () => void
   onRefresh: () => void
+
+  deleteDisciplineGroup: {
+    loading: boolean
+    delete: (disciplineGroupId: string) => Promise<void>
+  }
+
+  unsubscribeStudent: {
+    loading: boolean
+    unsubscribe: (disciplineGroupId: string) => Promise<void>
+  }
 
   search: {
     open: boolean
@@ -33,8 +45,6 @@ export interface DisciplineGroupsPresenterContextData {
 }
 
 export interface IDisciplineGroupsFilterParams extends IFilterParams {
-  studentId?: string
-  teacherId?: string
   search?: string
 }
 
@@ -54,11 +64,8 @@ export const DisciplineGroupsPresenter: React.FC = ({ children }) => {
   const [searchOpen, setSearchOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
-  const [filter, setFilter] = useState<IDisciplineGroupsFilterParams>({
-    ...initialFilter,
-    studentId: user?.student?.id,
-    teacherId: user?.teacher?.id,
-  })
+  const [filter, setFilter] =
+    useState<IDisciplineGroupsFilterParams>(initialFilter)
 
   const dSearchText = useDebounce(filter.search ?? '', 300)
 
@@ -73,9 +80,12 @@ export const DisciplineGroupsPresenter: React.FC = ({ children }) => {
   } = useGetAllDisciplineGroups({
     ...filter,
     search: searchOpen ? dSearchText : undefined,
+    studentId: user?.student?.id,
+    teacherId: user?.teacher?.id,
   })
 
   const { isUnsubscribing, unsubscribe } = useUnsubscribeStudent()
+  const { isDeleting, delete: deleteGroup } = useDeleteDisciplineGroup()
 
   const showMenu = () => setMenuOpen(true)
   const hideMenu = () => setMenuOpen(false)
@@ -95,21 +105,33 @@ export const DisciplineGroupsPresenter: React.FC = ({ children }) => {
     await unsubscribe({ disciplineGroupId })
   }
 
+  const handleDeleteDisciplineGroup = async (disciplineGroupId: string) => {
+    await deleteGroup({ params: { disciplineGroupId } })
+  }
+
   const handleSearchChange = (text: string) => {
     setFilter({ ...filter, search: text })
   }
 
   if (isLoading) return <FullLoading />
+
   return (
     <DisciplineGroupsPresenterContext.Provider
       value={{
         isFetchingMore,
         isRefreshing,
-        isUnsubscribing,
         disciplineGroups,
-        unsubscribeStudent: handleUnsubscribeStudent,
         onNextPage: handleNextPage,
         onRefresh: handleRefresh,
+
+        deleteDisciplineGroup: {
+          loading: isDeleting,
+          delete: handleDeleteDisciplineGroup,
+        },
+        unsubscribeStudent: {
+          loading: isUnsubscribing,
+          unsubscribe: handleUnsubscribeStudent,
+        },
         search: {
           open: searchOpen,
           text: filter.search ?? '',

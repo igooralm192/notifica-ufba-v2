@@ -34,6 +34,7 @@ import {
   IGetMyLastMessagesEndpoint,
   ISubscribeStudentEndpoint,
   IUnsubscribeStudentEndpoint,
+  IDeleteDisciplineGroupEndpoint,
 } from './types'
 
 export const getDisciplineGroups = async ({
@@ -231,4 +232,10 @@ export const createPost = async (
   { content }: ICreatePostEndpoint.Body,
 ): Promise<void> => {
   await api.post(`/discipline-groups/${disciplineGroupId}/posts`, { content })
+}
+
+export const deleteDisciplineGroup = async (
+  { disciplineGroupId }: IDeleteDisciplineGroupEndpoint.Params,
+): Promise<void> => {
+  await api.delete(`/discipline-groups/${disciplineGroupId}`)
 }
