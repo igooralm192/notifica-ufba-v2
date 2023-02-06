@@ -9,7 +9,9 @@ export class PrismaDisciplineGroupPostRepository
   implements
     IDisciplineGroupPostRepository.Create,
     IDisciplineGroupPostRepository.Count,
-    IDisciplineGroupPostRepository.FindAll
+    IDisciplineGroupPostRepository.FindAll,
+    IDisciplineGroupPostRepository.FindOne,
+    IDisciplineGroupPostRepository.Delete
 {
   async create({
     title,
@@ -40,7 +42,7 @@ export class PrismaDisciplineGroupPostRepository
   async findAll(
     input: IDisciplineGroupPostRepository.FindAll.Input,
   ): Promise<IDisciplineGroupPostRepository.FindAll.Output> {
-    const { take, skip, where, include, orderBy } = input
+    const { take = 10, skip = 0, where, include, orderBy } = input
 
     const disciplineGroupPosts = await this.client.disciplineGroupPost.findMany(
       {
@@ -53,6 +55,32 @@ export class PrismaDisciplineGroupPostRepository
     )
 
     return disciplineGroupPosts.map(this.parseDisciplineGroupPost)
+  }
+
+  async findOne({
+    where,
+  }: IDisciplineGroupPostRepository.FindOne.Input): Promise<IDisciplineGroupPost> {
+    const { id } = where
+
+    const disciplineGroupPost = await this.client.disciplineGroupPost.findFirst(
+      {
+        where: { id },
+      },
+    )
+
+    if (!disciplineGroupPost) return null
+
+    return this.parseDisciplineGroupPost(disciplineGroupPost)
+  }
+
+  async delete({
+    where,
+  }: IDisciplineGroupPostRepository.Delete.Input): Promise<void> {
+    const { id } = where
+
+    await this.client.disciplineGroupPost.delete({
+      where: { id },
+    })
   }
 
   private parseDisciplineGroupPost(

@@ -50,4 +50,30 @@ export namespace IDisciplineGroupPostRepository {
   export interface FindAll {
     findAll(input: FindAll.Input): Promise<FindAll.Output>
   }
+
+  export namespace FindOne {
+    export type Input = {
+      where: {
+        id?: string
+      }
+    }
+    export type Output = IDisciplineGroupPost | null
+  }
+
+  export interface FindOne {
+    findOne(input: FindOne.Input): Promise<FindOne.Output>
+  }
+
+  export namespace Delete {
+    export type Input = {
+      where: {
+        id?: string
+      }
+    }
+    export type Output = void
+  }
+
+  export interface Delete {
+    delete(input: Delete.Input): Promise<Delete.Output>
+  }
 }

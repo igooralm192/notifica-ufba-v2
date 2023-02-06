@@ -3,7 +3,9 @@ import { PrismaDisciplineGroupPostRepository } from '@/infra/database/prisma/rep
 
 type IDisciplineGroupPostRepository = IDisciplineGroupPostRepository.Create &
   IDisciplineGroupPostRepository.Count &
-  IDisciplineGroupPostRepository.FindAll
+  IDisciplineGroupPostRepository.FindAll &
+  IDisciplineGroupPostRepository.FindOne &
+  IDisciplineGroupPostRepository.Delete
 
 export const makeDisciplineGroupPostRepository =
   (): IDisciplineGroupPostRepository => {
