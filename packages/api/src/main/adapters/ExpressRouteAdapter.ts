@@ -12,6 +12,13 @@ export class ExpressRouteAdapter {
         query: request.query,
         params: request.params,
         context: request.context,
+        file: request.file
+          ? {
+              originalName: request.file.originalname,
+              buffer: request.file.buffer,
+              type: request.file.mimetype,
+            }
+          : undefined,
       })
 
       if (controllerResponse.statusCode >= 400) {

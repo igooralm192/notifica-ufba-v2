@@ -11,3 +11,4 @@ export * from './repositories/UserRepository'
 
 export * from './services/EmailService'
 export * from './services/MessagingService'
+export * from './services/StorageService'

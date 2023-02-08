@@ -4,16 +4,18 @@ import { ITeacher } from './Teacher'
 export type IUserType = 'STUDENT' | 'TEACHER'
 
 export interface IUser {
-  id: string
-  name: string
-  email: string
-  password: string
-  type: IUserType
-  pushToken?: string
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  type: IUserType;
+  pushToken?: string;
 
-  teacher?: ITeacher
-  student?: IStudent
+  teacher?: ITeacher;
+  student?: IStudent;
 
-  createdAt: Date
-  updatedAt: Date
+  profilePictureUrl?: string; // Virtual value
+
+  createdAt: Date;
+  updatedAt: Date;
 }

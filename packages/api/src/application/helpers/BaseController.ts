@@ -7,11 +7,13 @@ export namespace BaseController {
     Query = any,
     Params = any,
     Context = { userId?: string, studentId?: string },
+    File = { originalName: string, buffer: Buffer, type: string },
   > = {
     body?: Body
     query?: Query
     params?: Params
     context?: Context
+    file?: File
   }
 
   export type Response = {

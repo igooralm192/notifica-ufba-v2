@@ -4,4 +4,5 @@ import serviceAccount from '../../../firebase-service-account.json'
 
 initializeApp({
   credential: cert(serviceAccount as ServiceAccount),
+  storageBucket: 'gs://notifica-ufba.appspot.com',
 })
