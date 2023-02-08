@@ -24,7 +24,7 @@ export const useDeleteDisciplineGroup =
 
           Toast.show({
             type: 'success',
-            text1: 'Postagem criada com sucesso!',
+            text1: 'Turma removida com sucesso!',
           })
         },
         onError: (error: BaseError) => {

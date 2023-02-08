@@ -49,7 +49,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           </BodyContainer>
 
           <ActionsContainer>
-            <NoButton title="Não" color="grey1" onPress={onBack} />
+            <NoButton title="Não" color="grey4" onPress={onBack} />
             <Spacer d="horizontal" s={4} />
             <YesButton title="Sim" color="error" onPress={onConfirm} />
           </ActionsContainer>

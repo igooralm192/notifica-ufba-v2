@@ -121,3 +121,10 @@ export namespace IDeleteDisciplineGroupEndpoint {
     disciplineGroupId: string
   }
 }
+
+export namespace IDeleteDisciplineGroupPostEndpoint {
+  export type Params = {
+    disciplineGroupId: string
+    disciplineGroupPostId: string
+  }
+}

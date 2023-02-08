@@ -2,24 +2,22 @@ import {Button,  Text } from '@rneui/themed'
 import styled from 'styled-components/native'
 
 export const Container = styled.View`
-  width: 250px;
+  width: 300px;
   background-color: white;
   border-radius: 16px;
-  padding: 8px 0;
+  padding: 4px 0;
 `
 
 export const CommonContainer = styled.View`
   padding: 8px 16px;
 `
 
-export const TitleContainer = styled(CommonContainer)`
-  
-`
+export const TitleContainer = styled(CommonContainer)``
 
 export const Title = styled(Text)`
   color: ${({ theme }) => theme.colors.black};
   font-family: 'Poppins_600SemiBold';
-  font-size: 16px;
+  font-size: 14px;
   margin-top: -4px;
   margin-bottom: -4px;
 `
@@ -51,8 +49,8 @@ export const ActionButton = styled(Button).attrs(() => {
     },
     buttonStyle: {
       borderRadius: 4,
-      padding: 6,
-      paddingHorizontal: 16
+      padding: 8,
+      paddingHorizontal: 20
     },
   }
 })``

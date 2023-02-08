@@ -24,7 +24,7 @@ const DisciplineGroupMuralTab: React.FC<DisciplineGroupMuralTabProps> = () => {
     disciplineGroupPosts,
     onNextPage,
     onRefresh,
-    navigateToCreatePost,
+    navigate
   } = useDisciplineGroupMuralPresenter()
 
   return (
@@ -55,7 +55,7 @@ const DisciplineGroupMuralTab: React.FC<DisciplineGroupMuralTabProps> = () => {
           icon={{ name: 'add', color: 'white' }}
           color={theme.colors.primary}
           style={{ position: 'absolute', bottom: 30, right: 24 }}
-          onPress={navigateToCreatePost}
+          onPress={navigate.toCreatePost}
         />
       )}
     </>
