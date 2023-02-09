@@ -3,6 +3,7 @@ import { IDisciplineGroupMessage } from '@shared/entities'
 import { db } from '@/config/firebase'
 import {
   DisciplineGroupMapper,
+  DisciplineGroupMemberMapper,
   DisciplineGroupMessageMapper,
   DisciplineGroupPostMapper,
   LastMessageMapper,
@@ -29,6 +30,7 @@ import {
   IGetDisciplineGroupEndpoint,
   IGetDisciplineGroupsEndpoint,
   IGetDisciplineGroupPostsEndpoint,
+  IGetDisciplineGroupMembersEndpoint,
   IGetDisciplineGroupMessagesEndpoint,
   IDisciplineGroupMessageListener,
   IGetMyLastMessagesEndpoint,
@@ -246,4 +248,24 @@ export const deleteDisciplineGroupPost = async ({
   disciplineGroupPostId
 }: IDeleteDisciplineGroupPostEndpoint.Params): Promise<void> => {
   await api.delete(`/discipline-groups/${disciplineGroupId}/posts/${disciplineGroupPostId}`)
+}
+
+export const getDisciplineGroupMembers = async (
+  disciplineGroupId: string,
+  { page, limit }: IGetDisciplineGroupMembersEndpoint.Request,
+): Promise<IGetDisciplineGroupMembersEndpoint.Response> => {
+  const response = await api.get(
+    `/discipline-groups/${disciplineGroupId}/members`,
+    {
+      params: {
+        page,
+        limit,
+      },
+    },
+  )
+
+  return {
+    results: DisciplineGroupMemberMapper.toDTOList(response.data.results),
+    total: response.data.total,
+  }
 }

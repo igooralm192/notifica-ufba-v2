@@ -4,8 +4,9 @@ import { useNavigation } from '@/helpers'
 import { Tab, TabView, useTheme } from '@rneui/themed'
 import React, { useState } from 'react'
 
-import { DisciplineGroupChatTab } from './DisciplineGroupChatTab'
 import { DisciplineGroupMuralTab } from './DisciplineGroupMuralTab'
+import { DisciplineGroupChatTab } from './DisciplineGroupChatTab'
+import { DisciplineGroupMembersTab } from './DisciplineGroupMembersTab'
 import {
   useDisciplineGroupTabsPresenter,
   withDisciplineGroupTabsPresenter,
@@ -64,6 +65,16 @@ const DisciplineGroupTabsScreen: React.FC = () => {
           titleStyle={{ fontSize: 12 }}
           icon={{ name: 'chat', type: 'material-community', color: 'white' }}
         />
+        <Tab.Item
+          containerStyle={{ backgroundColor: theme.colors.primary }}
+          title="Membros"
+          titleStyle={{ fontSize: 12 }}
+          icon={{
+            name: 'users',
+            type: 'font-awesome-5',
+            color: 'white',
+          }}
+        />
       </Tab>
 
       <TabView value={index} onChange={setIndex} animationType="spring">
@@ -72,6 +83,9 @@ const DisciplineGroupTabsScreen: React.FC = () => {
         </TabView.Item>
         <TabView.Item style={{ width: '100%' }}>
           <DisciplineGroupChatTab />
+        </TabView.Item>
+        <TabView.Item style={{ width: '100%' }}>
+          <DisciplineGroupMembersTab />
         </TabView.Item>
       </TabView>
     </Container>

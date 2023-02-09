@@ -1,1 +1,2 @@
-export * from './LastMessageDTO'
+export * from "./DisciplineGroupMemberDTO";
+export * from "./LastMessageDTO";

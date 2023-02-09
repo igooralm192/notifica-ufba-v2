@@ -1,5 +1,6 @@
 export * from './discipline/DisciplineMapper'
 export * from './discipline-group/DisciplineGroupMapper'
+export * from './discipline-group/DisciplineGroupMemberMapper'
 export * from './discipline-group/DisciplineGroupMessageMapper'
 export * from './discipline-group/DisciplineGroupPostMapper'
 export * from './discipline-group/LastMessageMapper'

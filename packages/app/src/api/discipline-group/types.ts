@@ -1,4 +1,4 @@
-import { ILastMessageDTO } from '@shared/dtos'
+import { IDisciplineGroupMemberDTO, ILastMessageDTO } from '@shared/dtos'
 import {
   IDisciplineGroup,
   IDisciplineGroupMessage,
@@ -126,5 +126,17 @@ export namespace IDeleteDisciplineGroupPostEndpoint {
   export type Params = {
     disciplineGroupId: string
     disciplineGroupPostId: string
+  }
+}
+
+export namespace IGetDisciplineGroupMembersEndpoint {
+  export interface Request {
+    page?: number
+    limit?: number
+  }
+
+  export interface Response {
+    results: IDisciplineGroupMemberDTO[]
+    total: number
   }
 }
