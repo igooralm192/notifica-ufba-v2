@@ -25,7 +25,7 @@ export namespace IStorageService {
     }
 
     export interface Output {
-      url: string
+      url?: string
     }
   }
 

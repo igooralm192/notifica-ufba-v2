@@ -53,8 +53,12 @@ export class GCSStorageService
   }: IStorageService.GetFileUrl.Input): Promise<IStorageService.GetFileUrl.Output> {
     const bucket = this.client.bucket()
 
+    const [fileExists] = await bucket.file(`${path}/${filename}`).exists()
+
     return {
-      url: new URL(`${this.BASE_URL}/${bucket.name}/${path}/${filename}`).toString(),
+      url: fileExists
+        ? `${this.BASE_URL}/${bucket.name}/${path}/${filename}`
+        : undefined,
     }
   }
 }
