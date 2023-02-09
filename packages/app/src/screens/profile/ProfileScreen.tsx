@@ -1,15 +1,22 @@
+import { BottomSheet } from '@/components/BottomSheet'
 import { Spacer } from '@/components/Spacer'
+import { Stack } from '@/components/Stack'
 import { useStatusBar } from '@/contexts/status-bar'
 import { useNavigation } from '@/helpers'
+import { useBoolean } from '@/hooks/common'
 
-import { Image } from '@rneui/themed'
-import React from 'react'
+import { Icon, useTheme } from '@rneui/themed'
+import React, { useRef, useState } from 'react'
+import { Text, TouchableOpacity } from 'react-native'
+import * as ImagePicker from 'expo-image-picker'
 
+import { PreviewPictureModal } from './PreviewPictureModal'
 import { useProfilePresenter, withProfilePresenter } from './ProfilePresenter'
 import {
   Container,
   UserContainer,
   PhotoContainer,
+  PhotoEditContainer,
   Photo,
   UserImagePlaceholder,
   UserName,
@@ -22,25 +29,93 @@ export interface ProfileScreenProps {}
 
 const ProfileScreen: React.FC<ProfileScreenProps> = () => {
   const { user, logout } = useProfilePresenter()
-
   const navigation = useNavigation()
+  const { theme } = useTheme()
+
+  const [previewPictureUri, setPreviewPictureUri] =
+    useState<Nullable<string>>(null)
+
+  const editPictureVisible = useBoolean()
+  const previewPictureVisible = useBoolean()
+
+  const cameraOrGalleryRef = useRef<'camera' | 'gallery'>()
+
+  const pickImageFromCamera = async () => {
+    cameraOrGalleryRef.current = 'camera'
+
+    const cameraPermissionsResponse =
+      await ImagePicker.requestCameraPermissionsAsync()
+
+    if (!cameraPermissionsResponse.granted) return
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    })
+
+    if (result.cancelled) return
+
+    setPreviewPictureUri(result.uri)
+
+    editPictureVisible.off()
+    previewPictureVisible.on()
+  }
+
+  const pickImageFromGallery = async () => {
+    cameraOrGalleryRef.current = 'gallery'
+
+    const galleryPermissionsResponse =
+      await ImagePicker.requestMediaLibraryPermissionsAsync()
+    
+    if (!galleryPermissionsResponse.granted) return
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    })
+
+    if (result.cancelled) return
+
+    setPreviewPictureUri(result.uri)
+
+    editPictureVisible.off()
+    previewPictureVisible.on()
+  }
 
   useStatusBar('primary')
 
   return (
     <Container headerProps={{ title: 'Perfil', back: false }}>
       <UserContainer>
-        <PhotoContainer>
-          {/* <Photo
-            source={{
-              width: 100,
-              height: 100,
-              uri: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-            }}
-            resizeMode="cover"
-          /> */}
-          <UserImagePlaceholder />
-        </PhotoContainer>
+        <TouchableOpacity activeOpacity={0.6} onPress={editPictureVisible.on}>
+          <PhotoContainer>
+            {!!user.profilePictureUrl ? (
+              <Photo
+                source={{
+                  width: 100,
+                  height: 100,
+                  uri: user.profilePictureUrl,
+                }}
+                resizeMode="cover"
+              />
+            ) : (
+              <UserImagePlaceholder />
+            )}
+          </PhotoContainer>
+
+          <PhotoEditContainer>
+            <Icon
+              type="material-community"
+              name="pencil-outline"
+              color="white"
+              size={16}
+            />
+          </PhotoEditContainer>
+        </TouchableOpacity>
 
         <Spacer />
 
@@ -64,6 +139,110 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
         <OptionIcon name="logout" />
         <OptionName>Sair</OptionName>
       </OptionContainer>
+
+      <BottomSheet
+        visible={editPictureVisible.value}
+        onHide={editPictureVisible.off}
+      >
+        <Stack s={8}>
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={pickImageFromCamera}
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+            }}
+          >
+            <Icon
+              type="material-community"
+              name="camera"
+              color={theme.colors.black}
+              size={22}
+            />
+
+            <Text
+              style={{
+                justifyContent: 'center',
+                marginLeft: 8,
+                color: theme.colors.black,
+                fontFamily: 'Inter_600SemiBold',
+              }}
+            >
+              Tirar foto
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={pickImageFromGallery}
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+            }}
+          >
+            <Icon
+              type="material-community"
+              name="image"
+              color={theme.colors.black}
+              size={22}
+            />
+
+            <Text
+              style={{
+                justifyContent: 'center',
+                marginLeft: 8,
+                color: theme.colors.black,
+                fontFamily: 'Inter_600SemiBold',
+              }}
+            >
+              Abrir galeria
+            </Text>
+          </TouchableOpacity>
+        </Stack>
+
+        <Spacer />
+
+        <TouchableOpacity
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingVertical: 8,
+          }}
+          activeOpacity={0.5}
+          onPress={editPictureVisible.off}
+        >
+          <Text
+            style={{
+              justifyContent: 'center',
+              fontFamily: 'Inter_600SemiBold',
+              color: theme.colors.black,
+            }}
+          >
+            Voltar
+          </Text>
+        </TouchableOpacity>
+
+        {/* <LoadingModal
+          visible={deletePost.loading}
+          description="Removendo postagem..."
+        />  */}
+      </BottomSheet>
+
+      <PreviewPictureModal
+        pictureUri={previewPictureUri ?? undefined}
+        visible={previewPictureVisible.value}
+        onHide={previewPictureVisible.off}
+        onCancel={previewPictureVisible.off}
+        onTakeAnother={
+          cameraOrGalleryRef.current === 'camera'
+            ? pickImageFromCamera
+            : pickImageFromGallery
+        }
+        onUpdatePicture={() => {}}
+      />
     </Container>
   )
 }

@@ -22,6 +22,19 @@ export const PhotoContainer = styled.View`
   overflow: hidden;
 `
 
+export const PhotoEditContainer = styled.View`
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  background-color: ${({ theme }) => theme.colors.primary};
+`
+
 export const Photo = styled.Image`
   width: 100%;
   height: 100%;

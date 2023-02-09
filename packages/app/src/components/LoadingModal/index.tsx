@@ -34,9 +34,7 @@ export const LoadingModal: React.FC<LoadingModalProps> = ({
             paddingHorizontal: 16
           }}
         >
-
           <Spinner />
-
           <Spacer />
 
           <Text

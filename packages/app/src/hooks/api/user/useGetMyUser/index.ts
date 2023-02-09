@@ -24,5 +24,5 @@ export const useGetMyUser = (
     },
   )
 
-  return { isLoading, user: data?.user }
+  return { isLoading, user: data?.user || null }
 }

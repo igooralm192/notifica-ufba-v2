@@ -64,6 +64,15 @@ export default {
     runtimeVersion: {
       policy: "sdkVersion",
     },
-    plugins: ["sentry-expo"],
+    plugins: [
+      "sentry-expo",
+      [
+        "expo-image-picker",
+        {
+          cameraPermission: "O aplicativo irá utilizar sua camera.",
+          photosPermission: "O aplicativo irá acessar suas fotos.",
+        },
+      ],
+    ],
   },
 };
