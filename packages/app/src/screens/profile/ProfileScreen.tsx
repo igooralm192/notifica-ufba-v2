@@ -28,7 +28,7 @@ import {
 export interface ProfileScreenProps {}
 
 const ProfileScreen: React.FC<ProfileScreenProps> = () => {
-  const { user, logout } = useProfilePresenter()
+  const { user, logout, updateProfilePicture } = useProfilePresenter()
   const navigation = useNavigation()
   const { theme } = useTheme()
 
@@ -68,7 +68,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
 
     const galleryPermissionsResponse =
       await ImagePicker.requestMediaLibraryPermissionsAsync()
-    
+
     if (!galleryPermissionsResponse.granted) return
 
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -86,6 +86,15 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
     previewPictureVisible.on()
   }
 
+  const handleUpdatePicture = async () => {
+    if (!previewPictureUri) return
+
+    await updateProfilePicture.update(previewPictureUri)
+    previewPictureVisible.off()
+  }
+
+  const profilePictureUrl = user.profilePictureUrl
+
   useStatusBar('primary')
 
   return (
@@ -93,12 +102,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
       <UserContainer>
         <TouchableOpacity activeOpacity={0.6} onPress={editPictureVisible.on}>
           <PhotoContainer>
-            {!!user.profilePictureUrl ? (
+            {!!profilePictureUrl ? (
               <Photo
                 source={{
                   width: 100,
                   height: 100,
-                  uri: user.profilePictureUrl,
+                  uri: profilePictureUrl + '?' + new Date(),
                 }}
                 resizeMode="cover"
               />
@@ -233,6 +242,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
 
       <PreviewPictureModal
         pictureUri={previewPictureUri ?? undefined}
+        loading={updateProfilePicture.loading}
         visible={previewPictureVisible.value}
         onHide={previewPictureVisible.off}
         onCancel={previewPictureVisible.off}
@@ -241,7 +251,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
             ? pickImageFromCamera
             : pickImageFromGallery
         }
-        onUpdatePicture={() => {}}
+        onUpdatePicture={handleUpdatePicture}
       />
     </Container>
   )

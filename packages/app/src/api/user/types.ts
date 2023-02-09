@@ -44,3 +44,13 @@ export namespace IGetMyUserEndpoint {
     user: IUser
   }
 }
+
+export namespace IUpdateProfilePictureEndpoint {
+  export interface Body {
+    pictureUri: string
+  }
+
+  export interface Response {
+    url: string
+  }
+}

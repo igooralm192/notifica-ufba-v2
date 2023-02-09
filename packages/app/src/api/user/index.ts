@@ -7,6 +7,7 @@ import {
   IPatchMyUserEndpoint,
   IForgotPasswordEndpoint,
   IResetPasswordEndpoint,
+  IUpdateProfilePictureEndpoint,
 } from './types'
 
 export const login = async ({
@@ -46,3 +47,28 @@ export const getMyUser = async (): Promise<IGetMyUserEndpoint.Response> => {
 
   return { user: UserMapper.toEntity(response.data.user) }
 }
+
+export const updateProfilePicture = async ({
+  pictureUri,
+}: IUpdateProfilePictureEndpoint.Body): Promise<IUpdateProfilePictureEndpoint.Response> => {
+  const responseBlob = await fetch(pictureUri)
+  const blobFile = await responseBlob.blob()
+
+  const data = new FormData()
+
+  data.append('picture', {
+    // @ts-ignore
+    uri: pictureUri,
+    type: blobFile.type,
+    name: `profile-picture.${blobFile.type.split('/')[1]}`,
+  })
+
+  const response = await api.put('/users/me/profile-picture', data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+
+  return { url: response.data.url }
+}
+ 

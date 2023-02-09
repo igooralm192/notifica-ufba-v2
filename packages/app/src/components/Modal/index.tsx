@@ -19,7 +19,12 @@ export const Modal: React.FC<ModalProps> = ({
   children,
 }) => {
   return (
-    <RNModal animationType="fade" transparent={true} visible={visible}>
+    <RNModal
+      animationType="fade"
+      transparent={true}
+      visible={visible}
+      onRequestClose={onHide}
+    >
       <Pressable
         style={[
           {

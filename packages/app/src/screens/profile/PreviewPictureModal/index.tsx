@@ -16,12 +16,14 @@ import {
 
 export interface PreviewPictureModalProps extends ModalProps {
   pictureUri?: string
+  loading?: boolean
   onUpdatePicture: () => void
   onTakeAnother: () => void
   onCancel: () => void
 }
 
 export const PreviewPictureModal: React.FC<PreviewPictureModalProps> = ({
+  loading,
   pictureUri,
   ...props
 }) => {
@@ -39,15 +41,24 @@ export const PreviewPictureModal: React.FC<PreviewPictureModalProps> = ({
             </PreviewImageContainer>
 
             <ActionsContainer s={4}>
-              <UpdatePictureButton onPress={props.onUpdatePicture}>
+              <UpdatePictureButton
+                onPress={props.onUpdatePicture}
+                loading={loading}
+                disabled={loading}
+              >
                 Atualizar minha foto
               </UpdatePictureButton>
 
-              <TakeAnotherButton onPress={props.onTakeAnother}>
+              <TakeAnotherButton
+                onPress={props.onTakeAnother}
+                disabled={loading}
+              >
                 Selecionar outra
               </TakeAnotherButton>
 
-              <CancelButton onPress={props.onCancel}>Cancelar</CancelButton>
+              <CancelButton onPress={props.onCancel} disabled={loading}>
+                Cancelar
+              </CancelButton>
             </ActionsContainer>
           </InnerContainer>
         </Container>
