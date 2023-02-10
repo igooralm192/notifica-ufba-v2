@@ -6,14 +6,19 @@ import Toast from 'react-native-toast-message'
 
 import { IUseUpdateProfilePicture } from './types'
 
-export const useUpdateProfilePicture = (): IUseUpdateProfilePicture.Output => {
+export const useUpdateProfilePicture = (
+  userId?: string,
+): IUseUpdateProfilePicture.Output => {
   const queryClient = useQueryClient()
-  
+
   const { isLoading: isUpdating, mutateAsync: update } = useMutation(
-    (input: IUseUpdateProfilePicture.Body) => api.user.updateProfilePicture(input),
+    (input: IUseUpdateProfilePicture.Body) =>
+      api.user.updateProfilePicture(input),
     {
+      retry: true,
       onSuccess: () => {
-        queryClient.invalidateQueries('user')
+        if (userId)
+          queryClient.invalidateQueries(['userProfilePicture', userId])
       },
       onError: (error: BaseError) => {
         Toast.show({

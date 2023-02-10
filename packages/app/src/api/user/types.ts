@@ -54,3 +54,13 @@ export namespace IUpdateProfilePictureEndpoint {
     url: string
   }
 }
+
+export namespace IGetUserProfilePictureEndpoint {
+  export interface Params {
+    userId: string
+  }
+
+  export interface Response {
+    url?: string
+  }
+}

@@ -19,6 +19,7 @@ export * from './student/useUpdateMyStudent'
 export * from './teacher/useUpdateMyTeacher'
 
 export * from './user/useGetMyUser'
+export * from './user/useGetUserProfilePictureUrl'
 export * from './user/useForgotPassword'
 export * from './user/useLogin'
 export * from './user/useResetPassword'

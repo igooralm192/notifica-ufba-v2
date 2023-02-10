@@ -24,7 +24,9 @@ export const ProfilePresenter: React.FC = ({ children }) => {
   const auth = useAuth()
   const { user } = useMe()
 
-  const { isUpdating, update: updateProfilePicture } = useUpdateProfilePicture()
+  const { isUpdating, update: updateProfilePicture } = useUpdateProfilePicture(
+    user?.id,
+  )
 
   const handleLogout = () => {
     auth.onTokenChange(null)

@@ -1,6 +1,8 @@
 import { UserMapper } from '@/mappers'
 import { api } from '@/services/api'
 
+import mime from 'mime'
+
 import {
   IGetMyUserEndpoint,
   ILoginEndpoint,
@@ -8,6 +10,7 @@ import {
   IForgotPasswordEndpoint,
   IResetPasswordEndpoint,
   IUpdateProfilePictureEndpoint,
+  IGetUserProfilePictureEndpoint,
 } from './types'
 
 export const login = async ({
@@ -51,24 +54,31 @@ export const getMyUser = async (): Promise<IGetMyUserEndpoint.Response> => {
 export const updateProfilePicture = async ({
   pictureUri,
 }: IUpdateProfilePictureEndpoint.Body): Promise<IUpdateProfilePictureEndpoint.Response> => {
-  const responseBlob = await fetch(pictureUri)
-  const blobFile = await responseBlob.blob()
+  const pictureType = mime.getType(pictureUri)
+  const pictureExt = mime.getExtension(pictureType!)
 
   const data = new FormData()
 
   data.append('picture', {
     // @ts-ignore
     uri: pictureUri,
-    type: blobFile.type,
-    name: `profile-picture.${blobFile.type.split('/')[1]}`,
+    type: pictureType!,
+    name: `profile-picture.${pictureExt}`,
   })
 
   const response = await api.put('/users/me/profile-picture', data, {
     headers: {
-      'Content-Type': 'multipart/form-data',
+      'content-type': 'multipart/form-data',
     },
   })
 
   return { url: response.data.url }
 }
- 
+
+export const getUserProfilePictureUrl = async ({
+  userId,
+}: IGetUserProfilePictureEndpoint.Params): Promise<IGetUserProfilePictureEndpoint.Response> => {
+  const response = await api.get(`/users/${userId}/profile-picture`)
+
+  return { url: response.data.url || undefined }
+}

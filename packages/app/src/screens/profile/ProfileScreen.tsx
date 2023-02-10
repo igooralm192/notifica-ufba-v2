@@ -1,6 +1,7 @@
 import { BottomSheet } from '@/components/BottomSheet'
 import { Spacer } from '@/components/Spacer'
 import { Stack } from '@/components/Stack'
+import UserProfilePicture from '@/components/UserProfilePicture'
 import { useStatusBar } from '@/contexts/status-bar'
 import { useNavigation } from '@/helpers'
 import { useBoolean } from '@/hooks/common'
@@ -93,28 +94,13 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
     previewPictureVisible.off()
   }
 
-  const profilePictureUrl = user.profilePictureUrl
-
   useStatusBar('primary')
 
   return (
     <Container headerProps={{ title: 'Perfil', back: false }}>
       <UserContainer>
         <TouchableOpacity activeOpacity={0.6} onPress={editPictureVisible.on}>
-          <PhotoContainer>
-            {!!profilePictureUrl ? (
-              <Photo
-                source={{
-                  width: 100,
-                  height: 100,
-                  uri: profilePictureUrl + '?' + new Date(),
-                }}
-                resizeMode="cover"
-              />
-            ) : (
-              <UserImagePlaceholder />
-            )}
-          </PhotoContainer>
+          <UserProfilePicture userId={user.id} />
 
           <PhotoEditContainer>
             <Icon
