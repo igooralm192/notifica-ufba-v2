@@ -8,3 +8,4 @@ export * from './subscribe-student-to-discipline-group/SubscribeStudentToDiscipl
 export * from './unsubscribe-student/UnsubscribeStudentRouteFactory'
 export * from './delete-discipline-group/DeleteDisciplineGroupRouteFactory'
 export * from './delete-discipline-group-post/DeleteDisciplineGroupPostRouteFactory'
+export * from './read-discipline-group-members/ReadDisciplineGroupMembersRouteFactory'

@@ -1,6 +1,6 @@
-import { ITeacherRepositoryListInput } from '@/data/contracts'
+import { IDisciplineGroup, IStudent, ITeacher } from '@shared/entities'
 import { IQueryFilterDTO } from '@/domain/dtos'
-import { IDisciplineGroup } from '@shared/entities'
+import { ITeacherRepositoryListInput } from '@/data/contracts'
 
 export type IDisciplineGroupRepositoryListInput = {
   where?: IQueryFilterDTO<IDisciplineGroup>
@@ -125,4 +125,26 @@ export namespace IDeleteDisciplineGroupRepository {
 
 export interface IDeleteDisciplineGroupRepository {
   delete(input: IDeleteDisciplineGroupRepository.Input): Promise<void>
+}
+
+export namespace IFindAllDisciplineGroupStudentsRepository {
+  export type Input = { where: { id?: string } }
+  export type Output = IStudent[]
+}
+
+export interface IFindAllDisciplineGroupStudentsRepository {
+  findAllStudents(
+    input: IFindAllDisciplineGroupStudentsRepository.Input,
+  ): Promise<IFindAllDisciplineGroupStudentsRepository.Output>
+}
+
+export namespace IFindAllDisciplineGroupTeachersRepository {
+  export type Input = { where: { id?: string } }
+  export type Output = ITeacher[]
+}
+
+export interface IFindAllDisciplineGroupTeachersRepository {
+  findAllTeachers(
+    input: IFindAllDisciplineGroupTeachersRepository.Input,
+  ): Promise<IFindAllDisciplineGroupTeachersRepository.Output>
 }

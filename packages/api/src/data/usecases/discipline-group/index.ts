@@ -8,3 +8,4 @@ export * from './subscribe-student-to-discipline-group/SubscribeStudentToDiscipl
 export * from './unsubscribe-student/UnsubscribeStudentUseCase'
 export * from './delete-discipline-group/DeleteDisciplineGroupUseCase'
 export * from './delete-discipline-group-post/DeleteDisciplineGroupPostUseCase'
+export * from './read-discipline-group-members/ReadDisciplineGroupMembersUseCase'

@@ -3,6 +3,8 @@ import {
   ICreateDisciplineGroupRepository,
   IDeleteDisciplineGroupRepository,
   IFindAllDisciplineGroupRepository,
+  IFindAllDisciplineGroupStudentsRepository,
+  IFindAllDisciplineGroupTeachersRepository,
   IFindOneDisciplineGroupRepository,
   IPushStudentDisciplineGroupRepository,
   IRemoveStudentDisciplineGroupRepository,
@@ -15,7 +17,9 @@ type IDisciplineGroupRepository = ICountDisciplineGroupRepository &
   IPushStudentDisciplineGroupRepository &
   IRemoveStudentDisciplineGroupRepository &
   ICreateDisciplineGroupRepository &
-  IDeleteDisciplineGroupRepository
+  IDeleteDisciplineGroupRepository &
+  IFindAllDisciplineGroupStudentsRepository &
+  IFindAllDisciplineGroupTeachersRepository
 
 export const makeDisciplineGroupRepository = (): IDisciplineGroupRepository => {
   return new PrismaDisciplineGroupRepository()

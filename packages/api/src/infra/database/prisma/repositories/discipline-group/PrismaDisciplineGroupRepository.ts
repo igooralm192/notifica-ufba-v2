@@ -6,6 +6,8 @@ import {
   IDeleteDisciplineGroupRepository,
   IDisciplineGroupRepositoryListInput,
   IFindAllDisciplineGroupRepository,
+  IFindAllDisciplineGroupStudentsRepository,
+  IFindAllDisciplineGroupTeachersRepository,
   IFindOneDisciplineGroupRepository,
   IPushStudentDisciplineGroupRepository,
   IRemoveStudentDisciplineGroupRepository,
@@ -22,7 +24,9 @@ export class PrismaDisciplineGroupRepository
     IFindAllDisciplineGroupRepository,
     IFindOneDisciplineGroupRepository,
     IPushStudentDisciplineGroupRepository,
-    IRemoveStudentDisciplineGroupRepository
+    IRemoveStudentDisciplineGroupRepository,
+    IFindAllDisciplineGroupStudentsRepository,
+    IFindAllDisciplineGroupTeachersRepository
 {
   async create(
     { disciplineId, teacherId }: ICreateDisciplineGroupRepository.Params,
@@ -71,6 +75,30 @@ export class PrismaDisciplineGroupRepository
     })
 
     return disciplineGroups.map(this.parseDisciplineGroup)
+  }
+
+  async findAllTeachers({
+    where,
+  }: IFindAllDisciplineGroupTeachersRepository.Input): Promise<IFindAllDisciplineGroupTeachersRepository.Output> {
+    const teachers = await this.client.teacher.findMany({
+      where: { groups: { some: { id: where.id } } },
+      include: { user: true },
+    })
+
+    return teachers
+  }
+
+  async findAllStudents({
+    where,
+  }: IFindAllDisciplineGroupStudentsRepository.Input): Promise<IFindAllDisciplineGroupStudentsRepository.Output> {
+    const { id } = where
+
+    const students = await this.client.student.findMany({
+      where: { groups: { some: { id } } },
+      include: { user: true },
+    })
+
+    return students
   }
 
   async findOne({

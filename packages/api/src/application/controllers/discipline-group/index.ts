@@ -8,3 +8,4 @@ export * from './subscribe-student-to-discipline-group/SubscribeStudentToDiscipl
 export * from './unsubscribe-student/UnsubscribeStudentController'
 export * from './delete-discipline-group/DeleteDisciplineGroupController'
 export * from './delete-discipline-group-post/DeleteDisciplineGroupPostController'
+export * from './read-discipline-group-members/ReadDisciplineGroupMembersController'
