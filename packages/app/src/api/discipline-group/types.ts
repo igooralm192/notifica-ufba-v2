@@ -130,13 +130,11 @@ export namespace IDeleteDisciplineGroupPostEndpoint {
 }
 
 export namespace IGetDisciplineGroupMembersEndpoint {
-  export interface Request {
-    page?: number
-    limit?: number
+  export interface Params {
+    disciplineGroupId: string
   }
 
   export interface Response {
-    results: IDisciplineGroupMemberDTO[]
-    total: number
+    members: IDisciplineGroupMemberDTO[]
   }
 }

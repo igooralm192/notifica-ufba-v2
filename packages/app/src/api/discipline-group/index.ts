@@ -251,21 +251,15 @@ export const deleteDisciplineGroupPost = async ({
 }
 
 export const getDisciplineGroupMembers = async (
-  disciplineGroupId: string,
-  { page, limit }: IGetDisciplineGroupMembersEndpoint.Request,
+  params: IGetDisciplineGroupMembersEndpoint.Params,
 ): Promise<IGetDisciplineGroupMembersEndpoint.Response> => {
+  const { disciplineGroupId } = params
+
   const response = await api.get(
     `/discipline-groups/${disciplineGroupId}/members`,
-    {
-      params: {
-        page,
-        limit,
-      },
-    },
   )
 
   return {
-    results: DisciplineGroupMemberMapper.toDTOList(response.data.results),
-    total: response.data.total,
+    members: DisciplineGroupMemberMapper.toDTOList(response.data),
   }
 }

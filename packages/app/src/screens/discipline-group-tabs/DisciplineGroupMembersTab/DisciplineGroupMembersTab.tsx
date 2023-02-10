@@ -1,4 +1,3 @@
-import { FooterLoading } from '@/components/FooterLoading'
 import { Spacer } from '@/components/Spacer'
 import { useMe } from '@/contexts/me'
 
@@ -22,10 +21,8 @@ const DisciplineGroupMembersTab: React.FC<
   const { user } = useMe()
 
   const {
-    isFetchingMore,
     isRefreshing,
     disciplineGroupMembers,
-    onNextPage,
     onRefresh,
   } = useDisciplineGroupMembersPresenter()
 
@@ -57,12 +54,9 @@ const DisciplineGroupMembersTab: React.FC<
       SectionSeparatorComponent={() => <Spacer s={8} />}
       stickySectionHeadersEnabled={false}
       contentContainerStyle={{ padding: 16 }}
-      onEndReached={onNextPage}
-      onEndReachedThreshold={0.15}
-      ListFooterComponent={isFetchingMore ? FooterLoading : undefined}
       refreshControl={
         <RefreshControl
-          refreshing={!isFetchingMore && isRefreshing}
+          refreshing={isRefreshing}
           onRefresh={onRefresh}
         />
       }

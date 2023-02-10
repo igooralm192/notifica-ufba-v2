@@ -1,20 +1,13 @@
-import { IFilterParams } from '@/types/list'
 import { IDisciplineGroupMemberDTO } from '@shared/dtos'
+import { IGetDisciplineGroupMembersEndpoint } from '@/api/discipline-group/types'
 
 export namespace IUseGetAllDisciplineGroupMembers {
-  export type Params = {
-    disciplineGroupId: string
-  }
-
-  export type Query = Partial<IFilterParams>
+  export type Params = IGetDisciplineGroupMembersEndpoint.Params
 
   export type Output = {
     isLoading: boolean
-    isFetchingMore: boolean
     isRefreshing: boolean
-    hasNextPage: boolean
     disciplineGroupMembers: IDisciplineGroupMemberDTO[]
-    fetchNextPage: () => void
     refresh: () => void
   }
 }
