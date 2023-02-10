@@ -2,15 +2,18 @@ import { Either, left, right } from '@shared/utils'
 
 import { UserDoesNotExistError } from '@/domain/errors'
 import { BaseError } from '@/domain/helpers'
-import { IGetUserByIdUseCase } from '@/domain/usecases'
+import {
+  IGetUserByIdUseCase,
+  IReadUserPictureUrlUseCase,
+} from '@/domain/usecases'
 
-import { IStorageService, IUserRepository } from '@/data/contracts'
+import { IUserRepository } from '@/data/contracts'
 
 
 export class GetUserByIdUseCase implements IGetUserByIdUseCase {
   constructor(
     private readonly findOneUserRepository: IUserRepository.FindOne,
-    private readonly getFileUrlStorageService: IStorageService.GetFileUrl,
+    private readonly readUserPictureUrlUseCase: IReadUserPictureUrlUseCase,
   ) {}
 
   async run({
@@ -24,12 +27,20 @@ export class GetUserByIdUseCase implements IGetUserByIdUseCase {
       return left(new UserDoesNotExistError())
     }
 
-    const { url: profilePictureUrl } =
-      await this.getFileUrlStorageService.getFileUrl({
-        path: `users/${user.id}`,
-        filename: 'profile-picture',
-      })
+    const readPictureUrlResult =
+      await this.readUserPictureUrlUseCase.readPictureUrl({ userId })
 
-    return right({ user: { ...user, profilePictureUrl } })
+    if (readPictureUrlResult.isLeft()) {
+      return left(readPictureUrlResult.value)
+    }
+
+    const { url: profilePictureUrl } = readPictureUrlResult.value
+
+    return right({
+      user: {
+        ...user,
+        profilePictureUrl,
+      },
+    })
   }
 }
