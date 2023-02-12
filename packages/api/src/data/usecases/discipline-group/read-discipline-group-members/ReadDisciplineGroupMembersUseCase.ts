@@ -45,8 +45,14 @@ export class ReadDisciplineGroupMembersUseCase
         where: { id: disciplineGroupId },
       })
 
-    const studentUsers = allStudents.map(s => s.user!)
-    const teacherUsers = allTeachers.map(t => t.user!)
+    const studentUsers = allStudents.map(s => ({
+      ...s.user!,
+      student: { id: s.id },
+    }))
+    const teacherUsers = allTeachers.map(t => ({
+      ...t.user!,
+      teacher: { id: t.id },
+    }))
 
     const members = [...studentUsers, ...teacherUsers].map(
       u =>
@@ -54,6 +60,8 @@ export class ReadDisciplineGroupMembersUseCase
           userId: u.id,
           userName: u.name,
           userType: u.type,
+          studentId: u.student?.id,
+          teacherId: u.teacher?.id,
         } as IDisciplineGroupMemberDTO),
     )
 
