@@ -6,6 +6,8 @@ export class DisciplineGroupMemberMapper {
       userId: data.userId,
       userName: data.userName,
       userType: data.userType,
+      studentId: data.studentId,
+      teacherId: data.teacherId,
     }
   }
 

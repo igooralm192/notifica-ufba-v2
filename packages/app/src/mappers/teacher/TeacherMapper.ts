@@ -11,14 +11,4 @@ export class TeacherMapper {
       updatedAt: new Date(data.updatedAt),
     }
   }
-
-  // static toDTO(data: Record<string, any>): ITeacherDTO {
-  //   return {
-  //     id: data.id,
-  //     userId: data.userId,
-  //     user: data.user ? UserMapper.toDTO(data.user) : undefined,
-  //     createdAt: data.createdAt.toDate().toISOString(),
-  //     updatedAt: data.updatedAt.toDate().toISOString(),
-  //   }
-  // }
 }

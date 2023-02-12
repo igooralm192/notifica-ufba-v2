@@ -138,3 +138,11 @@ export namespace IGetDisciplineGroupMembersEndpoint {
     members: IDisciplineGroupMemberDTO[]
   }
 }
+
+export namespace IRemoveDisciplineGroupStudentEndpoint {
+  export type Params = {
+    disciplineGroupId: string
+    studentId: string
+  }
+}
+

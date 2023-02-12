@@ -1,5 +1,5 @@
-import { StudentMapper, TeacherMapper } from '@/mappers'
 import { IUser } from '@shared/entities'
+import { StudentMapper, TeacherMapper } from '@/mappers'
 
 export class UserMapper {
   static toEntity(data: Record<string, any>): IUser {

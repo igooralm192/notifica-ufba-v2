@@ -10,6 +10,7 @@ export * from './discipline-group/useGetAllDisciplineGroupPosts'
 export * from './discipline-group/useGetAllDisciplineGroups'
 export * from './discipline-group/useGetDisciplineGroup'
 export * from './discipline-group/useGetLastMessages'
+export * from './discipline-group/useRemoveDisciplineGroupStudent'
 export * from './discipline-group/useSubscribeStudent'
 export * from './discipline-group/useUnsubscribeStudent'
 

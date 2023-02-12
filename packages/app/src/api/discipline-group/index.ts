@@ -38,6 +38,7 @@ import {
   IUnsubscribeStudentEndpoint,
   IDeleteDisciplineGroupEndpoint,
   IDeleteDisciplineGroupPostEndpoint,
+  IRemoveDisciplineGroupStudentEndpoint,
 } from './types'
 
 export const getDisciplineGroups = async ({
@@ -262,4 +263,13 @@ export const getDisciplineGroupMembers = async (
   return {
     members: DisciplineGroupMemberMapper.toDTOList(response.data),
   }
+}
+
+export const removeDisciplineGroupStudent = async ({
+  disciplineGroupId,
+  studentId,
+}: IRemoveDisciplineGroupStudentEndpoint.Params): Promise<void> => {
+  await api.delete(
+    `/discipline-groups/${disciplineGroupId}/students/${studentId}`,
+  )
 }

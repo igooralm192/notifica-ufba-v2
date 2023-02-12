@@ -13,7 +13,9 @@ export const Picture = styled.Image`
   border-radius: 16px;
 `
 
-export const NameContainer = styled.View``
+export const NameContainer = styled.View`
+  flex: 1;
+`
 export const Name = styled(Text)`
   font-family: 'Poppins_400Regular';
   font-size: 14px;

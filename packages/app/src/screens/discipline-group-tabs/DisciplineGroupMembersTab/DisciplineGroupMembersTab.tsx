@@ -1,7 +1,5 @@
 import { Spacer } from '@/components/Spacer'
-import { useMe } from '@/contexts/me'
 
-import { useTheme } from '@rneui/themed'
 import React, { useMemo } from 'react'
 import { RefreshControl, SectionList } from 'react-native'
 
@@ -17,14 +15,8 @@ export interface DisciplineGroupMembersTabProps {}
 const DisciplineGroupMembersTab: React.FC<
   DisciplineGroupMembersTabProps
 > = () => {
-  const { theme } = useTheme()
-  const { user } = useMe()
-
-  const {
-    isRefreshing,
-    disciplineGroupMembers,
-    onRefresh,
-  } = useDisciplineGroupMembersPresenter()
+  const { isRefreshing, disciplineGroupMembers, onRefresh } =
+    useDisciplineGroupMembersPresenter()
 
   const teacherMembers = useMemo(
     () => disciplineGroupMembers.filter(m => m.userType === 'TEACHER'),
@@ -55,10 +47,7 @@ const DisciplineGroupMembersTab: React.FC<
       stickySectionHeadersEnabled={false}
       contentContainerStyle={{ padding: 16 }}
       refreshControl={
-        <RefreshControl
-          refreshing={isRefreshing}
-          onRefresh={onRefresh}
-        />
+        <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
       }
     />
   )

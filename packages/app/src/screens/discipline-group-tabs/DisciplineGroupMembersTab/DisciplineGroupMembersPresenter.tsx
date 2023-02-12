@@ -1,7 +1,10 @@
 import { IDisciplineGroupMemberDTO } from '@shared/dtos'
 
 import { FullLoading } from '@/components/FullLoading'
-import { useGetAllDisciplineGroupMembers } from '@/hooks/api'
+import {
+  useGetAllDisciplineGroupMembers,
+  useRemoveDisciplineGroupStudent,
+} from '@/hooks/api'
 
 import React, { useContext } from 'react'
 
@@ -11,6 +14,11 @@ export interface DisciplineGroupMembersPresenterContextData {
   isRefreshing: boolean
   disciplineGroupMembers: IDisciplineGroupMemberDTO[]
   onRefresh: () => void
+
+  removeStudent: {
+    loading: boolean
+    remove: (studentId: string) => Promise<void>
+  }
 }
 
 const DisciplineGroupMembersPresenterContext = React.createContext(
@@ -23,8 +31,17 @@ export const DisciplineGroupMembersPresenter: React.FC = ({ children }) => {
   const { isLoading, isRefreshing, disciplineGroupMembers, refresh } =
     useGetAllDisciplineGroupMembers({ disciplineGroupId: disciplineGroup.id })
 
+  const { isRemoving, remove: removeStudent } =
+    useRemoveDisciplineGroupStudent()
+
   const handleRefresh = () => {
     refresh()
+  }
+
+  const handleRemoveStudent = async (studentId: string) => {
+    await removeStudent({
+      params: { disciplineGroupId: disciplineGroup.id, studentId },
+    })
   }
 
   if (isLoading) return <FullLoading />
@@ -35,6 +52,10 @@ export const DisciplineGroupMembersPresenter: React.FC = ({ children }) => {
         isRefreshing,
         disciplineGroupMembers,
         onRefresh: handleRefresh,
+        removeStudent: {
+          loading: isRemoving,
+          remove: handleRemoveStudent
+        }
       }}
     >
       {children}
