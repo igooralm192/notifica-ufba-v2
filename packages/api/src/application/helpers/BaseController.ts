@@ -6,7 +6,7 @@ export namespace BaseController {
     Body = any,
     Query = any,
     Params = any,
-    Context = { userId?: string, studentId?: string },
+    Context = { userId?: string, studentId?: string, teacherId?: string },
     File = { originalName: string, buffer: Buffer, type: string },
   > = {
     body?: Body

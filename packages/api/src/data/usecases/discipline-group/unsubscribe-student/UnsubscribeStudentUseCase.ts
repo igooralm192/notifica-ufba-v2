@@ -20,12 +20,18 @@ export class UnsubscribeStudentUseCase implements IUnsubscribeStudentUseCase {
     private readonly removeStudentDisciplineGroupRepository: IRemoveStudentDisciplineGroupRepository,
   ) {}
 
-  async unsubscribe(
-    params: IUnsubscribeStudentUseCase.Params,
-  ): Promise<Either<BaseError, IUnsubscribeStudentUseCase.Output>> {
-    const { userId, disciplineGroupId } = params
+  async unsubscribe({
+    context,
+    params,
+  }: IUnsubscribeStudentUseCase.Input): Promise<
+    Either<BaseError, IUnsubscribeStudentUseCase.Output>
+  > {
+    const { studentId } = context
+    const { disciplineGroupId } = params
 
-    const student = await this.findOneStudentRepository.findOne({ userId })
+    const student = await this.findOneStudentRepository.findOne({
+      id: studentId,
+    })
 
     if (!student) {
       return left(new StudentDoesNotExistError())

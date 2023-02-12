@@ -2,13 +2,14 @@ import { IDisciplineGroup } from '@shared/entities'
 import { Either } from '@shared/utils'
 import { BaseError } from '@/domain/helpers'
 
-export namespace IUnsubscribeStudentUseCase {
+export namespace IRemoveDisciplineGroupStudentUseCase {
   export type Context = {
-    studentId: string
+    teacherId: string
   }
 
   export type Params = {
     disciplineGroupId: string
+    studentId: string
   }
 
   export type Input = {
@@ -21,8 +22,8 @@ export namespace IUnsubscribeStudentUseCase {
   }
 }
 
-export interface IUnsubscribeStudentUseCase {
-  unsubscribe: (
-    input: IUnsubscribeStudentUseCase.Input,
-  ) => Promise<Either<BaseError, IUnsubscribeStudentUseCase.Output>>
+export interface IRemoveDisciplineGroupStudentUseCase {
+  removeStudent: (
+    input: IRemoveDisciplineGroupStudentUseCase.Input,
+  ) => Promise<Either<BaseError, IRemoveDisciplineGroupStudentUseCase.Output>>
 }

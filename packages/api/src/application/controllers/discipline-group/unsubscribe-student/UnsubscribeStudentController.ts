@@ -26,10 +26,10 @@ export class UnsubscribeStudentController extends BaseController {
   async handle(
     request: IUnsubscribeStudentController.Request,
   ): Promise<BaseController.Response> {
-    const userId = request.context?.userId
+    const studentId = request.context?.studentId
     const disciplineGroupId = request.params?.disciplineGroupId
 
-    if (!userId) {
+    if (!studentId) {
       return this.forbidden(new MissingParamsError())
     }
 
@@ -38,8 +38,8 @@ export class UnsubscribeStudentController extends BaseController {
     }
 
     const result = await this.unsubscribeStudent.unsubscribe({
-      userId,
-      disciplineGroupId,
+      context: { studentId },
+      params: {disciplineGroupId}
     })
 
     if (result.isRight()) {
