@@ -11,6 +11,7 @@ import {
   IUnsubscribeStudentUseCase,
 } from '@/domain/usecases'
 import {
+  ICreateMessagingService,
   IFindOneDisciplineGroupRepository,
   IFindOneStudentRepository,
   ITeacherRepository,
@@ -24,6 +25,7 @@ export class RemoveDisciplineGroupStudentUseCase
     private readonly findOneTeacherRepository: ITeacherRepository.FindOne,
     private readonly findOneDisciplineGroupRepository: IFindOneDisciplineGroupRepository,
     private readonly unsubscribeStudentUseCase: IUnsubscribeStudentUseCase,
+    private readonly createMessagingService: ICreateMessagingService,
   ) {}
 
   async removeStudent({
@@ -57,6 +59,7 @@ export class RemoveDisciplineGroupStudentUseCase
     const disciplineGroup = await this.findOneDisciplineGroupRepository.findOne(
       {
         where: { id: disciplineGroupId },
+        include: { discipline: true },
       },
     )
 
@@ -70,9 +73,17 @@ export class RemoveDisciplineGroupStudentUseCase
       )
     }
 
-    return this.unsubscribeStudentUseCase.unsubscribe({
+    const unsubscribeResult = await this.unsubscribeStudentUseCase.unsubscribe({
       context: { studentId: student.id },
       params: { disciplineGroupId },
     })
+
+    this.createMessagingService.create({
+      title: `${disciplineGroup.discipline?.code} - ${disciplineGroup.code}`,
+      body: 'Você foi removido desta turma pelo seu professor!',
+      tokens: [student.user.pushToken],
+    })
+
+    return unsubscribeResult
   }
 }
