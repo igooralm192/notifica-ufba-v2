@@ -4,7 +4,7 @@ import { useNavigation } from '@/helpers'
 
 import { Button, useTheme } from '@rneui/themed'
 import React from 'react'
-import { FlexAlignType } from 'react-native'
+import { FlexAlignType, StyleProp, ViewStyle } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import {
@@ -25,6 +25,7 @@ export interface HeaderProps {
     icon: string
     onPress?: () => void
   }
+  style?: StyleProp<ViewStyle>
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -34,6 +35,7 @@ const Header: React.FC<HeaderProps> = ({
   onBack,
   titleAlign = 'flex-start',
   rightAction,
+  style,
 }) => {
   const navigation = useNavigation()
   const insets = useSafeAreaInsets()
@@ -42,14 +44,17 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <Container
-      style={{
-        paddingTop: insets.top,
-        minHeight: insets.top + 48,
-        backgroundColor:
-          statusBar.theme === 'light'
-            ? theme.colors.white
-            : theme.colors.primary,
-      }}
+      style={[
+        {
+          paddingTop: insets.top,
+          minHeight: insets.top + 48,
+          backgroundColor:
+            statusBar.theme === 'light'
+              ? theme.colors.white
+              : theme.colors.primary,
+        },
+        style,
+      ]}
     >
       <Action>
         {back && (
@@ -60,11 +65,15 @@ const Header: React.FC<HeaderProps> = ({
               size: 20,
               containerStyle: {
                 padding: 0,
+                paddingHorizontal: 0,
                 margin: 0,
+                marginHorizontal: 0,
               },
               iconStyle: {
                 padding: 0,
+                paddingHorizontal: 0,
                 margin: 0,
+                marginHorizontal: 0,
                 marginRight: 4,
               },
               color:
@@ -74,9 +83,16 @@ const Header: React.FC<HeaderProps> = ({
             }}
             iconContainerStyle={{
               padding: 0,
+              paddingHorizontal: 0,
               margin: 0,
+              marginHorizontal: 0,
             }}
-            buttonStyle={{ padding: 0, margin: 0 }}
+            buttonStyle={{
+              padding: 0,
+              paddingHorizontal: 0,
+              margin: 0,
+              marginHorizontal: 0,
+            }}
             onPress={() => {
               if (onBack) onBack()
               else navigation.goBack()

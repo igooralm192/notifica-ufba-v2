@@ -67,9 +67,8 @@ export const ListGroupsPresenter: React.FC = ({ children }) => {
     discipline: IDiscipline,
     disciplineGroup: IDisciplineGroup,
   ) => {
-    route.params.onDisciplineGroupSelected(discipline, disciplineGroup)
-
     navigation.goBack()
+    route.params.onDisciplineGroupSelected(discipline, disciplineGroup)
   }
 
   const handleCodeChange = (code: string) => {

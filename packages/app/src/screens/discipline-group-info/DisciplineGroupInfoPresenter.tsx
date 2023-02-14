@@ -1,8 +1,10 @@
 import { IDisciplineGroup } from '@shared/entities'
+import { IDisciplineGroupMemberDTO } from '@shared/dtos'
 
 import { FullLoading } from '@/components/FullLoading'
 import { useNavigation } from '@/helpers'
 import {
+  useGetAllDisciplineGroupMembers,
   useGetDisciplineGroup,
   useSubscribeStudent,
   useUnsubscribeStudent,
@@ -17,7 +19,8 @@ import React, { useContext } from 'react'
 export interface DisciplineGroupInfoPresenterContextData {
   subscribing: boolean
   unsubscribing: boolean
-  disciplineGroup: IDisciplineGroup | null
+  disciplineGroup: IDisciplineGroup
+  disciplineGroupMembers: IDisciplineGroupMemberDTO[]
   subscribeStudent: () => Promise<void>
   unsubscribeStudent: () => Promise<void>
 }
@@ -34,6 +37,9 @@ export const DisciplineGroupInfoPresenter: React.FC<{
   const { isLoading, disciplineGroup } = useGetDisciplineGroup({
     disciplineGroupId,
   })
+
+  const { isLoading: isLoadingMembers, disciplineGroupMembers } =
+    useGetAllDisciplineGroupMembers({ disciplineGroupId })
 
   const { isSubscribing, subscribe } = useSubscribeStudent()
   const { isUnsubscribing, unsubscribe } = useUnsubscribeStudent()
@@ -70,7 +76,9 @@ export const DisciplineGroupInfoPresenter: React.FC<{
     )
   }
 
-  if (isLoading) return <FullLoading />
+  if (isLoading || isLoadingMembers) return <FullLoading />
+
+  if (!disciplineGroup) return null
 
   return (
     <DisciplineGroupInfoPresenterContext.Provider
@@ -78,6 +86,7 @@ export const DisciplineGroupInfoPresenter: React.FC<{
         subscribing: isSubscribing,
         unsubscribing: isUnsubscribing,
         disciplineGroup,
+        disciplineGroupMembers,
         subscribeStudent: handleSubscribeStudent,
         unsubscribeStudent: handleUnsubscribeStudent,
       }}

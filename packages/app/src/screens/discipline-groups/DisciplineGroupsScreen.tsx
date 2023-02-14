@@ -34,7 +34,8 @@ import {
   HeaderButton,
   ListContainer,
 } from './DisciplineGroupsStyles'
-import { SubscribeGroupModal } from './SubscribeGroupModal'
+import { StackActions } from '@react-navigation/routers'
+import { delay } from '@/utils/delay'
 
 export interface DisciplineGroupsScreenProps {}
 
@@ -56,8 +57,6 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
   const navigation = useNavigation()
   const insets = useSafeAreaInsets()
   const { theme } = useTheme()
-
-  const subscribeGroupConfirmVisible = useBoolean()
 
   const searchInputRef = useRef() as React.MutableRefObject<TextInput | null>
 
@@ -103,8 +102,10 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
       },
       onPress: () => {
         navigation.navigate('ListGroupsScreen', {
-          onDisciplineGroupSelected: () => {
-            subscribeGroupConfirmVisible.on()
+          onDisciplineGroupSelected: async (_, disciplineGroup) => {
+            navigation.navigate('DisciplineGroupInfoScreen', {
+              disciplineGroupId: disciplineGroup.id,
+            })
           },
         })
         menu.hide()
@@ -276,12 +277,6 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
           ))}
         </SpeedDial>
       )}
-
-      <SubscribeGroupModal
-        // visible={subscribeGroupConfirmVisible.value}
-        visible={true}
-        onHide={subscribeGroupConfirmVisible.off}
-      />
     </Container>
   )
 }

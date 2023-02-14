@@ -1,7 +1,6 @@
 import React from 'react'
 import { StyleProp, ViewStyle } from 'react-native'
 import RNModal from 'react-native-modal'
-import { Container, SwipeLabel, InnerContainer } from './styles'
 
 export interface ModalProps {
   visible: boolean
@@ -17,18 +16,14 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
   return (
     <RNModal
-      style={[{margin: 0}, backdropStyle]}
+      style={[{ margin: 0 }, backdropStyle]}
       isVisible={visible}
       swipeDirection={['down']}
       onSwipeComplete={onHide}
       onBackdropPress={onHide}
       onBackButtonPress={onHide}
     >
-      <Container>
-        <SwipeLabel />
-
-        <InnerContainer>{children}</InnerContainer>
-      </Container>
+      {children}
     </RNModal>
   )
 }

@@ -1,7 +1,11 @@
+import { Stack } from '@/components/Stack'
+import UserProfilePicture from '@/components/UserProfilePicture'
 import { useMe } from '@/contexts/me'
 import { useStatusBar } from '@/contexts/status-bar'
 
-import React, { useLayoutEffect, useMemo } from 'react'
+import { Icon } from '@rneui/themed'
+import React, { useMemo } from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import {
   useDisciplineGroupInfoPresenter,
@@ -9,25 +13,25 @@ import {
 } from './DisciplineGroupInfoPresenter'
 import {
   Container,
-  ScrollContainer,
-  InitialLetterContainer,
-  InitialLetter,
-  TitleContainer,
+  TopContainer,
+  BottomContainer,
+  DisciplineGroupContainer,
+  DisciplineContainer,
+  GroupContainer,
   DisciplineCode,
+  DisciplineName,
   GroupCode,
-  Name,
+  GroupTeacher,
   DescriptionContainer,
   DescriptionLabel,
   Description,
-  TeacherContainer,
-  TeacherLabel,
-  TeacherName,
   MenuContainer,
   MenuLabel,
   MenuUrl,
-  ClassSchedulesContainer,
-  ClassSchedulesLabel,
-  ClassSchedule,
+  MembersContainer,
+  MembersLabel,
+  MembersPictureContainer,
+  MembersRemaining,
   ButtonContainer,
   SubscribeButton,
   UnsubscribeButton,
@@ -38,18 +42,13 @@ const DisciplineGroupInfoScreen: React.FC = () => {
     subscribing,
     unsubscribing,
     disciplineGroup,
+    disciplineGroupMembers,
     subscribeStudent,
     unsubscribeStudent,
   } = useDisciplineGroupInfoPresenter()
 
   const { user } = useMe()
-  const statusBar = useStatusBar()
-
-  const disciplineGroupCode = disciplineGroup?.code
-  const disciplineCode = disciplineGroup?.discipline?.code
-  const disciplineName = disciplineGroup?.discipline?.name
-
-  const disciplineCodeFirstLetter = disciplineCode?.charAt(0).toUpperCase()
+  const insets = useSafeAreaInsets()
 
   const isSubscribed = useMemo(() => {
     if (!disciplineGroup?.studentIds || !user || !user.student?.id) return false
@@ -57,58 +56,79 @@ const DisciplineGroupInfoScreen: React.FC = () => {
     return disciplineGroup.studentIds.includes(user.student.id)
   }, [disciplineGroup?.studentIds, user?.student?.id])
 
-  useLayoutEffect(() => {
-    statusBar.setTheme('primary')
-  }, [])
+  const disciplineGroupCode = disciplineGroup?.code
+  const disciplineCode = disciplineGroup?.discipline?.code
+  const disciplineName = disciplineGroup?.discipline?.name
+  const teacherName = disciplineGroup?.teacher?.user?.name
+
+  const studentMembers = disciplineGroupMembers.filter(
+    m => m.userType === 'STUDENT' && m.userId !== user?.id,
+  )
+  const chosenStudentMembers = studentMembers.slice(0, 10)
+  const remainingStudentMembers = studentMembers.length - 10
+
+  useStatusBar('primary')
 
   return (
     <Container
       headerProps={{
-        title: `${disciplineCode} - ${disciplineGroupCode}`,
-        subtitle: disciplineName,
-        titleAlign: 'center',
+        style: { paddingTop: 24, paddingVertical: 24, minHeight: 0 },
       }}
     >
-      <ScrollContainer>
-        <InitialLetterContainer>
-          <InitialLetter>{disciplineCodeFirstLetter}</InitialLetter>
-        </InitialLetterContainer>
+      <TopContainer>
+        <DisciplineGroupContainer>
+          <DisciplineContainer>
+            <DisciplineName>{disciplineName}</DisciplineName>
+            <DisciplineCode>{disciplineCode}</DisciplineCode>
+          </DisciplineContainer>
+          <GroupContainer>
+            <GroupCode>{disciplineGroupCode}</GroupCode>
 
-        <TitleContainer>
-          <DisciplineCode>{disciplineCode}</DisciplineCode>
-          <Name>{disciplineName}</Name>
-          <GroupCode>{disciplineGroupCode}</GroupCode>
-        </TitleContainer>
+            <Stack d="horizontal" s={2} style={{ alignItems: 'center' }}>
+              <Icon name="school" size={12} color="white" />
+              <GroupTeacher>{teacherName}</GroupTeacher>
+            </Stack>
+          </GroupContainer>
+        </DisciplineGroupContainer>
+      </TopContainer>
 
+      <BottomContainer>
         <DescriptionContainer>
           <DescriptionLabel>Descrição</DescriptionLabel>
           <Description>{disciplineGroup?.description}</Description>
         </DescriptionContainer>
-
-        <TeacherContainer>
-          <TeacherLabel>Professor</TeacherLabel>
-          <TeacherName>{disciplineGroup?.teacher?.user?.name}</TeacherName>
-        </TeacherContainer>
 
         <MenuContainer>
           <MenuLabel>Link da ementa</MenuLabel>
           <MenuUrl>{disciplineGroup?.menuUrl}</MenuUrl>
         </MenuContainer>
 
-        {!!disciplineGroup?.classTime && (
-          <ClassSchedulesContainer>
-            <ClassSchedulesLabel>Horários</ClassSchedulesLabel>
-            <ClassSchedule>
-              {disciplineGroup?.classTime.toString()}
-            </ClassSchedule>
-          </ClassSchedulesContainer>
-        )}
-      </ScrollContainer>
+        <MembersContainer>
+          <MembersLabel>Alunos</MembersLabel>
+
+          <MembersPictureContainer>
+            {chosenStudentMembers.map((s, i) => (
+              <UserProfilePicture
+                key={s.userId}
+                userId={s.userId}
+                pictureProps={{
+                  size: 36,
+                  style: { marginLeft: i > 0 ? -15 : 0, zIndex: -i },
+                }}
+              />
+            ))}
+
+            {remainingStudentMembers > 0 && (
+              <MembersRemaining>+ 7 pessoas</MembersRemaining>
+            )}
+          </MembersPictureContainer>
+        </MembersContainer>
+      </BottomContainer>
 
       {user?.type === 'STUDENT' && (
         <>
           {!isSubscribed ? (
-            <ButtonContainer>
+            <ButtonContainer style={{ marginBottom: insets.bottom + 16 }}>
               <SubscribeButton
                 title="Inscrever-se"
                 loading={subscribing}
@@ -118,7 +138,7 @@ const DisciplineGroupInfoScreen: React.FC = () => {
               />
             </ButtonContainer>
           ) : (
-            <ButtonContainer>
+            <ButtonContainer style={{ marginBottom: insets.bottom + 16 }}>
               <UnsubscribeButton
                 color="error"
                 title="Desinscrever-se"

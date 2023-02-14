@@ -67,6 +67,7 @@ const Routes: React.FC = () => {
                   <Stack.Screen
                     name="DisciplineGroupInfoScreen"
                     component={DisciplineGroupInfoScreen}
+                    options={{ headerShown: false, presentation: 'modal' }}
                   />
 
                   <Stack.Screen
@@ -77,9 +78,9 @@ const Routes: React.FC = () => {
                   <Stack.Screen
                     name="CreateGroupScreen"
                     component={CreateGroupScreen}
-                    />
-                    
-                    <Stack.Screen
+                  />
+
+                  <Stack.Screen
                     name="ListDisciplinesScreen"
                     component={ListDisciplinesScreen}
                     options={{ headerShown: false, presentation: 'modal' }}
