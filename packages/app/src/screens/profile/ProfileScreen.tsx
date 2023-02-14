@@ -25,6 +25,7 @@ import {
   OptionIcon,
   OptionName,
 } from './ProfileStyles'
+import { delay } from '@/utils/delay'
 
 export interface ProfileScreenProps {}
 
@@ -40,6 +41,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
   const previewPictureVisible = useBoolean()
 
   const cameraOrGalleryRef = useRef<'camera' | 'gallery'>()
+  const editPictureModalCallback = useRef<(() => void)>()
 
   const pickImageFromCamera = async () => {
     cameraOrGalleryRef.current = 'camera'
@@ -61,7 +63,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
     setPreviewPictureUri(result.uri)
 
     editPictureVisible.off()
-    previewPictureVisible.on()
+
+    editPictureModalCallback.current = () => {
+      previewPictureVisible.on()
+    }
   }
 
   const pickImageFromGallery = async () => {
@@ -84,7 +89,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
     setPreviewPictureUri(result.uri)
 
     editPictureVisible.off()
-    previewPictureVisible.on()
+
+    editPictureModalCallback.current = () => {
+      previewPictureVisible.on()
+    }
   }
 
   const handleUpdatePicture = async () => {
@@ -138,6 +146,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
       <BottomSheet
         visible={editPictureVisible.value}
         onHide={editPictureVisible.off}
+        onFinishHide={() => {
+          editPictureModalCallback.current?.()
+          editPictureModalCallback.current = undefined
+        }}
       >
         <Stack s={8}>
           <TouchableOpacity
@@ -219,11 +231,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
             Voltar
           </Text>
         </TouchableOpacity>
-
-        {/* <LoadingModal
-          visible={deletePost.loading}
-          description="Removendo postagem..."
-        />  */}
       </BottomSheet>
 
       <PreviewPictureModal

@@ -6,16 +6,14 @@ import { Container, SwipeLabel, InnerContainer } from './styles'
 export interface BottomSheetProps extends ModalProps {}
 
 export const BottomSheet: React.FC<BottomSheetProps> = ({
-  visible,
-  onHide,
   children,
+  ...props
 }) => {
   const insets = useSafeAreaInsets()
 
   return (
     <Modal
-      visible={visible}
-      onHide={onHide}
+      {...props}
       backdropStyle={{ justifyContent: 'flex-end' }}
     >
       <Container>

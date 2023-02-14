@@ -5,12 +5,14 @@ import RNModal from 'react-native-modal'
 export interface ModalProps {
   visible: boolean
   onHide?: () => void
+  onFinishHide?: () => void
   backdropStyle?: StyleProp<ViewStyle>
 }
 
 export const Modal: React.FC<ModalProps> = ({
   visible,
   onHide,
+  onFinishHide,
   backdropStyle,
   children,
 }) => {
@@ -22,6 +24,7 @@ export const Modal: React.FC<ModalProps> = ({
       onSwipeComplete={onHide}
       onBackdropPress={onHide}
       onBackButtonPress={onHide}
+      onModalHide={onFinishHide}
     >
       {children}
     </RNModal>
