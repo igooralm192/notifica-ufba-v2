@@ -3,6 +3,7 @@ import { Spacer } from '@/components/Spacer'
 import { useMe } from '@/contexts/me'
 import { useStatusBar } from '@/contexts/status-bar'
 import { useNavigation } from '@/helpers'
+import { useBoolean } from '@/hooks/common'
 
 import { Icon, SpeedDial, useTheme } from '@rneui/themed'
 import React, { useEffect, useRef } from 'react'
@@ -33,6 +34,7 @@ import {
   HeaderButton,
   ListContainer,
 } from './DisciplineGroupsStyles'
+import { SubscribeGroupModal } from './SubscribeGroupModal'
 
 export interface DisciplineGroupsScreenProps {}
 
@@ -54,6 +56,8 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
   const navigation = useNavigation()
   const insets = useSafeAreaInsets()
   const { theme } = useTheme()
+
+  const subscribeGroupConfirmVisible = useBoolean()
 
   const searchInputRef = useRef() as React.MutableRefObject<TextInput | null>
 
@@ -89,7 +93,26 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
     },
   ]
 
-  const menuActions = user?.type === 'TEACHER' ? teacherActions : []
+  const studentActions = [
+    {
+      title: 'Entrar em uma turma',
+      icon: {
+        name: 'location-enter',
+        type: 'material-community',
+        color: '#fff',
+      },
+      onPress: () => {
+        navigation.navigate('ListGroupsScreen', {
+          onDisciplineGroupSelected: () => {
+            subscribeGroupConfirmVisible.on()
+          },
+        })
+        menu.hide()
+      },
+    },
+  ]
+
+  const menuActions = user?.type === 'TEACHER' ? teacherActions : studentActions
 
   useEffect(() => {
     if (!searchInputRef?.current?.isFocused?.() && search.open) {
@@ -253,6 +276,12 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
           ))}
         </SpeedDial>
       )}
+
+      <SubscribeGroupModal
+        // visible={subscribeGroupConfirmVisible.value}
+        visible={true}
+        onHide={subscribeGroupConfirmVisible.off}
+      />
     </Container>
   )
 }

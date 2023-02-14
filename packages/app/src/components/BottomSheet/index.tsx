@@ -1,7 +1,7 @@
 import { Modal, ModalProps } from '@/components/Modal'
 import React from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { InnerContainer, Content } from './styles'
+import { InnerContainer } from './styles'
 
 export interface BottomSheetProps extends ModalProps {}
 
@@ -16,10 +16,10 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
     <Modal
       visible={visible}
       onHide={onHide}
-      backdropStyle={{ flexDirection: 'column-reverse' }}
+      backdropStyle={{ justifyContent: 'flex-end' }}
     >
       <InnerContainer style={{ paddingBottom: insets.bottom }}>
-        <Content>{children}</Content>
+        {children}
       </InnerContainer>
     </Modal>
   )

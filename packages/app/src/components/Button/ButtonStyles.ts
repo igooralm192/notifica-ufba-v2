@@ -11,19 +11,24 @@ const buttonStyleMap = {
   clear: {},
 }
 
-export const Container = styled(Button).attrs<ButtonProps>(({ type }) => {
-  return {
-    containerStyle: {
-      borderRadius: 32,
-    },
-    titleStyle: {
-      fontFamily: 'Quicksand_700Bold',
-      fontSize: 18,
-    },
-    buttonStyle: {
-      padding: 16,
-      borderRadius: 32,
-      ...(type ? buttonStyleMap[type] : {}),
-    },
-  }
-})``
+export const Container = styled(Button).attrs<ButtonProps>(
+  ({ type, titleStyle, buttonStyle }) => {
+    return {
+      titleStyle: [
+        {
+          fontFamily: 'Quicksand_700Bold',
+          fontSize: 18,
+        },
+        titleStyle,
+      ],
+      buttonStyle: [
+        {
+          padding: 16,
+          borderRadius: 32,
+        },
+        type ? buttonStyleMap[type] : {},
+        buttonStyle,
+      ],
+    }
+  },
+)``

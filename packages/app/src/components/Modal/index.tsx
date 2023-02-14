@@ -1,10 +1,7 @@
 import React from 'react'
-import {
-  Modal as RNModal,
-  Pressable,
-  StyleProp,
-  ViewStyle,
-} from 'react-native'
+import { StyleProp, ViewStyle } from 'react-native'
+import RNModal from 'react-native-modal'
+import { Container, SwipeLabel, InnerContainer } from './styles'
 
 export interface ModalProps {
   visible: boolean
@@ -20,23 +17,18 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
   return (
     <RNModal
-      animationType="fade"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onHide}
+      style={[{margin: 0}, backdropStyle]}
+      isVisible={visible}
+      swipeDirection={['down']}
+      onSwipeComplete={onHide}
+      onBackdropPress={onHide}
+      onBackButtonPress={onHide}
     >
-      <Pressable
-        style={[
-          {
-            flex: 1,
-            backgroundColor: 'rgba(0,0,0,.5)',
-          },
-          backdropStyle,
-        ]}
-        onPress={onHide}
-      >
-        {children}
-      </Pressable>
+      <Container>
+        <SwipeLabel />
+
+        <InnerContainer>{children}</InnerContainer>
+      </Container>
     </RNModal>
   )
 }
