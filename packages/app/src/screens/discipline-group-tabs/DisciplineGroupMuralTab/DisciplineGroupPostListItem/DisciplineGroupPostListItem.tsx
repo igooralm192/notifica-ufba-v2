@@ -6,7 +6,7 @@ import { LoadingModal } from '@/components/LoadingModal'
 import { Spacer } from '@/components/Spacer'
 import { useBoolean } from '@/hooks/common'
 
-import { Avatar, Icon, Text, useTheme } from '@rneui/themed'
+import { Icon, Text } from '@rneui/themed'
 import { format } from 'date-fns'
 import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
@@ -20,6 +20,7 @@ import {
   CreatedAt,
   ContentBody,
 } from './DisciplineGroupPostListItemStyles'
+import UserProfilePicture from '@/components/UserProfilePicture'
 
 export interface DisciplineGroupPostListItemProps {
   disciplineGroupPost: IDisciplineGroupPost
@@ -29,7 +30,6 @@ const DisciplineGroupPostListItem: React.FC<
   DisciplineGroupPostListItemProps
 > = ({ disciplineGroupPost }) => {
   const { deletePost } = useDisciplineGroupMuralPresenter()
-  const { theme } = useTheme()
 
   const bottomMenuVisible = useBoolean()
   const deletePostConfirmVisible = useBoolean()
@@ -44,14 +44,16 @@ const DisciplineGroupPostListItem: React.FC<
   return (
     <Container>
       <TopContainer>
-        <Avatar
-          size={32}
-          rounded
-          icon={{ name: 'user', type: 'font-awesome' }}
-          containerStyle={{ backgroundColor: theme.colors.primary }}
-        />
+        {disciplineGroupPost.authorId && (
+          <>
+            <UserProfilePicture
+              userId={disciplineGroupPost.authorId}
+              pictureProps={{ size: 32 }}
+            />
 
-        <Spacer d="horizontal" s={4} />
+            <Spacer d="horizontal" s={4} />
+          </>
+        )}
 
         <View style={{ flex: 1 }}>
           <AuthorName>{disciplineGroupPost.author?.name}</AuthorName>
@@ -121,7 +123,7 @@ const DisciplineGroupPostListItem: React.FC<
             Voltar
           </Text>
         </TouchableOpacity>
-        
+
         <ConfirmationModal
           visible={deletePostConfirmVisible.value}
           title="Remover postagem"

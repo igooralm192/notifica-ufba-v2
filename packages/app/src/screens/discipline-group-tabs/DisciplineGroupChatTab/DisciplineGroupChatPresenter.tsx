@@ -31,8 +31,6 @@ export const DisciplineGroupChatPresenter: React.FC = ({ children }) => {
   // TODO: Change to a named type
   const isChatVisible = tabs.currentIndex == 1
 
-  console.log({isChatVisible})
-
   const {
     isLoading,
     isFetchingMore,
