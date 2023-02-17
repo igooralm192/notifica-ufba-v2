@@ -1,9 +1,15 @@
 import { IDisciplineGroupMessage } from '@shared/entities'
 
+import api from '@/api'
+import { BottomSheet } from '@/components/BottomSheet'
+import { Spacer } from '@/components/Spacer'
+import { useBoolean } from '@/hooks/common'
 import { useMe } from '@/contexts/me'
 
+import { Icon, Text } from '@rneui/themed'
 import { format } from 'date-fns'
 import React from 'react'
+import { TouchableOpacity } from 'react-native'
 
 import {
   ReceivedContainer,
@@ -25,9 +31,19 @@ const DisciplineGroupMessageListItem: React.FC<
 > = ({ disciplineGroupMessage }) => {
   const { user } = useMe()
 
-  const wasSentByMe = user?.id === disciplineGroupMessage.sentById
+  const bottomMenuVisible = useBoolean()
 
+  const wasSentByMe = user?.id === disciplineGroupMessage.sentById
   const sentAt = format(disciplineGroupMessage.sentAt, 'dd/MM/yyyy HH:mm')
+
+  const handleDeleteMessage = async () => {
+    bottomMenuVisible.off()
+
+    await api.disciplineGroup.deleteMessage({
+      disciplineGroupId: disciplineGroupMessage.disciplineGroupId,
+      messageId: disciplineGroupMessage.id,
+    })
+  }
 
   const renderReicevedMessage = () => {
     return (
@@ -43,16 +59,71 @@ const DisciplineGroupMessageListItem: React.FC<
 
   const renderSentMessage = () => {
     return (
-      <SentContainer>
-        <SentMessageContainer>
-          <SentMessage>{disciplineGroupMessage.body}</SentMessage>
-        </SentMessageContainer>
-        <SentAt>{sentAt}</SentAt>
-      </SentContainer>
+      <TouchableOpacity activeOpacity={0.8} onLongPress={bottomMenuVisible.on}>
+        <SentContainer>
+          <SentMessageContainer>
+            <SentMessage>{disciplineGroupMessage.body}</SentMessage>
+          </SentMessageContainer>
+          <SentAt>{sentAt}</SentAt>
+        </SentContainer>
+      </TouchableOpacity>
     )
   }
 
-  return wasSentByMe ? renderSentMessage() : renderReicevedMessage()
+  return (
+    <>
+      {wasSentByMe ? renderSentMessage() : renderReicevedMessage()}
+      <BottomSheet
+        visible={bottomMenuVisible.value}
+        onHide={bottomMenuVisible.off}
+      >
+        <TouchableOpacity
+          activeOpacity={0.5}
+          onPress={handleDeleteMessage}
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+          }}
+        >
+          <Icon name="delete-outline" color="red" size={22} />
+
+          <Text
+            style={{
+              justifyContent: 'center',
+              marginLeft: 8,
+              color: 'red',
+              fontFamily: 'Inter_600SemiBold',
+            }}
+          >
+            Remover mensagem
+          </Text>
+        </TouchableOpacity>
+
+        <Spacer />
+
+        <TouchableOpacity
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingVertical: 8,
+          }}
+          activeOpacity={0.5}
+          onPress={bottomMenuVisible.off}
+        >
+          <Text
+            style={{
+              justifyContent: 'center',
+              fontFamily: 'Inter_600SemiBold',
+            }}
+          >
+            Voltar
+          </Text>
+        </TouchableOpacity>
+      </BottomSheet>
+    </>
+  )
 }
 
 export default DisciplineGroupMessageListItem

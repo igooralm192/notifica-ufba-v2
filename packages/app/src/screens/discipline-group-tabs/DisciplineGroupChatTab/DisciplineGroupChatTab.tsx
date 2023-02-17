@@ -22,12 +22,12 @@ import {
 import { useDisciplineGroupTabsPresenter } from '../DisciplineGroupTabsPresenter'
 
 const DisciplineGroupChatTab: React.FC = () => {
-  const insets = useSafeAreaInsets()
-
-  const { user } = useMe()
   const { disciplineGroup } = useDisciplineGroupTabsPresenter()
   const { isFetchingMore, disciplineGroupMessages, onNextPage } =
     useDisciplineGroupChatPresenter()
+
+  const { user } = useMe()
+  const insets = useSafeAreaInsets()
 
   const [message, setMessage] = useState('')
 
@@ -80,7 +80,7 @@ const DisciplineGroupChatTab: React.FC = () => {
             placeholder="Envie uma mensagem"
             value={message}
             onChangeText={setMessage}
-            onSubmitEditing={handleSendMessage}
+            multiline
           />
         </SendInputContainer>
 

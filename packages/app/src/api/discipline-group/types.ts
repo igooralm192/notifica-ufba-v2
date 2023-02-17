@@ -60,15 +60,26 @@ export namespace IGetDisciplineGroupMessagesEndpoint {
   }
 }
 
-export namespace IDisciplineGroupMessageListener {
+export namespace IAddedMessagesListener {
   export interface Params {
     disciplineGroupId: string
   }
 
-  export type Callback = (
-    disciplineGroupMessage: IDisciplineGroupMessage,
-  ) => void
+  export interface Query {
+    from?: Date
+  }
+
+  export type Callback = (messages: IDisciplineGroupMessage[]) => void
 }
+
+export namespace IRemovedMessagesListener {
+  export interface Params {
+    disciplineGroupId: string
+  }
+
+  export type Callback = (messages: IDisciplineGroupMessage[]) => void
+}
+
 
 export namespace ICreateMessageEndpoint {
   export interface Params {
@@ -79,6 +90,13 @@ export namespace ICreateMessageEndpoint {
 
   export interface Body {
     message: string
+  }
+}
+
+export namespace IDeleteMessageEndpoint {
+  export interface Params {
+    disciplineGroupId: string
+    messageId: string
   }
 }
 

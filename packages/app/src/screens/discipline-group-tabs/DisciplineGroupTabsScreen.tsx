@@ -14,12 +14,10 @@ import {
 import { Container } from './DisciplineGroupTabsStyles'
 
 const DisciplineGroupTabsScreen: React.FC = () => {
-  const { initialIndex, disciplineGroup } = useDisciplineGroupTabsPresenter()
+  const { disciplineGroup, tabs } = useDisciplineGroupTabsPresenter()
 
   const navigation = useNavigation()
   const { theme } = useTheme()
-
-  const [index, setIndex] = useState(initialIndex)
 
   useStatusBar('primary')
 
@@ -45,8 +43,8 @@ const DisciplineGroupTabsScreen: React.FC = () => {
       }}
     >
       <Tab
-        value={index}
-        onChange={e => setIndex(e)}
+        value={tabs.currentIndex}
+        onChange={tabs.onChangeIndex}
         indicatorStyle={{
           backgroundColor: 'white',
           height: 3,
@@ -77,7 +75,7 @@ const DisciplineGroupTabsScreen: React.FC = () => {
         />
       </Tab>
 
-      <TabView value={index} onChange={setIndex} animationType="spring">
+      <TabView value={tabs.currentIndex} onChange={tabs.onChangeIndex} animationType="spring">
         <TabView.Item style={{ width: '100%' }}>
           <DisciplineGroupMuralTab />
         </TabView.Item>

@@ -3,7 +3,6 @@ import styled from 'styled-components/native'
 
 export const Container = styled.View`
   max-width: 300px;
-  /* min-width: 100px; */
   padding: 0 16px;
 `
 

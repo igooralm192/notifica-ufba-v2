@@ -66,7 +66,7 @@ export const BottomTabsNavigator = () => {
           component={LastMessagesScreen}
         />
       )}
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="DisciplinesScreen"
         options={{
           title: 'Disciplinas',
@@ -80,7 +80,7 @@ export const BottomTabsNavigator = () => {
           ),
         }}
         component={DisciplinesScreen}
-      />
+      /> */}
       <BottomTab.Screen
         name="ProfileScreen"
         options={{

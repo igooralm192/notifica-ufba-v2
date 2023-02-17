@@ -5,7 +5,7 @@ import { useGetDisciplineGroup } from '@/hooks/api'
 import { AppNavigation } from '@/types/navigation'
 
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 
 interface DisciplineGroupTabsPresenterProps {
   disciplineGroupId: string
@@ -13,8 +13,11 @@ interface DisciplineGroupTabsPresenterProps {
 }
 
 export interface DisciplineGroupTabsPresenterContextData {
-  initialIndex: number
   disciplineGroup: IDisciplineGroup
+  tabs: {
+    currentIndex: number
+    onChangeIndex: (index: number) => void
+  }
 }
 
 const DisciplineGroupTabsPresenterContext = React.createContext(
@@ -24,6 +27,8 @@ const DisciplineGroupTabsPresenterContext = React.createContext(
 export const DisciplineGroupTabsPresenter: React.FC<
   DisciplineGroupTabsPresenterProps
 > = ({ disciplineGroupId, initialTab, children }) => {
+  const [index, setIndex] = useState(initialTab === 'chat' ? 1 : 0)
+
   const { isLoading, disciplineGroup } = useGetDisciplineGroup({
     disciplineGroupId,
   })
@@ -34,8 +39,11 @@ export const DisciplineGroupTabsPresenter: React.FC<
   return (
     <DisciplineGroupTabsPresenterContext.Provider
       value={{
-        initialIndex: initialTab === 'chat' ? 1 : 0,
         disciplineGroup,
+        tabs: {
+          currentIndex: index,
+          onChangeIndex: setIndex
+        }
       }}
     >
       {children}

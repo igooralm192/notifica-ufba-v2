@@ -8,12 +8,11 @@ import { useEffect } from 'react'
 import { InfiniteData, useInfiniteQuery, useQueryClient } from 'react-query'
 import Toast from 'react-native-toast-message'
 import { IUseGetAllDisciplineGroupMessages } from './types'
-import { getMessageStore } from '@/state/zustand/message'
 
 export const useGetAllDisciplineGroupMessages = (
   params: IUseGetAllDisciplineGroupMessages.Params,
   query: IUseGetAllDisciplineGroupMessages.Query,
-  callback?: IUseGetAllDisciplineGroupMessages.Callback,
+  enabled = true
 ): IUseGetAllDisciplineGroupMessages.Output => {
   const queryClient = useQueryClient()
 
@@ -30,7 +29,7 @@ export const useGetAllDisciplineGroupMessages = (
         )
       },
       {
-        enabled: !!params.disciplineGroupId,
+        enabled,
         keepPreviousData: true,
         getNextPageParam: lastPage => {
           if (!lastPage || !lastPage.nextCursor) return undefined
@@ -48,9 +47,14 @@ export const useGetAllDisciplineGroupMessages = (
     )
 
   useEffect(() => {
-    const unsubscribe = api.disciplineGroup.disciplineGroupMessageListener(
+    if (isLoading || !enabled) return
+
+    const firstMessage = data?.pages?.[0].results?.[0]
+
+    const unsubscribe = api.disciplineGroup.addedMessagesListener(
       { disciplineGroupId: params.disciplineGroupId },
-      disciplineGroupMessage => {
+      { from: firstMessage?.sentAt },
+      messages => {
         queryClient.invalidateQueries('lastMessages')
 
         queryClient.setQueryData<
@@ -61,27 +65,16 @@ export const useGetAllDisciplineGroupMessages = (
           const firstPage = oldData.pages[0]
           const restPages = oldData.pages.slice(1, oldData.pages.length)
 
-          if (
-            !firstPage.results.find(
-              message => message.id === disciplineGroupMessage.id,
-            )
-          ) {
-            getMessageStore().setState({ lastMessage: disciplineGroupMessage })
-            callback?.(disciplineGroupMessage)
-          }
-
           firstPage.results = joinData(
             firstPage.results,
-            [disciplineGroupMessage],
+            messages,
             (a, b) => a.id === b.id,
             'sentAt',
             'desc',
           )
 
-          restPages.splice(0, 0, firstPage)
-
           return {
-            pages: restPages,
+            pages: [firstPage, ...restPages],
             pageParams: oldData.pageParams,
           }
         })
@@ -89,7 +82,51 @@ export const useGetAllDisciplineGroupMessages = (
     )
 
     return () => unsubscribe()
-  }, [params.disciplineGroupId])
+  }, [params.disciplineGroupId, isLoading, enabled])
+
+  useEffect(() => {
+    if (isLoading || !enabled) return
+
+    const unsubscribe = api.disciplineGroup.removedMessagesListener(
+      { disciplineGroupId: params.disciplineGroupId },
+      messages => {
+        queryClient.invalidateQueries('lastMessages')
+
+        const removedMessageIds = messages.map(m => m.id)
+
+        queryClient.setQueryData<
+          InfiniteData<IGetDisciplineGroupMessagesEndpoint.Response>
+        >(['disciplineGroupMessages', params.disciplineGroupId], oldData => {
+          if (!oldData) return { pages: [], pageParams: [] }
+
+          const firstPages = oldData.pages.slice(0, oldData.pages.length - 1)
+          const lastPage = oldData.pages[oldData.pages.length - 1]
+
+          oldData.pages.forEach(page => {
+            page.results = page.results.filter(
+              r => !removedMessageIds.includes(r.id),
+            )
+          })
+
+          if (
+            lastPage?.nextCursor &&
+            removedMessageIds.includes(lastPage?.nextCursor)
+          ) {
+            lastPage.nextCursor =
+              lastPage.results.length > 0
+                ? lastPage.results[lastPage.results.length - 1].id
+                : firstPages.length > 0
+                ? firstPages[firstPages.length - 1].nextCursor
+                : undefined
+          }
+
+          return oldData
+        })
+      },
+    )
+
+    return () => unsubscribe()
+  }, [params.disciplineGroupId, isLoading, enabled])
 
   return {
     isLoading,

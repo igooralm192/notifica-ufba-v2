@@ -16,13 +16,15 @@ import {
   orderBy,
   query,
   startAfter,
+  endBefore,
   limit as limitFirestore,
   getDoc,
   getDocs,
   setDoc,
+  deleteDoc,
   onSnapshot,
+  Timestamp,
 } from 'firebase/firestore'
-import * as Sentry from 'sentry-expo'
 
 import {
   ICreatePostEndpoint,
@@ -32,10 +34,12 @@ import {
   IGetDisciplineGroupPostsEndpoint,
   IGetDisciplineGroupMembersEndpoint,
   IGetDisciplineGroupMessagesEndpoint,
-  IDisciplineGroupMessageListener,
+  IAddedMessagesListener,
+  IRemovedMessagesListener,
   IGetMyLastMessagesEndpoint,
   ISubscribeStudentEndpoint,
   IUnsubscribeStudentEndpoint,
+  IDeleteMessageEndpoint,
   IDeleteDisciplineGroupEndpoint,
   IDeleteDisciplineGroupPostEndpoint,
   IRemoveDisciplineGroupStudentEndpoint,
@@ -150,50 +154,65 @@ export const getDisciplineGroupMessages = async (
     querySnapshot.docs.length > 0
       ? querySnapshot.docs[querySnapshot.docs.length - 1]
       : undefined
-
-  const nextDocs = lastDocument
-    ? await getDocs(
-        query(
-          collectionRef,
-          orderBy('sentAt', 'desc'),
-          startAfter(lastDocument),
-          limitFirestore(1),
-        ),
-      )
-    : undefined
-
+  
   const disciplineGroupMessages = DisciplineGroupMessageMapper.toEntityList(
     querySnapshot.docs.map(doc => doc.data()),
   )
 
   return {
     results: disciplineGroupMessages,
-    nextCursor: nextDocs && !nextDocs.empty ? nextDocs.docs[0].id : undefined,
+    nextCursor: lastDocument ? lastDocument.id : undefined,
   }
 }
 
-export const disciplineGroupMessageListener = (
-  { disciplineGroupId }: IDisciplineGroupMessageListener.Params,
-  callback: IDisciplineGroupMessageListener.Callback,
+export const addedMessagesListener = (
+  { disciplineGroupId }: IAddedMessagesListener.Params,
+  { from }: IAddedMessagesListener.Query,
+  callback: IAddedMessagesListener.Callback,
 ): (() => void) => {
   const docRef = doc(db, 'disciplineGroupMessages', disciplineGroupId)
   const collectionRef = collection(docRef, 'messages')
 
-  const queryRef = query(
-    collectionRef,
-    orderBy('sentAt', 'desc'),
-    limitFirestore(1),
-  )
+  const queryRef = from
+    ? query(
+        collectionRef,
+        orderBy('sentAt', 'desc'),
+        endBefore(Timestamp.fromDate(from)),
+      )
+    : query(collectionRef, orderBy('sentAt', 'desc'))
+
 
   const unsubscribe = onSnapshot(queryRef, querySnapshot => {
-    Sentry.Native.captureMessage('QUERY SNAPSHOT')
+    const addedDocs = querySnapshot
+      .docChanges()
+      .filter(change => change.type === 'added')
+      .map(change => change.doc.data())
 
-    const disciplineGroupMessages = DisciplineGroupMessageMapper.toEntityList(
-      querySnapshot.docs.map(doc => doc.data()),
-    )
+    if (addedDocs.length > 0) {
+      callback?.(DisciplineGroupMessageMapper.toEntityList(addedDocs))
+    }
+  })
 
-    if (disciplineGroupMessages.length > 0) {
-      callback(disciplineGroupMessages[0])
+  return unsubscribe
+}
+
+export const removedMessagesListener = (
+  { disciplineGroupId }: IRemovedMessagesListener.Params,
+  callback: IRemovedMessagesListener.Callback,
+): (() => void) => {
+  const docRef = doc(db, 'disciplineGroupMessages', disciplineGroupId)
+  const collectionRef = collection(docRef, 'messages')
+
+  const queryRef = query(collectionRef, orderBy('sentAt', 'desc'))
+
+  const unsubscribe = onSnapshot(queryRef, querySnapshot => {
+    const removedDocs = querySnapshot
+      .docChanges()
+      .filter(change => change.type === 'removed')
+      .map(change => change.doc.data())
+
+    if (removedDocs.length > 0) {
+      callback?.(DisciplineGroupMessageMapper.toEntityList(removedDocs))
     }
   })
 
@@ -229,6 +248,21 @@ export const createMessage = async (
     message,
     onlyNotify: true,
   })
+}
+
+export const deleteMessage = async ({
+  disciplineGroupId,
+  messageId,
+}: IDeleteMessageEndpoint.Params) => {
+  const docRef = doc(
+    db,
+    'disciplineGroupMessages',
+    disciplineGroupId,
+    'messages',
+    messageId,
+  )
+
+  await deleteDoc(docRef)
 }
 
 export const createPost = async (

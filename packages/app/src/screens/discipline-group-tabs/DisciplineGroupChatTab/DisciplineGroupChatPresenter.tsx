@@ -26,7 +26,12 @@ const initialFilter: IChatFilterParams = {
 }
 
 export const DisciplineGroupChatPresenter: React.FC = ({ children }) => {
-  const { disciplineGroup } = useDisciplineGroupTabsPresenter()
+  const { disciplineGroup, tabs } = useDisciplineGroupTabsPresenter()
+
+  // TODO: Change to a named type
+  const isChatVisible = tabs.currentIndex == 1
+
+  console.log({isChatVisible})
 
   const {
     isLoading,
@@ -37,6 +42,7 @@ export const DisciplineGroupChatPresenter: React.FC = ({ children }) => {
   } = useGetAllDisciplineGroupMessages(
     { disciplineGroupId: disciplineGroup.id },
     initialFilter,
+    isChatVisible
   )
 
   const handleNextPage = () => {
