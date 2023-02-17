@@ -66,6 +66,7 @@ const ListGroupsItem: React.FC<ListGroupsItemProps> = ({
 
             {isMember && (
               <ListItem.Chevron
+                type='material-community'
                 name="check-circle"
                 color={theme.colors.primary}
                 size={20}

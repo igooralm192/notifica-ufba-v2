@@ -7,19 +7,19 @@ export const Container = styled.View`
 `
 
 export const MessageContainer = styled.View`
-  padding: 12px 16px;
+  padding: 10px 16px;
   border-radius: 16px;
   min-width: 50px;
 `
 
 export const SentBy = styled(Text)`
-  font-family: 'Quicksand_700Bold';
-  font-size: 14px;
+  font-family: 'Montserrat_700Bold';
+  font-size: 12px;
 `
 
 export const Message = styled(Text)`
-  font-family: 'Quicksand_500Medium';
-  font-size: 12px;
+  font-family: 'Montserrat_500Medium';
+  font-size: 14px;
 `
 
 export const SentAt = styled(Text)`
@@ -31,6 +31,7 @@ export const SentAt = styled(Text)`
 `
 
 export const ReceivedContainer = styled(Container)`
+  padding: 0 4px;
   align-self: flex-start;
   align-items: flex-start;
 `

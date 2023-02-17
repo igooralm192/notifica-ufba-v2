@@ -3,13 +3,15 @@ import { IDisciplineGroupMessage } from '@shared/entities'
 import api from '@/api'
 import { BottomSheet } from '@/components/BottomSheet'
 import { Spacer } from '@/components/Spacer'
+import { Stack } from '@/components/Stack'
+import UserProfilePicture from '@/components/UserProfilePicture'
 import { useBoolean } from '@/hooks/common'
 import { useMe } from '@/contexts/me'
 
 import { Icon, Text } from '@rneui/themed'
 import { format } from 'date-fns'
 import React from 'react'
-import { TouchableOpacity } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 
 import {
   ReceivedContainer,
@@ -48,11 +50,22 @@ const DisciplineGroupMessageListItem: React.FC<
   const renderReicevedMessage = () => {
     return (
       <ReceivedContainer>
-        <ReceivedMessageContainer>
-          <ReceivedSentBy>{disciplineGroupMessage.sentBy}</ReceivedSentBy>
-          <ReceivedMessage>{disciplineGroupMessage.body}</ReceivedMessage>
-        </ReceivedMessageContainer>
-        <SentAt>{sentAt}</SentAt>
+        <View style={{ flexDirection: 'row' }}>
+          <UserProfilePicture
+            userId={disciplineGroupMessage.sentById}
+            pictureProps={{ size: 28 }}
+          />
+
+          <Spacer d="horizontal" s={4} />
+
+          <View>
+            <ReceivedMessageContainer>
+              <ReceivedSentBy>{disciplineGroupMessage.sentBy}</ReceivedSentBy>
+              <ReceivedMessage>{disciplineGroupMessage.body}</ReceivedMessage>
+            </ReceivedMessageContainer>
+            <SentAt>{sentAt}</SentAt>
+          </View>
+        </View>
       </ReceivedContainer>
     )
   }
