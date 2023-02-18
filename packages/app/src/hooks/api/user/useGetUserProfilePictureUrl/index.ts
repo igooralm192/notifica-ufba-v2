@@ -15,6 +15,7 @@ export const useGetUserProfilePictureUrl = (
     () => api.user.getUserProfilePictureUrl(params),
     {
       enabled,
+      staleTime: Infinity,
       onError: (error: BaseError) => {
         Toast.show({
           type: 'error',
