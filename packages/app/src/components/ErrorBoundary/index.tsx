@@ -3,7 +3,7 @@ import {
   ErrorBoundary as ReactErrorBoundary,
   FallbackProps,
 } from 'react-error-boundary'
-import { useQueryErrorResetBoundary } from 'react-query'
+import { useQueryErrorResetBoundary } from '@tanstack/react-query'
 import * as Sentry from 'sentry-expo'
 
 import {

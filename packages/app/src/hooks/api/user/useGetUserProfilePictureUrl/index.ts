@@ -1,7 +1,7 @@
 import api from '@/api'
 import { BaseError } from '@/helpers'
 
-import { useQuery } from 'react-query'
+import { useQuery } from '@tanstack/react-query'
 import Toast from 'react-native-toast-message'
 
 import { IUseGetUserProfilePictureUrl } from './types'

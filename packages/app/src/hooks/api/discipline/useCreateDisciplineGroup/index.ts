@@ -1,7 +1,7 @@
 import api from '@/api'
 import { BaseError } from '@/helpers'
 
-import { useMutation, useQueryClient } from 'react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import Toast from 'react-native-toast-message'
 
 import { IUseCreateDisciplineGroup } from './types'

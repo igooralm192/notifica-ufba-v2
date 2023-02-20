@@ -2,7 +2,7 @@ import { ILastMessageDTO } from '@shared/dtos'
 import api from '@/api'
 import { BaseError } from '@/helpers'
 
-import { useInfiniteQuery } from 'react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import Toast from 'react-native-toast-message'
 
 import { IUseGetLastMessages } from './types'
@@ -19,11 +19,13 @@ export const useGetLastMessages = (
     isRefetching,
     isFetchingNextPage,
   } = useInfiniteQuery(
-    'lastMessages',
-    async ({ pageParam = query }) => {
+    ['lastMessages'],
+    async ({ pageParam }) => {
+      const pageParams = pageParam ?? query
+
       return api.disciplineGroup.getMyLastMessages({
-        page: pageParam.page,
-        limit: pageParam.limit,
+        page: pageParams?.page,
+        limit: pageParams?.limit,
       })
     },
     {

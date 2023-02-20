@@ -10,7 +10,7 @@ import { AuthState } from '@/store/auth/types'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import React, { useContext, useEffect } from 'react'
 import Toast from 'react-native-toast-message'
-import { useQueryClient } from 'react-query'
+import { useQueryClient } from '@tanstack/react-query'
 
 export interface AuthContextData {
   state: AuthState
@@ -30,9 +30,9 @@ const AuthProviderBase: React.FC = ({ children }) => {
   }
 
   useEffect(() => {
-    queryClient.invalidateQueries('user')
-    queryClient.invalidateQueries('disciplineGroups', { refetchActive: false })
-    queryClient.invalidateQueries('lastMessages', { refetchActive: false })
+    queryClient.invalidateQueries(['user'])
+    queryClient.invalidateQueries(['disciplineGroups'])
+    queryClient.invalidateQueries(['lastMessages'])
   }, [authState])
 
   useEffect(() => {

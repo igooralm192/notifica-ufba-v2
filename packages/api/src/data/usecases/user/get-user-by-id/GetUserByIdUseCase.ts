@@ -27,20 +27,17 @@ export class GetUserByIdUseCase implements IGetUserByIdUseCase {
       return left(new UserDoesNotExistError())
     }
 
-    const readPictureUrlResult =
-      await this.readUserPictureUrlUseCase.readPictureUrl({ userId })
+    // const readPictureUrlResult =
+    //   await this.readUserPictureUrlUseCase.readPictureUrl({ userId })
 
-    if (readPictureUrlResult.isLeft()) {
-      return left(readPictureUrlResult.value)
-    }
+    // if (readPictureUrlResult.isLeft()) {
+    //   return left(readPictureUrlResult.value)
+    // }
 
-    const { url: profilePictureUrl } = readPictureUrlResult.value
+    // const { url: profilePictureUrl } = readPictureUrlResult.value
 
     return right({
-      user: {
-        ...user,
-        profilePictureUrl,
-      },
+      user,
     })
   }
 }

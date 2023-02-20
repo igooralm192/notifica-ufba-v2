@@ -1,5 +1,5 @@
 import api from '@/api'
-import { useQuery } from 'react-query'
+import { useQuery } from '@tanstack/react-query'
 import { IUseGetDisciplineGroup } from './types'
 
 export const useGetDisciplineGroup = (
@@ -10,5 +10,8 @@ export const useGetDisciplineGroup = (
     () => api.disciplineGroup.getDisciplineGroup(params.disciplineGroupId),
   )
 
-  return { isLoading, disciplineGroup: data?.disciplineGroup || null }
+  return {
+    isLoading,
+    disciplineGroup: data?.disciplineGroup || null,
+  }
 }

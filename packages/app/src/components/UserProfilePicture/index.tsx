@@ -13,11 +13,8 @@ const UserProfilePicture: React.FC<UserProfilePictureProps> = ({
   pictureProps,
 }) => {
   const { isLoading, url } = useGetUserProfilePictureUrl({ userId })
-
-  const pictureUrl = url ? `${url}?${new Date().valueOf()}` : null
-
   return (
-    <Picture {...pictureProps} loading={isLoading} pictureUrl={pictureUrl} />
+    <Picture {...pictureProps} loading={isLoading} pictureUrl={url || null} />
   )
 }
 

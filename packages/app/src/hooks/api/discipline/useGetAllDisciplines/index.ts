@@ -2,7 +2,7 @@ import { IDiscipline } from '@shared/entities'
 import api from '@/api'
 import { BaseError } from '@/helpers'
 
-import { useInfiniteQuery } from 'react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import Toast from 'react-native-toast-message'
 import { IUseGetAllDisciplines } from './types'
 
@@ -19,11 +19,13 @@ export const useGetAllDisciplines = (
     isFetchingNextPage,
   } = useInfiniteQuery(
     ['disciplines', query],
-    async ({ pageParam = query }) => {
+    async ({ pageParam }) => {
+      const pageParams = pageParam ?? query
+
       return api.discipline.getDisciplines({
-        page: pageParam.page,
-        limit: pageParam.limit,
-        code: pageParam.code,
+        page: pageParams?.page,
+        limit: pageParams?.limit,
+        code: pageParams?.code,
       })
     },
     {

@@ -1,6 +1,6 @@
 import api from '@/api'
 import { BaseError } from '@/helpers'
-import { useMutation, useQueryClient } from 'react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import Toast from 'react-native-toast-message'
 import { IUseSubscribeStudent } from './types'
 
@@ -15,8 +15,8 @@ export const useSubscribeStudent = (): IUseSubscribeStudent.Output => {
       {
         onSuccess: (_, { disciplineGroupId }: IUseSubscribeStudent.Params) => {
           queryClient.invalidateQueries(['disciplineGroups', disciplineGroupId])
-          queryClient.invalidateQueries('disciplineGroups')
-          queryClient.invalidateQueries('lastMessages')
+          queryClient.invalidateQueries(['disciplineGroups'])
+          queryClient.invalidateQueries(['lastMessages'])
         },
         onError: (error: BaseError) => {
           Toast.show({

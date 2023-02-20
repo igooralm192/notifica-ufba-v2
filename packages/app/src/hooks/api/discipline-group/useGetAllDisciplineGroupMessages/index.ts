@@ -5,7 +5,11 @@ import { BaseError } from '@/helpers'
 import { joinData } from '@/utils/array'
 
 import { useEffect } from 'react'
-import { InfiniteData, useInfiniteQuery, useQueryClient } from 'react-query'
+import {
+  InfiniteData,
+  useInfiniteQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
 import Toast from 'react-native-toast-message'
 import { IUseGetAllDisciplineGroupMessages } from './types'
 
@@ -19,12 +23,14 @@ export const useGetAllDisciplineGroupMessages = (
   const { isLoading, data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery(
       ['disciplineGroupMessages', params.disciplineGroupId],
-      async ({ pageParam = query }) => {
+      async ({ pageParam }) => {
+        const pageParams = pageParam ?? query
+
         return api.disciplineGroup.getDisciplineGroupMessages(
           { disciplineGroupId: params.disciplineGroupId },
           {
-            nextCursor: pageParam.nextCursor,
-            limit: pageParam.limit,
+            nextCursor: pageParams?.nextCursor,
+            limit: pageParams?.limit,
           },
         )
       },
@@ -55,7 +61,7 @@ export const useGetAllDisciplineGroupMessages = (
       { disciplineGroupId: params.disciplineGroupId },
       { from: firstMessage?.sentAt },
       messages => {
-        queryClient.invalidateQueries('lastMessages')
+        queryClient.invalidateQueries(['lastMessages'])
 
         queryClient.setQueryData<
           InfiniteData<IGetDisciplineGroupMessagesEndpoint.Response>
@@ -90,7 +96,7 @@ export const useGetAllDisciplineGroupMessages = (
     const unsubscribe = api.disciplineGroup.removedMessagesListener(
       { disciplineGroupId: params.disciplineGroupId },
       messages => {
-        queryClient.invalidateQueries('lastMessages')
+        queryClient.invalidateQueries(['lastMessages'])
 
         const removedMessageIds = messages.map(m => m.id)
 

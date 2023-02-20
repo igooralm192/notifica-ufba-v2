@@ -42,8 +42,8 @@ export const DisciplineGroupTabsPresenter: React.FC<
         disciplineGroup,
         tabs: {
           currentIndex: index,
-          onChangeIndex: setIndex
-        }
+          onChangeIndex: setIndex,
+        },
       }}
     >
       {children}

@@ -42,11 +42,10 @@ import { ThemeProvider, useTheme } from '@rneui/themed'
 
 import AppLoading from 'expo-app-loading'
 import * as Linking from 'expo-linking'
-import React, { useEffect } from 'react'
-import { useState } from 'react'
+import React from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThemeProvider as StyledProvider } from 'styled-components/native'
 
 export const LayoutProvider: React.FC = ({ children }) => {
@@ -139,7 +138,12 @@ export const NavigationProvider: React.FC = ({ children }) => {
 
 export const HttpProvider: React.FC = ({ children }) => {
   const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: 3 } },
+    defaultOptions: {
+      queries: {
+        cacheTime: 1000 * 60 * 60 * 24, // 24 hours
+        retry: 3,
+      },
+    },
   })
 
   return (

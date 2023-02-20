@@ -1,7 +1,7 @@
 import api from '@/api'
 import { BaseError } from '@/helpers'
 
-import { useMutation } from 'react-query'
+import { useMutation } from '@tanstack/react-query'
 import Toast from 'react-native-toast-message'
 
 import { IUseResetPassword } from './types'

@@ -2,7 +2,7 @@ import { IDisciplineGroup } from '@shared/entities'
 import api from '@/api'
 import { BaseError } from '@/helpers'
 
-import { useInfiniteQuery } from 'react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import Toast from 'react-native-toast-message'
 import { IUseGetAllDisciplineGroups } from './types'
 
@@ -19,19 +19,21 @@ export const useGetAllDisciplineGroups = (
     isFetchingNextPage,
   } = useInfiniteQuery(
     ['disciplineGroups', query],
-    async ({ pageParam = query }) => {
+    async ({ pageParam }) => {
+      const pageParams = pageParam ?? query
+
       return api.disciplineGroup.getDisciplineGroups({
         query: {
-          studentId: pageParam.studentId,
-          teacherId: pageParam.teacherId,
-          search: pageParam.search,
+          studentId: pageParams?.studentId,
+          teacherId: pageParams?.teacherId,
+          search: pageParams?.search,
         },
-        page: pageParam.page,
-        limit: pageParam.limit,
+        page: pageParams?.page,
+        limit: pageParams?.limit,
       })
     },
     {
-      // enabled: !!query.studentId || !!query.teacherId,
+      enabled: !!query.studentId || !!query.teacherId,
       keepPreviousData: true,
       getNextPageParam: (lastPage, pages) => {
         const allResults = pages.reduce(

@@ -2,7 +2,7 @@ import { IDisciplineGroupPost } from '@shared/entities'
 import api from '@/api'
 import { BaseError } from '@/helpers'
 
-import { useInfiniteQuery } from 'react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import Toast from 'react-native-toast-message'
 import { IUseGetAllDisciplineGroupPosts } from './types'
 
@@ -20,12 +20,14 @@ export const useGetAllDisciplineGroupPosts = (
     isFetchingNextPage,
   } = useInfiniteQuery(
     ['disciplineGroupPosts', params.disciplineGroupId],
-    async ({ pageParam = query }) => {
+    async ({ pageParam }) => {
+      const pageParams = pageParam ?? query
+      
       return api.disciplineGroup.getDisciplineGroupPosts(
         params.disciplineGroupId,
         {
-          page: pageParam.page,
-          limit: pageParam.limit,
+          page: pageParams?.page,
+          limit: pageParams?.limit,
         },
       )
     },

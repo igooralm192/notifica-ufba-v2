@@ -1,7 +1,7 @@
 import api from '@/api'
 import { BaseError } from '@/helpers'
 
-import { useQuery } from 'react-query'
+import { useQuery } from '@tanstack/react-query'
 import Toast from 'react-native-toast-message'
 
 import { IUseGetMyUser } from './types'
@@ -10,7 +10,7 @@ export const useGetMyUser = (
   params: IUseGetMyUser.Params,
 ): IUseGetMyUser.Output => {
   const { isLoading, data } = useQuery(
-    'user',
+    ['user'],
     () => api.user.getMyUser(),
     {
       enabled: params.isAuthenticated,

@@ -80,5 +80,5 @@ export const getUserProfilePictureUrl = async ({
 }: IGetUserProfilePictureEndpoint.Params): Promise<IGetUserProfilePictureEndpoint.Response> => {
   const response = await api.get(`/users/${userId}/profile-picture`)
 
-  return { url: response.data.url || undefined }
+  return { url: response.data.url ? `${response.data.url}?${new Date().valueOf()}` : undefined }
 }
