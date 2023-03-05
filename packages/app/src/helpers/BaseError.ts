@@ -1,6 +1,6 @@
 export type BaseErrorContext<V = any> = { key: string; value: V }
 
-export class BaseError implements Error {
+export class BaseError extends Error {
   name: string
 
   constructor(
@@ -10,6 +10,7 @@ export class BaseError implements Error {
     public readonly stack?: string,
     public description?: string,
   ) {
+    super(message)
     this.name = code
   }
 }

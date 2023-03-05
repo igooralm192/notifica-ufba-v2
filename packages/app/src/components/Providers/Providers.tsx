@@ -2,6 +2,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { ApiProvider } from '@/contexts/api'
 import { AuthProvider } from '@/contexts/auth'
 import { StatusBarProvider } from '@/contexts/status-bar'
+import { ToastProvider } from '@/contexts/toast'
 import { themeOptions } from '@/styles/theme'
 import { AppNavigation } from '@/types/navigation'
 import {
@@ -44,8 +45,8 @@ import AppLoading from 'expo-app-loading'
 import * as Linking from 'expo-linking'
 import React from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-import Toast from 'react-native-toast-message'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import { QueryCache, MutationCache } from 'react-query/core'
 import { ThemeProvider as StyledProvider } from 'styled-components/native'
 
 export const LayoutProvider: React.FC = ({ children }) => {
@@ -89,12 +90,7 @@ export const StyleProvider: React.FC = ({ children }) => {
 }
 
 export const AlertProvider: React.FC = ({ children }) => {
-  return (
-    <>
-      {children}
-      <Toast />
-    </>
-  )
+  return <ToastProvider>{children}</ToastProvider>
 }
 
 export const navigationRef = createNavigationContainerRef<AppNavigation>()
@@ -144,6 +140,16 @@ export const HttpProvider: React.FC = ({ children }) => {
         retry: 3,
       },
     },
+    queryCache: new QueryCache({
+      onError: (error, query) => {
+        console.error({error})
+      },
+    }),
+    mutationCache: new MutationCache({
+      onError: (error, variables, context, mutation) => {
+        console.error({error})
+      },
+    }),
   })
 
   return (

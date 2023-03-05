@@ -10,7 +10,7 @@ import { AuthState } from '@/store/auth/types'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import React, { useContext, useEffect } from 'react'
 import Toast from 'react-native-toast-message'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from 'react-query'
 
 export interface AuthContextData {
   state: AuthState

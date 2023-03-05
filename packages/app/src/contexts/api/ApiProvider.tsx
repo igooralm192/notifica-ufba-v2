@@ -1,8 +1,8 @@
 import api from '@/api'
 import { FullLoading } from '@/components/FullLoading'
+import { ErrorCode } from '@/errors/codes'
+import { errorMessages } from '@/errors/messages'
 import { BaseError } from '@/helpers'
-import { authStateQuery, tokenState } from '@/state/auth'
-import { loaderState } from '@/state/loader'
 import { getAuthStore } from '@/state/zustand/auth'
 import { AxiosError } from 'axios'
 
@@ -37,12 +37,22 @@ const ApiProviderBase: React.FC = ({ children }) => {
     const interceptorId = api.instance.interceptors.response.use(
       response => response,
       (err: AxiosError) => {
-        // TODO: Handle network error
+        if (!err?.response) {
+          return Promise.reject(
+            new BaseError(
+              ErrorCode.NetworkError,
+              errorMessages[ErrorCode.NetworkError],
+              undefined,
+              err.stack,
+            ),
+          )
+        }
+
         if (!err?.response?.data?.code || !err?.response?.data?.message) {
           return Promise.reject(
             new BaseError(
-              'INTERNAL_SERVER_ERROR',
-              'Internal server error',
+              ErrorCode.InternalServerError,
+              errorMessages[ErrorCode.InternalServerError],
               undefined,
               err.stack,
             ),

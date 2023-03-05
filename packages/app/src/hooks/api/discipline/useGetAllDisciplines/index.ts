@@ -2,7 +2,7 @@ import { IDiscipline } from '@shared/entities'
 import api from '@/api'
 import { BaseError } from '@/helpers'
 
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from 'react-query'
 import Toast from 'react-native-toast-message'
 import { IUseGetAllDisciplines } from './types'
 

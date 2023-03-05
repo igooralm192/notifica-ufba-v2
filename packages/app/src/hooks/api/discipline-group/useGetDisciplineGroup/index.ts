@@ -1,5 +1,5 @@
 import api from '@/api'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from 'react-query'
 import { IUseGetDisciplineGroup } from './types'
 
 export const useGetDisciplineGroup = (

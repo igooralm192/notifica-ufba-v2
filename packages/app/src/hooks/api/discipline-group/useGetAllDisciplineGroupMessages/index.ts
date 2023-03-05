@@ -5,11 +5,7 @@ import { BaseError } from '@/helpers'
 import { joinData } from '@/utils/array'
 
 import { useEffect } from 'react'
-import {
-  InfiniteData,
-  useInfiniteQuery,
-  useQueryClient,
-} from '@tanstack/react-query'
+import { InfiniteData, useInfiniteQuery, useQueryClient } from 'react-query'
 import Toast from 'react-native-toast-message'
 import { IUseGetAllDisciplineGroupMessages } from './types'
 

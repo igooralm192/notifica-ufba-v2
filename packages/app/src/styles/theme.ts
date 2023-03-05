@@ -1,5 +1,4 @@
 import { createTheme, Colors } from '@rneui/themed'
-
 export interface ITheme {
   mode: 'light' | 'dark'
   colors: Colors
@@ -14,7 +13,9 @@ const themeOptions = createTheme({
     grey2: '#E9E9E9',
     grey5: '#5C5C5C',
     black: '#484848',
+    success: '#4ECC64',
     error: '#FF696A',
+    info: '#93CFFF',
   },
 })
 

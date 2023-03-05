@@ -2,7 +2,7 @@ import { ILastMessageDTO } from '@shared/dtos'
 import api from '@/api'
 import { BaseError } from '@/helpers'
 
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from 'react-query'
 import Toast from 'react-native-toast-message'
 
 import { IUseGetLastMessages } from './types'
