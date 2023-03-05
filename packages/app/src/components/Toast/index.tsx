@@ -1,6 +1,7 @@
 import { Spacer } from '@/components/Spacer'
-import { Icon, ThemeOptions, useTheme } from '@rneui/themed'
+import { Icon } from '@rneui/themed'
 import React from 'react'
+import { StyleProp, ViewStyle } from 'react-native'
 
 import {
   Container,
@@ -11,7 +12,7 @@ import {
 } from './styles'
 
 export interface ToastRootProps {
-  color: keyof Omit<ThemeOptions['colors'], 'platform'>
+  style?: StyleProp<ViewStyle>
   children: [React.ReactNode, React.ReactNode]
 }
 
@@ -24,9 +25,7 @@ export interface ToastTextProps {
   description?: string
 }
 
-function ToastRoot({ color, children }: ToastRootProps) {
-  const { theme } = useTheme()
-
+function ToastRoot({ style, children }: ToastRootProps) {
   if (!children.length || children.length != 2)
     throw Error(
       'Children must to have two children: ToastIcon and ToastText components',
@@ -35,11 +34,7 @@ function ToastRoot({ color, children }: ToastRootProps) {
   const [IconComponent, TextComponent] = children
 
   return (
-    <Container
-      style={{
-        backgroundColor: theme.colors[color],
-      }}
-    >
+    <Container style={style}>
       {IconComponent}
       <Spacer d="horizontal" />
       {TextComponent}
