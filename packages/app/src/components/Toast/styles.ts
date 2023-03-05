@@ -6,6 +6,7 @@ export const Container = styled.View`
   flex-direction: row;
   align-items: center;
   padding: 16px;
+  padding-top: ${({ theme }) => theme.insets.top + 16}px;
 `
 export const IconContainer = styled.View``
 export const TextContainer = styled.View`

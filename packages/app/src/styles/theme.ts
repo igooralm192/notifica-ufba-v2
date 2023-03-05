@@ -1,7 +1,9 @@
 import { createTheme, Colors } from '@rneui/themed'
+import { EdgeInsets } from 'react-native-safe-area-context'
 export interface ITheme {
   mode: 'light' | 'dark'
   colors: Colors
+  insets: EdgeInsets
 }
 
 const themeOptions = createTheme({
@@ -17,6 +19,7 @@ const themeOptions = createTheme({
     error: '#FF696A',
     info: '#93CFFF',
   },
+  insets: { top: 0, left: 0, right: 0, bottom: 0 },
 })
 
 export { themeOptions }

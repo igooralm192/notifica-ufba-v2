@@ -43,8 +43,11 @@ import { ThemeProvider, useTheme } from '@rneui/themed'
 
 import AppLoading from 'expo-app-loading'
 import * as Linking from 'expo-linking'
-import React from 'react'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
+import React, { useEffect } from 'react'
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { QueryCache, MutationCache } from 'react-query/core'
 import { ThemeProvider as StyledProvider } from 'styled-components/native'
@@ -84,7 +87,12 @@ export const UIProvider: React.FC = ({ children }) => {
 }
 
 export const StyleProvider: React.FC = ({ children }) => {
-  const { theme } = useTheme()
+  const insets = useSafeAreaInsets()
+  const { theme, updateTheme } = useTheme()
+
+  useEffect(() => {
+    updateTheme(theme => ({ ...theme, insets }))
+  }, [insets])
 
   return <StyledProvider theme={theme}>{children}</StyledProvider>
 }

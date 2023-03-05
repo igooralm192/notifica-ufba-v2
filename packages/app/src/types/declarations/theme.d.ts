@@ -5,6 +5,10 @@ declare module 'styled-components/native' {
 }
 
 declare module '@rneui/themed' {
+  export interface Theme {
+    insets: EdgeInsets
+  }
+
   export interface Colors {
     info: string
   }

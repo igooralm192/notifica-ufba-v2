@@ -15,7 +15,7 @@ function BaseToast({ color, iconName, title, description }: BaseToastProps) {
   const { theme } = useTheme()
 
   return (
-    <Toast.Root style={{ backgroundColor: theme.colors[color], paddingTop: insets.top + 16 }}>
+    <Toast.Root style={{ backgroundColor: theme.colors[color] }}>
       <Toast.Icon name={iconName} />
 
       <Toast.Text title={title} description={description || ''} />
