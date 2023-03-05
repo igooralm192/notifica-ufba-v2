@@ -29,9 +29,11 @@ const DisciplineGroupInfoPresenterContext = React.createContext(
   {} as DisciplineGroupInfoPresenterContextData,
 )
 
-export const DisciplineGroupInfoPresenter: React.FC<{
-  disciplineGroupId: string
-}> = ({ disciplineGroupId, children }) => {
+export const DisciplineGroupInfoPresenter: React.FC<
+  React.PropsWithChildren<{
+    disciplineGroupId: string
+  }>
+> = ({ disciplineGroupId, children }) => {
   const navigation = useNavigation()
 
   const { isLoading, disciplineGroup } = useGetDisciplineGroup({

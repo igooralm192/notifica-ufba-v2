@@ -1,13 +1,13 @@
 import api from '@/api'
-import { BaseError } from '@/helpers'
+import { useToast } from '@/contexts/toast'
 
 import { useMutation, useQueryClient } from 'react-query'
-import Toast from 'react-native-toast-message'
 
 import { IUseCreateDisciplineGroup } from './types'
 
 export const useCreateDisciplineGroup =
   (): IUseCreateDisciplineGroup.Output => {
+    const toast = useToast()
     const queryClient = useQueryClient()
 
     const { isLoading: isCreating, mutateAsync: createGroup } = useMutation(
@@ -21,17 +21,7 @@ export const useCreateDisciplineGroup =
         onSuccess: () => {
           queryClient.invalidateQueries(['disciplineGroups'])
 
-          Toast.show({
-            type: 'success',
-            text1: 'Turma criada com sucesso!',
-          })
-        },
-        onError: (error: BaseError) => {
-          Toast.show({
-            type: 'error',
-            text1: `Erro ao criar uma nova turma`,
-            text2: error.message,
-          })
+          toast.success('Turma criada com sucesso!')
         },
       },
     )

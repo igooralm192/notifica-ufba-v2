@@ -1,12 +1,10 @@
 import { IDisciplineGroupMessage } from '@shared/entities'
 import api from '@/api'
 import { IGetDisciplineGroupMessagesEndpoint } from '@/api/discipline-group/types'
-import { BaseError } from '@/helpers'
 import { joinData } from '@/utils/array'
 
 import { useEffect } from 'react'
 import { InfiniteData, useInfiniteQuery, useQueryClient } from 'react-query'
-import Toast from 'react-native-toast-message'
 import { IUseGetAllDisciplineGroupMessages } from './types'
 
 export const useGetAllDisciplineGroupMessages = (
@@ -37,13 +35,6 @@ export const useGetAllDisciplineGroupMessages = (
           if (!lastPage || !lastPage.nextCursor) return undefined
 
           return { ...query, nextCursor: lastPage.nextCursor }
-        },
-        onError: (error: BaseError) => {
-          Toast.show({
-            type: 'error',
-            text1: `Erro ao retornar as mensagens do chat desta turma`,
-            text2: error.message,
-          })
         },
       },
     )

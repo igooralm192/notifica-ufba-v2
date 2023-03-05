@@ -36,9 +36,11 @@ export const EditProfileTeacherForm: React.FC<EditProfileTeacherFormProps> = ({
   })
 
   const handleSubmit = async (values: IEditProfileTeacherFormValues) => {
-    Keyboard.dismiss()
+    try {
+      Keyboard.dismiss()
 
-    await onSubmit(values)
+      await onSubmit(values)
+    } catch (error) {}
   }
 
   const submitForm = form.handleSubmit(handleSubmit)

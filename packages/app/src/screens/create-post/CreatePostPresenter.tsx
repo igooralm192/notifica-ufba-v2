@@ -13,16 +13,16 @@ const CreatePostPresenterContext = React.createContext(
   {} as CreatePostPresenterContextData,
 )
 
-export const CreatePostPresenter: React.FC = ({ children }) => {
+export const CreatePostPresenter: React.FC<React.PropsWithChildren> = ({ children }) => {
   const navigation = useNavigation()
 
-  const { isCreating, create } = useCreateDisciplineGroupPost()
+  const { isCreating, create: createPost } = useCreateDisciplineGroupPost()
 
   const handleCreatePost = async (
     disciplineGroupId: string,
     content: string,
   ) => {
-    await create({ disciplineGroupId, content })
+    await createPost({ disciplineGroupId, content })
 
     navigation.goBack()
   }

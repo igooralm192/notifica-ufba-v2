@@ -26,20 +26,10 @@ export const EditProfilePresenter: React.FC = ({ children }) => {
 
   const handleUpdateStudent = async (body: IPatchMyStudentEndpoint.Body) => {
     await updateStudent(body)
-
-    Toast.show({
-      type: 'success',
-      text1: 'Perfil atualizado com sucesso!',
-    })
   }
 
   const handleUpdateTeacher = async (body: IPatchMyTeacherEndpoint.Body) => {
     await updateTeacher(body)
-
-    Toast.show({
-      type: 'success',
-      text1: 'Perfil atualizado com sucesso!',
-    })
   }
 
   if (!user) return null

@@ -1,9 +1,7 @@
 import { IDisciplineGroup } from '@shared/entities'
 import api from '@/api'
-import { BaseError } from '@/helpers'
 
 import { useInfiniteQuery } from 'react-query'
-import Toast from 'react-native-toast-message'
 import { IUseGetAllDisciplineGroups } from './types'
 
 export const useGetAllDisciplineGroups = (
@@ -44,13 +42,6 @@ export const useGetAllDisciplineGroups = (
         if (allResults.length >= lastPage.total) return undefined
 
         return { ...query, page: pages.length }
-      },
-      onError: (error: BaseError) => {
-        Toast.show({
-          type: 'error',
-          text1: `Erro ao retornar lista de turmas`,
-          text2: error.message,
-        })
       },
     },
   )

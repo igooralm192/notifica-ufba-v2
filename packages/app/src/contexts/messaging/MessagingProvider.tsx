@@ -1,4 +1,5 @@
 import { useAuth } from '@/contexts/auth'
+import { useToast } from '@/contexts/toast'
 import { useNavigation } from '@/helpers'
 import { useUpdateMyUser } from '@/hooks/api'
 import { AuthState } from '@/store/auth/types'
@@ -27,24 +28,19 @@ const MessagingContext = React.createContext({} as MessagingContextData)
 export const MessagingProvider: React.FC = ({ children }) => {
   const auth = useAuth()
   const navigation = useNavigation()
+  const toast = useToast()
 
   const { update } = useUpdateMyUser()
 
   const showNotification = (title: string, body: string) => {
-    Toast.show({
-      type: 'info',
-      text1: title || undefined,
-      text2: body || undefined,
-    })
+    toast.info(body)
   }
 
   const requestPermissions = async () => {
     const { status: currentStatus } = await Notifications.getPermissionsAsync()
-
     if (currentStatus === 'granted') return true
 
     const { status } = await Notifications.requestPermissionsAsync()
-
     return status === 'granted'
   }
 
@@ -52,12 +48,9 @@ export const MessagingProvider: React.FC = ({ children }) => {
     const permissionsGranted = await requestPermissions()
 
     if (!permissionsGranted) {
-      Toast.show({
-        type: 'error',
-        text1: 'Permissão insuficiente para notificaćões',
-        text2:
-          'Para receber notificações, ative as permissões para este app nas configurações do seu celular.',
-      })
+      toast.error(
+        'Para receber notificações, ative as permissões para este app nas configurações do seu celular.',
+      )
 
       return null
     }

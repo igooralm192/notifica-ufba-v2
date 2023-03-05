@@ -1,8 +1,6 @@
 import api from '@/api'
-import { BaseError } from '@/helpers'
 
 import { useQuery } from 'react-query'
-import Toast from 'react-native-toast-message'
 
 import { IUseGetUserProfilePictureUrl } from './types'
 
@@ -16,13 +14,6 @@ export const useGetUserProfilePictureUrl = (
     {
       enabled,
       staleTime: Infinity,
-      onError: (error: BaseError) => {
-        Toast.show({
-          type: 'error',
-          text1: `Erro ao retornar url da foto de perfil`,
-          text2: error.message,
-        })
-      },
     },
   )
 

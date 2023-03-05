@@ -5,10 +5,12 @@ import { useMutation, useQueryClient } from 'react-query'
 import Toast from 'react-native-toast-message'
 
 import { IUseDeleteDisciplineGroupPost } from './types'
+import { useToast } from '@/contexts/toast'
 
 export const useDeleteDisciplineGroupPost =
   (): IUseDeleteDisciplineGroupPost.Output => {
     const queryClient = useQueryClient()
+    const toast = useToast()
 
     const { isLoading: isDeleting, mutateAsync: deletePost } = useMutation(
       ({ params }: IUseDeleteDisciplineGroupPost.Input) => {
@@ -26,17 +28,7 @@ export const useDeleteDisciplineGroupPost =
             disciplineGroupId,
           ])
 
-          Toast.show({
-            type: 'success',
-            text1: 'Postagem removida com sucesso!',
-          })
-        },
-        onError: (error: BaseError) => {
-          Toast.show({
-            type: 'error',
-            text1: `Erro ao remover postagem`,
-            text2: error.message,
-          })
+          toast.success('Postagem removida com sucesso!')
         },
       },
     )

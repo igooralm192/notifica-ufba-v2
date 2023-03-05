@@ -1,16 +1,13 @@
 import { FullLoading } from '@/components/FullLoading'
+import { useToast } from '@/contexts/toast'
 import { useNavigation } from '@/helpers'
 import { useResetPassword } from '@/hooks/api'
 import { AppNavigation } from '@/types/navigation'
+
 import { StackActions } from '@react-navigation/routers'
 import { StackScreenProps } from '@react-navigation/stack'
-
 import jwt_decode from 'jwt-decode'
-import React, { useContext } from 'react'
-import { useRef } from 'react'
-import { useState } from 'react'
-import { useEffect } from 'react'
-import Toast from 'react-native-toast-message'
+import React, { useContext, useEffect, useState } from 'react'
 
 export interface ResetPasswordPresenterContextData {
   isResetting: boolean
@@ -46,6 +43,7 @@ export const ResetPasswordPresenter: React.FC<ResetPasswordPresenterProps> = ({
   children,
 }) => {
   const navigation = useNavigation()
+  const toast = useToast()
   const { isResetting, resetPassword } = useResetPassword()
 
   const [ready, setReady] = useState(false)
@@ -62,11 +60,7 @@ export const ResetPasswordPresenter: React.FC<ResetPasswordPresenterProps> = ({
     const { userId } = decodeTokenPayload(token)
 
     if (!userId) {
-      Toast.show({
-        type: 'error',
-        text1: 'Erro ao decodificar token',
-        text2: 'Não foi possível obter os dados do usuário.',
-      })
+      toast.error('Não foi possível obter os dados do usuário.')
 
       navigation.dispatch(StackActions.replace('WelcomeScreen'))
 

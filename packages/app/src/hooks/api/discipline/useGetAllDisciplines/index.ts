@@ -1,9 +1,7 @@
 import { IDiscipline } from '@shared/entities'
 import api from '@/api'
-import { BaseError } from '@/helpers'
 
 import { useInfiniteQuery } from 'react-query'
-import Toast from 'react-native-toast-message'
 import { IUseGetAllDisciplines } from './types'
 
 export const useGetAllDisciplines = (
@@ -41,13 +39,6 @@ export const useGetAllDisciplines = (
         if (allResults.length >= lastPage.total) return undefined
 
         return { ...query, page: pages.length }
-      },
-      onError: (error: BaseError) => {
-        Toast.show({
-          type: 'error',
-          text1: `Erro ao retornar lista de disciplinas`,
-          text2: error.message,
-        })
       },
     },
   )

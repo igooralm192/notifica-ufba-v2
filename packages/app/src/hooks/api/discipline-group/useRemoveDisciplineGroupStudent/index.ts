@@ -1,14 +1,13 @@
 import api from '@/api'
-import { BaseError } from '@/helpers'
-
+import { useToast } from '@/contexts/toast'
 import { useMutation, useQueryClient } from 'react-query'
-import Toast from 'react-native-toast-message'
 
 import { IUseRemoveDisciplineGroupStudent } from './types'
 
 export const useRemoveDisciplineGroupStudent =
   (): IUseRemoveDisciplineGroupStudent.Output => {
     const queryClient = useQueryClient()
+    const toast = useToast()
 
     const { isLoading: isRemoving, mutateAsync: removeStudent } = useMutation(
       ({ params }: IUseRemoveDisciplineGroupStudent.Input) => {
@@ -26,17 +25,7 @@ export const useRemoveDisciplineGroupStudent =
             disciplineGroupId,
           ])
 
-          Toast.show({
-            type: 'success',
-            text1: 'Aluno removido com sucesso!',
-          })
-        },
-        onError: (error: BaseError) => {
-          Toast.show({
-            type: 'error',
-            text1: `Erro ao remover aluno da turma`,
-            text2: error.message,
-          })
+          toast.success('Aluno removido com sucesso!')
         },
       },
     )

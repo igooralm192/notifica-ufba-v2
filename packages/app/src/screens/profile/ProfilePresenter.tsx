@@ -5,7 +5,6 @@ import { useMe } from '@/contexts/me'
 import { useUpdateProfilePicture } from '@/hooks/api'
 
 import React, { useContext } from 'react'
-import Toast from 'react-native-toast-message'
 
 export interface ProfilePresenterContextData {
   user: IUser
@@ -34,11 +33,6 @@ export const ProfilePresenter: React.FC = ({ children }) => {
 
   const handleUpdateProfilePicture = async (pictureUri: string) => {
     await updateProfilePicture({ pictureUri })
-
-    Toast.show({
-      type: 'success',
-      text1: 'Foto atualizada com sucesso!',
-    })
   }
 
   if (!user) return null

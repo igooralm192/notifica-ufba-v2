@@ -84,9 +84,11 @@ const CreatePostScreen: React.FC = () => {
     disciplineGroupId,
     content,
   }: ICreatePostFormValues) => {
-    Keyboard.dismiss()
+    try {
+      Keyboard.dismiss()
 
-    await createPost(disciplineGroupId, content)
+      await createPost(disciplineGroupId, content)
+    } catch (error) {}
   }
 
   const submitForm = form.handleSubmit(handleSubmit)

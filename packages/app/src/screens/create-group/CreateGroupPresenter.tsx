@@ -13,16 +13,16 @@ const CreateGroupPresenterContext = React.createContext(
   {} as CreateGroupPresenterContextData,
 )
 
-export const CreateGroupPresenter: React.FC = ({ children }) => {
+export const CreateGroupPresenter: React.FC<React.PropsWithChildren> = ({ children }) => {
   const navigation = useNavigation()
 
-  const { isCreating, create } = useCreateDisciplineGroup()
+  const { isCreating, create: createGroup } = useCreateDisciplineGroup()
 
   const handleCreateGroup = async ({
     disciplineId,
     ...values
   }: ICreateGroupFormValues) => {
-    await create({ disciplineId, ...values })
+    await createGroup({ disciplineId, ...values })
 
     navigation.goBack()
   }

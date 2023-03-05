@@ -1,4 +1,5 @@
 import api from '@/api'
+import { useToast } from '@/contexts/toast'
 import { BaseError } from '@/helpers'
 import {
   getAuthStore,
@@ -24,6 +25,7 @@ const AuthProviderBase: React.FC = ({ children }) => {
   const authState = useAuthStateSelector()
 
   const queryClient = useQueryClient()
+  const toast = useToast()
 
   const handleTokenChange = (token: string | null) => {
     store.setToken(token)
@@ -53,11 +55,7 @@ const AuthProviderBase: React.FC = ({ children }) => {
         if (error.code === 'ExpiredTokenError') {
           handleTokenChange(null)
 
-          Toast.show({
-            type: 'error',
-            text1: 'Token expirado',
-            text2: 'Seu token expirou, favor realizar login novamente.',
-          })
+          toast.error('Seu token expirou, favor realizar login novamente.')
         }
 
         return Promise.reject(error)

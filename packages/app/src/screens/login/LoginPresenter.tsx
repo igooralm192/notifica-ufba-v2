@@ -1,8 +1,6 @@
 import { ILoginEndpoint } from '@/api/user/types'
 import { useAuth } from '@/contexts/auth'
-import { useToast } from '@/contexts/toast'
 import { useLogin } from '@/hooks/api'
-import { assertIsError } from '@/utils/error'
 
 import React, { useContext } from 'react'
 
@@ -17,20 +15,13 @@ const LoginPresenterContext = React.createContext(
 
 export const LoginPresenter: React.FC = ({ children }) => {
   const auth = useAuth()
-  const toast = useToast()
 
   const { isLoggingIn, login } = useLogin()
 
   const handleLogin = async ({ email, password }: ILoginEndpoint.Request) => {
-    try {
-      const { token } = await login({ email, password })
+    const { token } = await login({ email, password })
 
-      auth.onTokenChange(token)
-    } catch (error) {
-      assertIsError(error)
-
-      toast.error(error.message)
-    }
+    auth.onTokenChange(token)
   }
 
   return (

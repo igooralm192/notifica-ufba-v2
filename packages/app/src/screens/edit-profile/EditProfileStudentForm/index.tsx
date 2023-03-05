@@ -49,9 +49,11 @@ export const EditProfileStudentForm: React.FC<EditProfileStudentFormProps> = ({
   const courseRef = useRef() as React.MutableRefObject<TextInput>
 
   const handleSubmit = async (values: IEditProfileStudentFormValues) => {
-    Keyboard.dismiss()
+    try {
+      Keyboard.dismiss()
 
-    await onSubmit(values)
+      await onSubmit(values)
+    } catch {}
   }
 
   const submitForm = form.handleSubmit(handleSubmit)

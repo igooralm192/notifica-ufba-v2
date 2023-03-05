@@ -46,9 +46,11 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = () => {
   })
 
   const handleSubmit = async (values: IForgotPasswordFormValues) => {
-    Keyboard.dismiss()
+    try {
+      Keyboard.dismiss()
 
-    await forgotPassword(values)
+      await forgotPassword(values)
+    } catch {}
   }
 
   const submitForm = form.handleSubmit(handleSubmit)

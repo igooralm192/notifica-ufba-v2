@@ -2,9 +2,10 @@ import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { ApiProvider } from '@/contexts/api'
 import { AuthProvider } from '@/contexts/auth'
 import { StatusBarProvider } from '@/contexts/status-bar'
-import { ToastProvider } from '@/contexts/toast'
+import { ToastProvider, useToast } from '@/contexts/toast'
 import { themeOptions } from '@/styles/theme'
 import { AppNavigation } from '@/types/navigation'
+import { assertIsError } from '@/utils/error'
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -48,7 +49,7 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { QueryClient, QueryClientProvider, useQueryClient } from 'react-query'
 import { QueryCache, MutationCache } from 'react-query/core'
 import { ThemeProvider as StyledProvider } from 'styled-components/native'
 
@@ -166,6 +167,25 @@ export const HttpProvider: React.FC = ({ children }) => {
 }
 
 export const ErrorProvider: React.FC = ({ children }) => {
+  const queryClient = useQueryClient()
+  const toast = useToast()
+
+  const handleError = (error: unknown) => {
+    assertIsError(error)
+    toast.error(error.message)
+  }
+
+  useEffect(() => {
+    queryClient.setDefaultOptions({
+      queries: {
+        onError: handleError,
+      },
+      mutations: {
+        onError: handleError
+      },
+    })
+  }, [])
+
   return <ErrorBoundary>{children}</ErrorBoundary>
 }
 

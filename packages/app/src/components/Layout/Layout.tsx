@@ -6,7 +6,10 @@ export interface LayoutProps {
   headerProps: HeaderProps
 }
 
-const Layout: React.FC<LayoutProps> = ({ headerProps, children }) => {
+const Layout: React.FC<React.PropsWithChildren<LayoutProps>> = ({
+  headerProps,
+  children,
+}) => {
   return (
     <>
       <Header {...headerProps} />

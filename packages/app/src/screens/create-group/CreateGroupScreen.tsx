@@ -73,9 +73,11 @@ const CreateGroupScreen: React.FC = () => {
   }, [])
 
   const handleSubmit = async (data: ICreateGroupFormValues) => {
-    Keyboard.dismiss()
+    try {
+      Keyboard.dismiss()
 
-    await createGroup(data)
+      await createGroup(data)
+    } catch (error) {}
   }
 
   const submitForm = form.handleSubmit(handleSubmit)

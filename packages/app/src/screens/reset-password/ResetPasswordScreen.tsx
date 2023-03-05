@@ -50,9 +50,11 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = () => {
   const confirmPasswordRef = useRef() as React.MutableRefObject<TextInput>
 
   const handleSubmit = async ({ password }: IResetPasswordFormValues) => {
-    Keyboard.dismiss()
+    try {
+      Keyboard.dismiss()
 
-    await resetPassword(password)
+      await resetPassword(password)
+    } catch {}
   }
 
   const submitForm = form.handleSubmit(handleSubmit)

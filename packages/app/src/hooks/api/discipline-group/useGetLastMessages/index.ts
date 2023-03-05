@@ -1,9 +1,7 @@
 import { ILastMessageDTO } from '@shared/dtos'
 import api from '@/api'
-import { BaseError } from '@/helpers'
 
 import { useInfiniteQuery } from 'react-query'
-import Toast from 'react-native-toast-message'
 
 import { IUseGetLastMessages } from './types'
 
@@ -39,13 +37,6 @@ export const useGetLastMessages = (
         if (allResults.length >= lastPage.total) return undefined
 
         return { ...query, page: pages.length }
-      },
-      onError: (error: BaseError) => {
-        Toast.show({
-          type: 'error',
-          text1: `Erro ao retornar as últimas mensagens das suas turmas`,
-          text2: error.message,
-        })
       },
     },
   )

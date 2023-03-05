@@ -6,7 +6,7 @@ import { joiResolver } from '@hookform/resolvers/joi'
 import Joi from 'joi'
 import React, { useRef } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Keyboard, TextInput, View } from 'react-native'
+import { Keyboard, TextInput } from 'react-native'
 
 import { useLoginPresenter, withLoginPresenter } from './LoginPresenter'
 import {
@@ -54,9 +54,11 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
   const passwordRef = useRef() as React.MutableRefObject<TextInput>
 
   const handleSubmit = async (values: ILoginFormValues) => {
-    Keyboard.dismiss()
+    try {
+      Keyboard.dismiss()
 
-    await login(values)
+      await login(values)
+    } catch (error) {}
   }
 
   const submitForm = form.handleSubmit(handleSubmit)

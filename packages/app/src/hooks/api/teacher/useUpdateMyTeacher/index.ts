@@ -1,26 +1,20 @@
 import api from '@/api'
-import { BaseError } from '@/helpers'
-
+import { useToast } from '@/contexts/toast'
 import { useMutation, useQueryClient } from 'react-query'
-import Toast from 'react-native-toast-message'
 
 import { IUseUpdateTeacher } from './types'
 
 export const useUpdateMyTeacher = (): IUseUpdateTeacher.Output => {
   const queryClient = useQueryClient()
+  const toast = useToast()
 
   const { isLoading: isUpdating, mutateAsync: update } = useMutation(
     (body: IUseUpdateTeacher.Body) => api.teacher.patchMyTeacher(body),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(['user'])
-      }, 
-      onError: (error: BaseError) => {
-        Toast.show({
-          type: 'error',
-          text1: `Erro ao atualizar um professor`,
-          text2: error.message,
-        })
+
+        toast.success('Perfil atualizado com sucesso!')
       },
     },
   )

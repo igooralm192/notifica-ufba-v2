@@ -92,9 +92,11 @@ const RegisterScreen: React.FC<RegisterScreenProps> = () => {
   const confirmPasswordRef = useRef() as React.MutableRefObject<TextInput>
 
   const handleSubmit = async (values: IRegisterFormValues) => {
-    Keyboard.dismiss()
+    try {
+      Keyboard.dismiss()
 
-    await register(values)
+      await register(values)
+    } catch {}
   }
 
   const submitForm = form.handleSubmit(handleSubmit)
