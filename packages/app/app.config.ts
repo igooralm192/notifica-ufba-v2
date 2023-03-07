@@ -67,7 +67,7 @@ export default {
     },
     plugins: [
       "sentry-expo",
-      "@notifee/react-native",
+      // "@notifee/react-native",
       [
         "expo-image-picker",
         {

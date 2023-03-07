@@ -5,15 +5,10 @@ import { useUpdateMyUser } from '@/hooks/api'
 import { AuthState } from '@/store/auth/types'
 import { getRouteByName } from '@/utils/navigation'
 
-import { useNavigationState } from '@react-navigation/core'
 import * as Notifications from 'expo-notifications'
 import React, { useContext, useEffect } from 'react'
 import { Platform } from 'react-native'
-import Toast from 'react-native-toast-message'
-import notifee, {
-  Event as NotifeeEvent,
-  EventType,
-} from '@notifee/react-native'
+
 import appConfig from '../../../app.config'
 export interface MessagingContextData {
   showNotification: (title: string, body: string) => void
@@ -79,25 +74,7 @@ export const MessagingProvider: React.FC = ({ children }) => {
     body: string,
     data?: Record<string, any>,
   ) => {
-    // Create a channel (required for Android)
-    const channelId = await notifee.createChannel({
-      id: 'default',
-      name: 'Default Channel',
-    })
-
-    // Display a notification
-    await notifee.displayNotification({
-      title,
-      body,
-      data,
-      android: {
-        channelId,
-        // pressAction is needed if you want the notification to open the app when pressed
-        pressAction: {
-          id: 'default',
-        },
-      },
-    })
+    toast.notification(title, body)
   }
 
   const navigateToDisciplineGroupTabs = (data: NotificationData) => {
@@ -150,31 +127,6 @@ export const MessagingProvider: React.FC = ({ children }) => {
         lightColor: '#FF231F7C',
       })
     }
-  }, [])
-
-  useEffect(() => {
-    notifee.requestPermission()
-  }, [])
-
-  useEffect(() => {
-    // Handle Notifee notifications ON TAP
-    const handleNotifeeNotification = async ({
-      type,
-      detail,
-    }: NotifeeEvent) => {
-      switch (type) {
-        case EventType.PRESS:
-          console.log('User pressed notification', detail.notification)
-          if (detail.notification?.data)
-            handleTapNotification({
-              data: detail.notification?.data as NotificationData,
-            })
-          break
-      }
-    }
-
-    notifee.onBackgroundEvent(handleNotifeeNotification)
-    return notifee.onForegroundEvent(handleNotifeeNotification)
   }, [])
 
   useEffect(() => {

@@ -1,3 +1,4 @@
+import { Notification } from '@/components/Notification'
 import {
   ErrorToast,
   InfoToast,
@@ -12,6 +13,7 @@ export interface ToastContextData {
   error: (message: string) => void
   info: (message: string) => void
   warning: (message: string) => void
+  notification: (title: string, message: string) => void
   show: (args: ShowToastArgs) => void
 }
 
@@ -30,20 +32,28 @@ const toastConfig = {
   warning: (props: BaseToastProps) => {
     return <WarningToast title={props.text1} description={props.text2} />
   },
+  notification: (props: BaseToastProps) => {
+    return (
+      <Notification title={props.text1 || ''} description={props.text2 || ''} />
+    )
+  },
 }
 
 interface ShowToastArgs {
-  type: 'success' | 'error' | 'info' | 'warning'
+  type: 'success' | 'error' | 'info' | 'warning' | 'notification'
   title?: string
   description?: string
 }
 
-export const ToastProvider: React.FC = ({ children }) => {
+export const ToastProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   const showToast = ({ type, title, description }: ShowToastArgs) => {
     RNToast.show({
       type,
       text1: title,
       text2: description,
+      autoHide: false,
     })
   }
 
@@ -59,9 +69,12 @@ export const ToastProvider: React.FC = ({ children }) => {
   const warning = (message: string) =>
     showToast({ type: 'warning', description: message })
 
+  const notification = (title: string, message: string) =>
+    showToast({ type: 'notification', title, description: message })
+
   return (
     <ToastContext.Provider
-      value={{ success, error, info, warning, show: showToast }}
+      value={{ success, error, info, warning, notification, show: showToast }}
     >
       {children}
       <RNToast config={toastConfig} topOffset={0} />
