@@ -51,9 +51,9 @@ export class PostMessageUseCase implements IPostMessageUseCase {
       include: { user: true },
     })
 
-    const allUserIds = allStudents
-      .filter(({ user }) => user.id != userId)
-      .map(({ userId }) => userId)
+    const allUserPushTokens = allStudents
+      .filter(({ user }) => user.id != userId && !!user.pushToken === true)
+      .map(({ user }) => user!.pushToken)
 
     if (!onlyNotify)
       await this.createDisciplineGroupMessageRepository.create({
@@ -74,7 +74,7 @@ export class PostMessageUseCase implements IPostMessageUseCase {
         disciplineCode: disciplineGroup.discipline?.code,
         disciplineName: disciplineGroup.discipline?.name,
       },
-      tokens: allUserIds,
+      tokens: allUserPushTokens,
     })
 
     return right(undefined)

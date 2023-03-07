@@ -24,6 +24,7 @@ export default {
     assetBundlePatterns: ["**/*"],
     ios: {
       supportsTablet: true,
+      bundleIdentifier: "com.iguzinho.notifica-ufba",
     },
     android: {
       package: "com.notifica_ufba",
@@ -66,6 +67,7 @@ export default {
     },
     plugins: [
       "sentry-expo",
+      "@notifee/react-native",
       [
         "expo-image-picker",
         {

@@ -10,9 +10,23 @@ import * as Notifications from 'expo-notifications'
 import React, { useContext, useEffect } from 'react'
 import { Platform } from 'react-native'
 import Toast from 'react-native-toast-message'
-
+import notifee, {
+  Event as NotifeeEvent,
+  EventType,
+} from '@notifee/react-native'
+import appConfig from '../../../app.config'
 export interface MessagingContextData {
   showNotification: (title: string, body: string) => void
+}
+
+export type ReceiveNotificationArgs = {
+  title: string
+  body: string
+  data: NotificationData
+}
+
+export type TapNotificationArgs = {
+  data: NotificationData
 }
 
 export type NotificationData = {
@@ -31,10 +45,6 @@ export const MessagingProvider: React.FC = ({ children }) => {
   const toast = useToast()
 
   const { update } = useUpdateMyUser()
-
-  const showNotification = (title: string, body: string) => {
-    toast.info(body)
-  }
 
   const requestPermissions = async () => {
     const { status: currentStatus } = await Notifications.getPermissionsAsync()
@@ -55,9 +65,39 @@ export const MessagingProvider: React.FC = ({ children }) => {
       return null
     }
 
-    const { data: token } = await Notifications.getExpoPushTokenAsync()
+    const projectId = appConfig?.expo?.extra?.eas?.projectId
+
+    const { data: token } = await Notifications.getExpoPushTokenAsync({
+      projectId,
+    })
 
     return token
+  }
+
+  const showNotification = async (
+    title: string,
+    body: string,
+    data?: Record<string, any>,
+  ) => {
+    // Create a channel (required for Android)
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+    })
+
+    // Display a notification
+    await notifee.displayNotification({
+      title,
+      body,
+      data,
+      android: {
+        channelId,
+        // pressAction is needed if you want the notification to open the app when pressed
+        pressAction: {
+          id: 'default',
+        },
+      },
+    })
   }
 
   const navigateToDisciplineGroupTabs = (data: NotificationData) => {
@@ -65,6 +105,40 @@ export const MessagingProvider: React.FC = ({ children }) => {
       disciplineGroupId: data.disciplineGroupId,
       initialTab: data.type === 'post' ? 'mural' : 'chat',
     })
+  }
+
+  const handleReceiveNotification = ({
+    title,
+    body,
+    data,
+  }: ReceiveNotificationArgs) => {
+    if (!data.type) return
+
+    switch (data.type) {
+      case 'post':
+      case 'message': {
+        if (getRouteByName(navigation.getState(), 'DisciplineGroupTabsScreen'))
+          return
+      }
+      default:
+        showNotification(title, body, data)
+    }
+  }
+
+  const handleTapNotification = ({ data }: TapNotificationArgs) => {
+    if (!data.type) return
+
+    switch (data.type) {
+      case 'post':
+      case 'message': {
+        if (getRouteByName(navigation.getState(), 'DisciplineGroupTabsScreen'))
+          return
+
+        navigateToDisciplineGroupTabs(data)
+      }
+      default:
+        return
+    }
   }
 
   useEffect(() => {
@@ -79,46 +153,85 @@ export const MessagingProvider: React.FC = ({ children }) => {
   }, [])
 
   useEffect(() => {
-    if (auth.state !== AuthState.AUTHENTICATED) return
-
-    requestPermissionsAndGetToken().then(pushToken => {
-      if (pushToken) return update({ pushToken })
-    })
-  }, [auth.state])
+    notifee.requestPermission()
+  }, [])
 
   useEffect(() => {
-    const onForegroundListener = Notifications.addNotificationReceivedListener(
-      notification => {
-        const { title, body, data } = notification.request.content
+    // Handle Notifee notifications ON TAP
+    const handleNotifeeNotification = async ({
+      type,
+      detail,
+    }: NotifeeEvent) => {
+      switch (type) {
+        case EventType.PRESS:
+          console.log('User pressed notification', detail.notification)
+          if (detail.notification?.data)
+            handleTapNotification({
+              data: detail.notification?.data as NotificationData,
+            })
+          break
+      }
+    }
 
-        if (!data.type) return
-        if (getRouteByName(navigation.getState(), 'DisciplineGroupTabsScreen'))
-          return
+    notifee.onBackgroundEvent(handleNotifeeNotification)
+    return notifee.onForegroundEvent(handleNotifeeNotification)
+  }, [])
 
-        Toast.show({
-          type: 'info',
-          text1: title || undefined,
-          text2: body || undefined,
-          onPress: () => {
-            navigateToDisciplineGroupTabs(data as NotificationData)
-            Toast.hide()
-          },
-        })
-      },
-    )
-
+  useEffect(() => {
+    // Handle Expo notifications ON TAP IN BACKGROUND STATE
     const onTapListener = Notifications.addNotificationResponseReceivedListener(
       ({ notification }) => {
         const { data } = notification.request.content
 
-        if (!!data.type) navigateToDisciplineGroupTabs(data as NotificationData)
+        if (data)
+          handleTapNotification({
+            data: data as NotificationData,
+          })
+      },
+    )
+
+    return () => {
+      Notifications.removeNotificationSubscription(onTapListener)
+    }
+  }, [])
+
+  useEffect(() => {
+    // Handle Expo notifications ON RECEIVE IN FOREGROUND STATE
+    const onForegroundListener = Notifications.addNotificationReceivedListener(
+      notification => {
+        const { title, body, data } = notification.request.content
+
+        if (title && body && data)
+          handleReceiveNotification({
+            title,
+            body,
+            data: data as NotificationData,
+          })
       },
     )
 
     return () => {
       Notifications.removeNotificationSubscription(onForegroundListener)
-      Notifications.removeNotificationSubscription(onTapListener)
     }
+  }, [])
+
+  useEffect(() => {
+    // Handle Expo notifications ON TAP IN KILLED STATE
+    Notifications.getLastNotificationResponseAsync().then(notification => {
+      if (notification == null) return
+
+      const { data } = notification.notification.request.content
+
+      if (data) handleTapNotification({ data: data as NotificationData })
+    })
+  }, [])
+
+  useEffect(() => {
+    if (auth.state !== AuthState.AUTHENTICATED) return
+
+    requestPermissionsAndGetToken().then(pushToken => {
+      if (pushToken) return update({ pushToken })
+    })
   }, [auth.state])
 
   return (
