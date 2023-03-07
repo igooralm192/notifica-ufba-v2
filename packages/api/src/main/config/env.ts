@@ -1,3 +1,18 @@
+export interface Env {
+  NODE_ENV: 'development' | 'production'
+  PORT: number
+  DATABASE_URL: string
+  SENDGRID_API_KEY: string
+  ONESIGNAL_APP_ID: string
+  ONESIGNAL_APP_KEY: string
+  ONESIGNAL_USER_KEY: string
+  SMTP_HOST: string
+  SMTP_PORT: number
+  SMTP_AUTH_USER: string
+  SMTP_AUTH_PASSWORD: string
+  APP_FORGOT_PASSWORD_URL: string
+}
+
 export default {
   NODE_ENV: process.env.NODE_ENV || 'development',
   PORT: Number(process.env.PORT || 3333),
@@ -11,4 +26,4 @@ export default {
   SMTP_AUTH_USER: process.env.SMTP_AUTH_USER || '',
   SMTP_AUTH_PASSWORD: process.env.SMTP_AUTH_PASSWORD || '',
   APP_FORGOT_PASSWORD_URL: process.env.APP_FORGOT_PASSWORD_URL || '',
-}
+} as Env
