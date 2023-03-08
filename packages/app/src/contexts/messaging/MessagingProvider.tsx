@@ -74,7 +74,9 @@ export const MessagingProvider: React.FC = ({ children }) => {
     body: string,
     data?: Record<string, any>,
   ) => {
-    toast.notification(title, body)
+    toast.notification(title, body, () => {
+      navigateToDisciplineGroupTabs(data as NotificationData)
+    })
   }
 
   const navigateToDisciplineGroupTabs = (data: NotificationData) => {

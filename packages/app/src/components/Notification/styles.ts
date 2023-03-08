@@ -1,6 +1,6 @@
 import styled from 'styled-components/native'
 
-export const Container = styled.View`
+export const Container = styled.TouchableOpacity`
   width: 95%;
   margin: 0 16px;
   margin-top: ${({ theme }) => theme.insets.top + 4}px;

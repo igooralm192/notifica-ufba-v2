@@ -1,7 +1,6 @@
 import React from 'react'
 import Toast, { ToastTextProps } from '@/components/Toast'
 import { ThemeOptions, useTheme } from '@rneui/themed'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 interface BaseToastProps {
   color: keyof Omit<ThemeOptions['colors'], 'platform'>
@@ -11,7 +10,6 @@ interface BaseToastProps {
 }
 
 function BaseToast({ color, iconName, title, description }: BaseToastProps) {
-  const insets = useSafeAreaInsets()
   const { theme } = useTheme()
 
   return (
