@@ -53,7 +53,6 @@ export const ToastProvider: React.FC<React.PropsWithChildren> = ({
       type,
       text1: title,
       text2: description,
-      autoHide: false,
     })
   }
 

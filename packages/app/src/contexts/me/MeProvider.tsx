@@ -2,10 +2,10 @@ import { IUser } from '@shared/entities'
 
 import { FullLoading } from '@/components/FullLoading'
 import { useGetMyUser } from '@/hooks/api'
-import { useAuthStateSelector } from '@/state/zustand/auth'
 import { AuthState } from '@/store/auth/types'
 
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
+import { useAuth } from '@/contexts/auth'
 export interface MeContextData {
   user: IUser | null
 }
@@ -13,11 +13,17 @@ export interface MeContextData {
 const MeContext = React.createContext({} as MeContextData)
 
 const MeProviderBase: React.FC = ({ children }) => {
-  const authState = useAuthStateSelector()
+  const auth = useAuth()
 
   const { isLoading, user } = useGetMyUser({
-    isAuthenticated: authState === AuthState.AUTHENTICATED,
+    isAuthenticated: auth.state === AuthState.AUTHENTICATED,
   })
+
+  useEffect(() => {
+    if (auth.state === AuthState.AUTHENTICATED && !isLoading && !user) {
+      auth.onTokenChange(null)
+    }
+  }, [isLoading, user])
 
   if (isLoading) return <FullLoading />
   if (!user) return null
