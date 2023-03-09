@@ -105,11 +105,11 @@ export const AlertProvider: React.FC = ({ children }) => {
 
 export const navigationRef = createNavigationContainerRef<AppNavigation>()
 
-const urlPrefix = Linking.createURL('/nufba')
+const urlPrefix = Linking.createURL('nufba')
 
 export const NavigationProvider: React.FC = ({ children }) => {
   const linking: LinkingOptions<AppNavigation> = {
-    prefixes: [urlPrefix, 'nufba://nufba', 'https://notificaufba.page.link'],
+    prefixes: [urlPrefix, 'exp://u.expo.dev/40b5b6cf-6fef-4d26-b431-b2577f3ef390/--/nufba', 'nufba://nufba', 'https://notificaufba.page.link'],
     config: {
       screens: {
         ResetPasswordScreen: 'forgot-password',
