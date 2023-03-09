@@ -1,3 +1,4 @@
+import { Log } from '@/config/logger'
 import React from 'react'
 import {
   ErrorBoundary as ReactErrorBoundary,
@@ -44,6 +45,7 @@ export const ErrorBoundary: React.FC = ({ children }) => {
   const handleError = (error: Error) => {
     console.log('ERRO', error)
     Sentry.Native.captureException(error)
+    Log.error('Error major', { error })
   }
 
   return (

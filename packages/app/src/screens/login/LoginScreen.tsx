@@ -1,5 +1,6 @@
 import { Button } from '@/components/Button'
 import { Input } from '@/components/Input'
+import { Log } from '@/config/logger'
 import { useNavigation } from '@/helpers'
 
 import { joiResolver } from '@hookform/resolvers/joi'
@@ -59,7 +60,8 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
       Keyboard.dismiss()
 
       await login(values)
-    } catch (error) {
+    } catch (error: any) {
+      Log.error('Login', {error})
       SentryNative.captureException(error)
     }
   }
