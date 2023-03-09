@@ -117,9 +117,6 @@ export const NavigationProvider: React.FC = ({ children }) => {
     },
   }
 
-
-  console.log({urlPrefix})
-
   const theme = {
     ...DefaultTheme,
     colors: {
@@ -130,7 +127,6 @@ export const NavigationProvider: React.FC = ({ children }) => {
 
   Linking.getInitialURL().then(async url => {
     if (!url) return
-
 
     const canOpen = await Linking.canOpenURL(url)
 

@@ -1,5 +1,4 @@
 import { FullLoading } from '@/components/FullLoading'
-import { Log } from '@/config/logger'
 import { useToast } from '@/contexts/toast'
 import { useNavigation } from '@/helpers'
 import { useResetPassword } from '@/hooks/api'
@@ -58,7 +57,6 @@ export const ResetPasswordPresenter: React.FC<ResetPasswordPresenterProps> = ({
   }
 
   useEffect(() => {
-    Log.info('RESET PASSWORD', { token: token || null })
     const { userId } = decodeTokenPayload(token)
 
     if (!userId) {
