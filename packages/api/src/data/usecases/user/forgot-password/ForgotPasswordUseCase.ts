@@ -24,6 +24,8 @@ export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
     const { email } = body
     const { expo = false } = query
 
+    console.log('FORGOT PASSWORD', { expo })
+
     const user = await this.findOneUserRepository.findOne({ email })
 
     if (!user) {

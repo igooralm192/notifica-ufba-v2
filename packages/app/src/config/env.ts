@@ -8,6 +8,9 @@ const API_URL =
   Constants?.manifest2?.extra?.expoClient?.extra?.API_URL ||
   'http://10.0.2.2:3333/api'
 
+  // @ts-ignore
+console.log('EXPO_GO', process.env.EXPO_GO)
+
 export default {
   API_URL,
   // @ts-ignore
