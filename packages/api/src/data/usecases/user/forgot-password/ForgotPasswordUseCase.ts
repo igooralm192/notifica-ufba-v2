@@ -38,9 +38,11 @@ export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
     const forgotPasswordUrl = expo ? this.forgotPasswordUrl.expo : this.forgotPasswordUrl.default
     const generatedLink = forgotPasswordUrl.replace(':token', token)
 
+    console.log({ forgotPasswordUrl })
+
     await this.sendMailEmailService.sendMail({
       to: email,
-      subject: 'Recuperacão de senha',
+      subject: 'Recuperação de senha',
       body: `Notifica UFBA<br/><br/>Clique neste <a href="${generatedLink}">link</a> para recuperar sua senha.`,
     })
 

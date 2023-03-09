@@ -10,8 +10,14 @@ export const makeForgotPasswordUseCase = () => {
   const tokenCryptography = makeTokenCryptography()
   const emailService = makeEmailService()
 
-  const defaultForgotPasswordUrl = env.APP_DEFAULT_FORGOT_PASSWORD_URL
-  const expoForgotPasswordUrl = env.APP_EXPO_FORGOT_PASSWORD_URL
+  const defaultForgotPasswordUrl = env.API_REDIRECT_URL.replace(
+    ':url',
+    env.APP_DEFAULT_FORGOT_PASSWORD_URL,
+  )
+  const expoForgotPasswordUrl = env.API_REDIRECT_URL.replace(
+    ':url',
+    env.APP_EXPO_FORGOT_PASSWORD_URL,
+  )
 
   return new ForgotPasswordUseCase(
     userRepository,

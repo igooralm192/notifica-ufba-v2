@@ -1,5 +1,4 @@
 import { ErrorBoundary } from '@/components/ErrorBoundary'
-import { Log } from '@/config/logger'
 import { ApiProvider } from '@/contexts/api'
 import { AuthProvider } from '@/contexts/auth'
 import { StatusBarProvider } from '@/contexts/status-bar'
@@ -109,7 +108,13 @@ const urlPrefix = Linking.createURL('nufba')
 
 export const NavigationProvider: React.FC = ({ children }) => {
   const linking: LinkingOptions<AppNavigation> = {
-    prefixes: [urlPrefix, 'exp://u.expo.dev/40b5b6cf-6fef-4d26-b431-b2577f3ef390/--/nufba', 'nufba://nufba', 'https://notificaufba.page.link'],
+    prefixes: [
+      urlPrefix,
+      'exp://u.expo.dev/40b5b6cf-6fef-4d26-b431-b2577f3ef390/--/nufba',
+      'https://u.expo.dev/40b5b6cf-6fef-4d26-b431-b2577f3ef390/--/nufba',
+      'nufba://nufba',
+      'https://notificaufba.page.link',
+    ],
     config: {
       screens: {
         ResetPasswordScreen: 'forgot-password',
@@ -152,12 +157,12 @@ export const HttpProvider: React.FC = ({ children }) => {
     },
     queryCache: new QueryCache({
       onError: (error, query) => {
-        console.error({error})
+        console.log(error)
       },
     }),
     mutationCache: new MutationCache({
       onError: (error, variables, context, mutation) => {
-        console.error({error})
+        console.log(error)
       },
     }),
   })
@@ -182,7 +187,7 @@ export const ErrorProvider: React.FC = ({ children }) => {
         onError: handleError,
       },
       mutations: {
-        onError: handleError
+        onError: handleError,
       },
     })
   }, [])

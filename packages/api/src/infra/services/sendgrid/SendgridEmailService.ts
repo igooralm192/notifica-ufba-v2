@@ -19,7 +19,6 @@ export class SendgridEmailService implements IEmailService.SendMail {
         from: 'igor.nascimento@ufba.br',
         to,
         subject,
-        text: body,
         html: body,
       })
     } catch (error) {

@@ -1,6 +1,5 @@
 import api from '@/api'
 import { FullLoading } from '@/components/FullLoading'
-import { Log } from '@/config/logger'
 import { ErrorCode } from '@/errors/codes'
 import { errorMessages } from '@/errors/messages'
 import { BaseError } from '@/helpers'
@@ -39,7 +38,6 @@ const ApiProviderBase: React.FC = ({ children }) => {
       response => response,
       (err: AxiosError) => {
         //@ts-ignore
-        Log.error('Request error', { err })
         if (!err?.response) {
           return Promise.reject(
             new BaseError(
