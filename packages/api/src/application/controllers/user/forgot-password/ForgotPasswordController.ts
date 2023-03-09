@@ -22,7 +22,10 @@ export class ForgotPasswordController extends BaseController {
       return this.badRequest(validationError)
     }
 
-    const result = await this.forgotPasswordUseCase.forgotPassword(request.body)
+    const result = await this.forgotPasswordUseCase.forgotPassword({
+      body: request.body,
+      query: { expo: request.query.expo === 'true' },
+    })
 
     if (result.isRight()) {
       return this.noContent()

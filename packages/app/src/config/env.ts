@@ -1,6 +1,7 @@
 // import { API_URL } from '@env'
 import Constants from 'expo-constants'
 
+
 const API_URL =
   // @ts-ignore
   (process.env.API_URL as string) ||
@@ -9,4 +10,6 @@ const API_URL =
 
 export default {
   API_URL,
+  // @ts-ignore
+  EXPO_GO: Boolean(process.env.EXPO_GO) || false,
 }

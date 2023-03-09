@@ -10,7 +10,8 @@ export interface Env {
   SMTP_PORT: number
   SMTP_AUTH_USER: string
   SMTP_AUTH_PASSWORD: string
-  APP_FORGOT_PASSWORD_URL: string
+  APP_DEFAULT_FORGOT_PASSWORD_URL: string
+  APP_EXPO_FORGOT_PASSWORD_URL: string
 }
 
 export default {
@@ -25,5 +26,8 @@ export default {
   SMTP_PORT: Number(process.env.SMTP_PORT || 465),
   SMTP_AUTH_USER: process.env.SMTP_AUTH_USER || '',
   SMTP_AUTH_PASSWORD: process.env.SMTP_AUTH_PASSWORD || '',
-  APP_FORGOT_PASSWORD_URL: process.env.APP_FORGOT_PASSWORD_URL || '',
+  APP_DEFAULT_FORGOT_PASSWORD_URL:
+    process.env.APP_DEFAULT_FORGOT_PASSWORD_URL || '',
+  APP_EXPO_FORGOT_PASSWORD_URL:
+    process.env.APP_EXPO_FORGOT_PASSWORD_URL || '',
 } as Env

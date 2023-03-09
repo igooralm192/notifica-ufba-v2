@@ -60,7 +60,9 @@ export const ResetPasswordPresenter: React.FC<ResetPasswordPresenterProps> = ({
     const { userId } = decodeTokenPayload(token)
 
     if (!userId) {
-      toast.error('Não foi possível obter os dados do usuário.')
+      toast.error(
+        'Não foi possível obter os dados do usuário a partir do token enviado, tente novamente com um token válido.',
+      )
 
       navigation.dispatch(StackActions.replace('WelcomeScreen'))
 

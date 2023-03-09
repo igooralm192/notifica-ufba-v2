@@ -14,12 +14,16 @@ export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
     private readonly findOneUserRepository: IUserRepository.FindOne,
     private readonly generateTokenCryptography: IGenerateTokenCryptography,
     private readonly sendMailEmailService: IEmailService.SendMail,
-    private readonly forgotPasswordUrl: string
+    private readonly forgotPasswordUrl: { default: string; expo: string },
   ) {}
 
   async forgotPassword({
-    email,
+    body,
+    query,
   }: IForgotPasswordUseCase.Input): Promise<Either<BaseError, void>> {
+    const { email } = body
+    const { expo = false } = query
+
     const user = await this.findOneUserRepository.findOne({ email })
 
     if (!user) {
@@ -30,13 +34,14 @@ export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
       { payload: { userId: user.id } },
       { expiresIn: '1h' },
     )
- 
-    const generatedLink = `${this.forgotPasswordUrl}?token=${token}`
+
+    const forgotPasswordUrl = expo ? this.forgotPasswordUrl.expo : this.forgotPasswordUrl.default
+    const generatedLink = forgotPasswordUrl.replace(':token', token)
 
     await this.sendMailEmailService.sendMail({
       to: email,
       subject: 'Recuperacão de senha',
-      body: `Segue o link para você recuperar sua senha: ${generatedLink}`,
+      body: `Notifica UFBA<br/><br/>Clique neste <a href="${generatedLink}">link</a> para recuperar sua senha.`,
     })
 
     return right(undefined)

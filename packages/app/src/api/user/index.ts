@@ -1,3 +1,4 @@
+import env from '@/config/env'
 import { UserMapper } from '@/mappers'
 import { api } from '@/services/api'
 
@@ -27,7 +28,11 @@ export const login = async ({
 export const forgotPassword = async ({
   email,
 }: IForgotPasswordEndpoint.Request): Promise<void> => {
-  await api.post('/auth/user/forgot', { email })
+  await api.post(
+    '/auth/user/forgot',
+    { email },
+    { params: { expo: String(env.EXPO_GO) } },
+  )
 }
 
 export const resetPassword = async ({
@@ -80,5 +85,9 @@ export const getUserProfilePictureUrl = async ({
 }: IGetUserProfilePictureEndpoint.Params): Promise<IGetUserProfilePictureEndpoint.Response> => {
   const response = await api.get(`/users/${userId}/profile-picture`)
 
-  return { url: response.data.url ? `${response.data.url}?${new Date().valueOf()}` : undefined }
+  return {
+    url: response.data.url
+      ? `${response.data.url}?${new Date().valueOf()}`
+      : undefined,
+  }
 }
