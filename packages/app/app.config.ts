@@ -62,9 +62,7 @@ export default {
       },
       // API_URL: ,
     },
-    runtimeVersion: {
-      policy: "sdkVersion",
-    },
+    runtimeVersion: "exposdk:46.0.0",
     plugins: [
       "sentry-expo",
       // "@notifee/react-native",

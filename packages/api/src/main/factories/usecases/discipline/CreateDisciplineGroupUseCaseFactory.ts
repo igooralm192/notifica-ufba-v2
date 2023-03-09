@@ -16,5 +16,6 @@ export const makeCreateDisciplineGroupUseCase =
       userRepository,
       disciplineRepository,
       disciplineGroupRepository,
+      disciplineGroupRepository,
     )
   }

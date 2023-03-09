@@ -47,7 +47,7 @@ export class PrismaDisciplineRepository
     const disciplines = await this.client.discipline.findMany({
       take,
       skip: skip * take,
-      include,
+      include: { groups: !!include.groups },
       where: this.parseWhereInput(input.where),
     })
 

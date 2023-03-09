@@ -2,7 +2,7 @@ import { StudentAlreadyExistsError } from '@/domain/errors'
 import { mockCreateStudentInput } from '@/domain/mocks'
 
 import { CreateStudentUseCase } from '@/data/usecases/student'
-import { CreateStudentController } from '@/application/controllers/student/create-student'
+import { CreateStudentController } from '@/application/controllers/student/create-student/CreateStudentController'
 import { InternalServerError, ValidationError } from '@/application/errors'
 import { usePrismaTestClient } from '@/infra/database/prisma/helpers'
 import { makeApp } from '@/main/config/app'

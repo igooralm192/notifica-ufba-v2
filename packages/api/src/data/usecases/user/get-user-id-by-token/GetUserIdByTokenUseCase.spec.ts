@@ -4,7 +4,7 @@ import { MockedTokenCryptography } from '@/data/mocks/cryptography'
 
 import faker from 'faker'
 
-import { GetUserIdByTokenUseCase } from '.'
+import { GetUserIdByTokenUseCase } from './GetUserIdByTokenUseCase'
 
 const makeSUT = () => {
   const token = faker.datatype.uuid()
