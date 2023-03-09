@@ -105,7 +105,7 @@ export const AlertProvider: React.FC = ({ children }) => {
 
 export const navigationRef = createNavigationContainerRef<AppNavigation>()
 
-const urlPrefix = Linking.createURL('nufba')
+const urlPrefix = Linking.createURL('/nufba')
 
 export const NavigationProvider: React.FC = ({ children }) => {
   const linking: LinkingOptions<AppNavigation> = {
@@ -117,6 +117,8 @@ export const NavigationProvider: React.FC = ({ children }) => {
     },
   }
 
+
+  console.log({urlPrefix})
 
   const theme = {
     ...DefaultTheme,
