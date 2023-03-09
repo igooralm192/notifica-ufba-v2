@@ -131,7 +131,6 @@ export const NavigationProvider: React.FC = ({ children }) => {
   Linking.getInitialURL().then(async url => {
     if (!url) return
 
-  Log.info('URL', { url })
 
     const canOpen = await Linking.canOpenURL(url)
 
