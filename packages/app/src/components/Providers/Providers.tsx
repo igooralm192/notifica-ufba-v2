@@ -1,4 +1,5 @@
 import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { Log } from '@/config/logger'
 import { ApiProvider } from '@/contexts/api'
 import { AuthProvider } from '@/contexts/auth'
 import { StatusBarProvider } from '@/contexts/status-bar'
@@ -115,6 +116,8 @@ export const NavigationProvider: React.FC = ({ children }) => {
       },
     },
   }
+
+  Log.info('URL Prefix', { urlPrefix })
 
   const theme = {
     ...DefaultTheme,
