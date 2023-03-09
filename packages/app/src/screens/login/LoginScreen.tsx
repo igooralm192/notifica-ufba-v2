@@ -3,6 +3,7 @@ import { Input } from '@/components/Input'
 import { useNavigation } from '@/helpers'
 
 import { joiResolver } from '@hookform/resolvers/joi'
+import * as SentryNative from '@sentry/react-native'
 import Joi from 'joi'
 import React, { useRef } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -58,7 +59,9 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
       Keyboard.dismiss()
 
       await login(values)
-    } catch (error) {}
+    } catch (error) {
+      SentryNative.captureException(error)
+    }
   }
 
   const submitForm = form.handleSubmit(handleSubmit)
