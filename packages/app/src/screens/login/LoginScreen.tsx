@@ -2,6 +2,7 @@ import { Button } from '@/components/Button'
 import { Input } from '@/components/Input'
 import { Log } from '@/config/logger'
 import { useNavigation } from '@/helpers'
+import * as Validations from '@/validations'
 
 import { joiResolver } from '@hookform/resolvers/joi'
 import * as SentryNative from '@sentry/react-native'
@@ -28,19 +29,8 @@ export interface ILoginFormValues {
 }
 
 const loginSchema = Joi.object({
-  email: Joi.string()
-    .email({ tlds: { allow: false } })
-    .required()
-    .messages({
-      'any.required': `Campo obrigatório.`,
-      'string.empty': 'Campo obrigatório.',
-      'string.email': `E-mail inválido.`,
-    }),
-  password: Joi.string().min(6).required().messages({
-    'any.required': `Campo obrigatório.`,
-    'string.empty': 'Campo obrigatório.',
-    'string.min': `Senha precisa ter no mínimo 6 caracteres.`,
-  }),
+  email: Validations.email.required(),
+  password: Validations.password.required()
 })
 
 const LoginScreen: React.FC<LoginScreenProps> = () => {

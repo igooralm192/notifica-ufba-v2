@@ -61,19 +61,17 @@ const DropdownInput: React.ForwardRefRenderFunction<
       />
 
       <Modal visible={visible} onHide={hideModal}>
-        <Container>
-          <PaperContainer>
-            <ListTitle>{title}</ListTitle>
+        <PaperContainer>
+          <ListTitle>{title}</ListTitle>
 
-            <Divider width={1} />
+          <Divider width={1} />
 
-            <FlatList
-              data={options}
-              renderItem={renderListItem}
-              ItemSeparatorComponent={Divider}
-            />
-          </PaperContainer>
-        </Container>
+          <FlatList
+            data={options}
+            renderItem={renderListItem}
+            ItemSeparatorComponent={Divider}
+          />
+        </PaperContainer>
       </Modal>
     </Pressable>
   )

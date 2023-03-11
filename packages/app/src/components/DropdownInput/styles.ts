@@ -2,7 +2,7 @@ import { Text } from "@rneui/themed";
 import { Pressable } from "react-native";
 import styled from "styled-components/native";
 
-export const Container = styled.View`
+export const Container = styled.Pressable`
   flex: 1;
   align-items: center;
   justify-content: center;
@@ -12,6 +12,7 @@ export const PaperContainer = styled.Pressable`
   width: 300px;
   max-height: 500px;
   padding-bottom: 8px;
+  align-self: center;
   background-color: white;
   border-radius: 8px;
 `

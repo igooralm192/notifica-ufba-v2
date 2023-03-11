@@ -1,5 +1,9 @@
 import { Button } from '@/components/Button'
+import DropdownInput from '@/components/DropdownInput'
 import { Input } from '@/components/Input'
+import NumericInput from '@/components/NumericInput'
+import { coursesList } from '@/utils/domain'
+import * as Validations from '@/validations'
 
 import { joiResolver } from '@hookform/resolvers/joi'
 import Joi from 'joi'
@@ -21,18 +25,9 @@ export interface IEditProfileStudentFormValues {
 }
 
 const editProfileStudentSchema = Joi.object({
-  name: Joi.string().required().messages({
-    'any.required': `Campo obrigatório.`,
-    'string.empty': 'Campo obrigatório.',
-  }),
-  matriculation: Joi.string().required().messages({
-    'any.required': `Campo obrigatório.`,
-    'string.empty': 'Campo obrigatório.',
-  }),
-  course: Joi.string().required().messages({
-    'any.required': `Campo obrigatório.`,
-    'string.empty': 'Campo obrigatório.',
-  }),
+  name: Validations.name.required(),
+  matriculation: Validations.matriculation.required(),
+  course: Validations.course.required(),
 })
 
 export const EditProfileStudentForm: React.FC<EditProfileStudentFormProps> = ({
@@ -42,7 +37,7 @@ export const EditProfileStudentForm: React.FC<EditProfileStudentFormProps> = ({
   const form = useForm<IEditProfileStudentFormValues>({
     mode: 'onChange',
     resolver: joiResolver(editProfileStudentSchema),
-    defaultValues: initialValues
+    defaultValues: initialValues,
   })
 
   const matriculationRef = useRef() as React.MutableRefObject<TextInput>
@@ -87,7 +82,7 @@ export const EditProfileStudentForm: React.FC<EditProfileStudentFormProps> = ({
           name="matriculation"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Input
+            <NumericInput
               ref={matriculationRef}
               placeholder="Matrícula"
               leftIcon={{ name: 'app-registration' }}
@@ -98,7 +93,8 @@ export const EditProfileStudentForm: React.FC<EditProfileStudentFormProps> = ({
               errorMessage={fieldState.error?.message}
               renderErrorMessage={!!fieldState.error}
               autoCapitalize="none"
-              testID="edit-profile-student-matriculation-input"
+              maxLength={9}
+              testID="edit-profile-matriculation-input"
             />
           )}
         />
@@ -109,18 +105,22 @@ export const EditProfileStudentForm: React.FC<EditProfileStudentFormProps> = ({
           name="course"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Input
+            <DropdownInput
               ref={courseRef}
               placeholder="Curso"
               leftIcon={{ name: 'library-books' }}
+              title="Selecione o seu curso"
+              options={coursesList}
               value={field.value}
-              onChangeText={field.onChange}
+              onSelectOption={value =>
+                form.setValue('course', value, { shouldValidate: true })
+              }
               onBlur={field.onBlur}
               onSubmitEditing={submitForm}
               errorMessage={fieldState.error?.message}
               renderErrorMessage={!!fieldState.error}
               autoCapitalize="none"
-              testID="edit-profile-student-course-input"
+              testID="edit-profile-course-input"
             />
           )}
         />

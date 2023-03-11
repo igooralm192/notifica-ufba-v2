@@ -1,0 +1,5 @@
+export { nameSchema as name } from './name'
+export { emailSchema as email } from './email'
+export { matriculationSchema as matriculation } from './matriculation'
+export { courseSchema as course } from './course'
+export { passwordSchema as password } from './password'

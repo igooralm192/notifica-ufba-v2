@@ -3,6 +3,7 @@ import DropdownInput from '@/components/DropdownInput'
 import { Input } from '@/components/Input'
 import NumericInput from '@/components/NumericInput'
 import { coursesList } from '@/utils/domain'
+import * as Validations from '@/validations'
 
 import { joiResolver } from '@hookform/resolvers/joi'
 import Joi from 'joi'
@@ -34,43 +35,12 @@ export interface IRegisterFormValues {
 }
 
 const registerSchema = Joi.object({
-  name: Joi.string()
-    .trim()
-    .min(2)
-    .max(255)
-    .pattern(/^[a-zA-Z\sÀ-ÿ]+$/)
-    .required()
-    .messages({
-      'any.required': 'Campo obrigatório.',
-      'string.empty': 'Campo obrigatório.',
-      'string.min': 'Precisa ter no mínimo {{#limit}} caracteres.',
-      'string.max': 'Precisa ter no máximo {{#limit}} caracteres.',
-      'string.trim': 'Não pode haver espaços no início e no fim.',
-      'string.pattern.base':
-        'Não pode have números e certos caracteres especiais.',
-    }),
-  email: Joi.string()
-    .email({ tlds: { allow: false } })
-    .required()
-    .messages({
-      'any.required': `Campo obrigatório.`,
-      'string.empty': 'Campo obrigatório.',
-      'string.email': `E-mail inválido.`,
-    }),
-  matriculation: Joi.string().required().messages({
-    'any.required': `Campo obrigatório.`,
-    'string.empty': 'Campo obrigatório.',
-  }),
-  course: Joi.string().required().messages({
-    'any.required': `Campo obrigatório.`,
-    'string.empty': 'Campo obrigatório.',
-  }),
-  password: Joi.string().min(6).required().messages({
-    'any.required': `Campo obrigatório.`,
-    'string.empty': 'Campo obrigatório.',
-    'string.min': `Senha precisa ter no mínimo 6 caracteres.`,
-  }),
-  confirmPassword: Joi.any().equal(Joi.ref('password')).required().messages({
+  name: Validations.name.required(),
+  email: Validations.email.required(),
+  matriculation: Validations.matriculation.required(),
+  course: Validations.course.required(),
+  password: Validations.password.required(),
+  confirmPassword: Validations.password.equal(Joi.ref('password')).required().messages({
     'any.only': 'As senhas não conferem.',
     'any.required': `Campo obrigatório.`,
     'string.empty': 'Campo obrigatório.',
@@ -124,7 +94,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = () => {
               onSubmitEditing={() => emailRef?.current?.focus()}
               errorMessage={fieldState.error?.message}
               renderErrorMessage={!!fieldState.error}
-              autoCapitalize="none"
+              autoCapitalize="words"
               textContentType="name"
               testID="register-name-input"
             />
@@ -191,7 +161,9 @@ const RegisterScreen: React.FC<RegisterScreenProps> = () => {
               title="Selecione o seu curso"
               options={coursesList}
               value={field.value}
-              onSelectOption={value => form.setValue('course', value)}
+              onSelectOption={value =>
+                form.setValue('course', value, { shouldValidate: true })
+              }
               onBlur={field.onBlur}
               onSubmitEditing={() => passwordRef?.current?.focus()}
               errorMessage={fieldState.error?.message}

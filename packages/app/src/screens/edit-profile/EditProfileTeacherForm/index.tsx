@@ -1,5 +1,6 @@
 import { Button } from '@/components/Button'
 import { Input } from '@/components/Input'
+import * as Validations from '@/validations'
 
 import { joiResolver } from '@hookform/resolvers/joi'
 import Joi from 'joi'
@@ -19,10 +20,7 @@ export interface IEditProfileTeacherFormValues {
 }
 
 const editProfileTeacherSchema = Joi.object({
-  name: Joi.string().required().messages({
-    'any.required': `Campo obrigatório.`,
-    'string.empty': 'Campo obrigatório.',
-  }),
+  name: Validations.name.required()
 })
 
 export const EditProfileTeacherForm: React.FC<EditProfileTeacherFormProps> = ({
