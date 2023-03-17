@@ -1,6 +1,7 @@
 import { IDiscipline, IDisciplineGroup } from '@shared/entities'
 
 import { FullLoading } from '@/components/FullLoading'
+import { useMe } from '@/contexts/me'
 import { useNavigation } from '@/helpers'
 import { useGetAllDisciplines } from '@/hooks/api'
 import { IFilterParams } from '@/types/list'
@@ -42,6 +43,7 @@ const initialFilter: IListGroupsFilter = {
 export const ListGroupsPresenter: React.FC = ({ children }) => {
   const navigation = useNavigation()
   const route = useRoute<RouteProp<AppNavigation, 'ListGroupsScreen'>>()
+  const { user } = useMe()
 
   const [code, setCode] = useState<string>('')
 
@@ -53,7 +55,7 @@ export const ListGroupsPresenter: React.FC = ({ children }) => {
     hasNextPage,
     fetchNextPage,
     refresh,
-  } = useGetAllDisciplines({ ...initialFilter, code })
+  } = useGetAllDisciplines({ ...initialFilter, code, teacherId: user?.teacher?.id })
 
   const handleNextPage = () => {
     if (!isFetchingMore && hasNextPage) fetchNextPage()

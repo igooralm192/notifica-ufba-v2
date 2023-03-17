@@ -7,9 +7,15 @@ export const getDisciplines = async ({
   page,
   limit,
   code,
+  teacherId,
 }: IGetDisciplinesEndpoint.Request): Promise<IGetDisciplinesEndpoint.Response> => {
   const response = await api.get('/disciplines', {
-    params: { page, limit, 'code_contains': code },
+    params: {
+      page,
+      limit,
+      code_contains: code,
+      'groups[teacherId]': teacherId,
+    },
   })
 
   const { results, total } = response.data

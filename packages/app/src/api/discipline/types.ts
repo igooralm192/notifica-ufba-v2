@@ -5,6 +5,7 @@ export namespace IGetDisciplinesEndpoint {
     page?: number
     limit?: number
     code?: string
+    teacherId?: string
   }
 
   export interface Response {

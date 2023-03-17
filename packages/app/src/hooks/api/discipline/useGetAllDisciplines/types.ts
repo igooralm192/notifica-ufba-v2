@@ -4,6 +4,7 @@ import { IFilterParams } from '@/types/list'
 export namespace IUseGetAllDisciplines {
   export type Query = Partial<IFilterParams> & {
     code?: string
+    teacherId?: string
   }
 
   export type Output = {

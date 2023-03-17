@@ -1,4 +1,5 @@
-import { IDiscipline } from '@shared/entities'
+import { IQueryFilterDTO } from '@/domain/dtos'
+import { IDiscipline, IDisciplineGroup } from '@shared/entities'
 import { IDisciplineGroupRepositoryListInput } from './DisciplineGroupRepository'
 
 export type IDisciplineRepositoryListInput = {
@@ -11,6 +12,7 @@ export type IDisciplineRepositoryListInput = {
       contains?: string
       mode?: 'default' | 'insensitive'
     }
+    groups?: IQueryFilterDTO<IDisciplineGroup>
   }
   take?: number
   skip?: number

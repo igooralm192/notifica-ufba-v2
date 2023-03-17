@@ -4,7 +4,6 @@ import { Either, right } from '@shared/utils'
 
 import {
   ICountDisciplineRepository,
-  IDisciplineRepositoryListInput,
   IFindAllDisciplineRepository,
 } from '@/data/contracts'
 
@@ -32,11 +31,13 @@ export class ReadDisciplinesUseCase implements IReadDisciplinesUseCase {
         },
         where: {
           code: filter.code,
+          groups: filter.groups,
         },
       }),
       this.countDisciplineRepository.count({
         where: {
           code: filter.code,
+          groups: filter.groups,
         },
       }),
     ])

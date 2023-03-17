@@ -6,6 +6,7 @@ import {
 } from '@/data/contracts'
 import { PrismaRepository } from '@/infra/database/prisma/helpers'
 import { Prisma } from '@prisma/client'
+import { pick } from 'lodash'
 
 export class PrismaDisciplineRepository
   extends PrismaRepository
@@ -47,7 +48,15 @@ export class PrismaDisciplineRepository
     const disciplines = await this.client.discipline.findMany({
       take,
       skip: skip * take,
-      include: { groups: !!include.groups },
+      include: {
+        groups:
+          typeof include.groups === 'object'
+            ? {
+                include: include.groups.include,
+                // where: pick(include.groups.where, 'teacherId'),
+              }
+            : false,
+      },
       where: this.parseWhereInput(input.where),
     })
 
@@ -62,6 +71,7 @@ export class PrismaDisciplineRepository
         ...where.code,
         mode: 'insensitive',
       },
+      groups: { some: pick(where.groups, 'teacherId') },
     }
   }
 }

@@ -100,11 +100,12 @@ const CreatePostScreen: React.FC = () => {
     >
       <ScrollContainer>
         <InputContainer
-          onPress={() =>
-            navigation.navigate('ListGroupsScreen', {
-              onDisciplineGroupSelected: handleDisciplineGroupSelected,
-            })
-          }
+          onPress={() => {
+            if (!route.params.disciplineGroup)
+              navigation.navigate('ListGroupsScreen', {
+                onDisciplineGroupSelected: handleDisciplineGroupSelected,
+              })
+          }}
         >
           <Controller
             name="disciplineGroup"
@@ -113,6 +114,7 @@ const CreatePostScreen: React.FC = () => {
               <CreatePostInput
                 label="Turma"
                 placeholder="Selecione uma turma"
+                disabled={!!route.params.disciplineGroup}
                 value={
                   discipline && disciplineGroup
                     ? `${discipline?.code} - ${disciplineGroup?.code}`
