@@ -12,7 +12,7 @@ export const createGroupSchema = Joi.object({
     'any.required': `Selecione um local para a turma.`,
     'string.empty': 'Selecione um local para a turma.',
   }),
-  description: Joi.string().required().messages({
+  description: Joi.string().trim().required().messages({
     'any.required': `Adicione uma descrição para a turma.`,
     'string.empty': 'Adicione uma descrição para a turma.',
   }),

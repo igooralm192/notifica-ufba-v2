@@ -1,13 +1,14 @@
-import { FullLoading } from '@/components/FullLoading'
-import { Input } from '@/components/Input'
-import { useMe } from '@/contexts/me'
-import { useNavigation } from '@/helpers'
-import { useStatusBar } from '@/contexts/status-bar'
-import { joiResolver } from '@hookform/resolvers/joi'
+import { IDiscipline, IDisciplineGroup } from '@shared/entities'
 
-import Joi from 'joi'
-import React, { useLayoutEffect, useMemo } from 'react'
+import { useStatusBar } from '@/contexts/status-bar'
+import { useNavigation } from '@/helpers'
+import { AppNavigation } from '@/types/navigation'
+
+import { joiResolver } from '@hookform/resolvers/joi'
+import { RouteProp, useRoute } from '@react-navigation/core'
+import React, { useLayoutEffect, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { Keyboard } from 'react-native'
 
 import {
   useCreatePostPresenter,
@@ -21,25 +22,15 @@ import {
   ButtonContainer,
   CreatePostButton,
 } from './CreatePostStyles'
-import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/core'
-import { useEffect } from 'react'
-import { useCallback } from 'react'
-import { AppNavigation } from '@/types/navigation'
-import { IDiscipline, IDisciplineGroup } from '@shared/entities'
-import { useState } from 'react'
-import { Keyboard } from 'react-native'
+import { createPostSchema } from './schemas'
 
 export interface ICreatePostFormValues {
-  disciplineId: string
-  disciplineGroupId: string
+  disciplineGroup: {
+    id: string
+    disciplineId: string
+  }
   content: string
 }
-
-const createPostSchema = Joi.object({
-  disciplineId: Joi.string(),
-  disciplineGroupId: Joi.string().required(),
-  content: Joi.string().required(),
-})
 
 const CreatePostScreen: React.FC = () => {
   const navigation = useNavigation()
@@ -69,11 +60,18 @@ const CreatePostScreen: React.FC = () => {
   }
 
   useEffect(() => {
-    if (discipline) form.setValue('disciplineId', discipline.id)
+    if (discipline)
+      form.setValue('disciplineGroup', {
+        ...form.getValues().disciplineGroup,
+        disciplineId: discipline.id,
+      })
   }, [discipline])
 
   useEffect(() => {
-    if (disciplineGroup) form.setValue('disciplineGroupId', disciplineGroup.id)
+    if (disciplineGroup) form.setValue('disciplineGroup', {
+      ...form.getValues().disciplineGroup,
+      id: disciplineGroup.id,
+    })
   }, [disciplineGroup])
 
   useLayoutEffect(() => {
@@ -81,13 +79,13 @@ const CreatePostScreen: React.FC = () => {
   }, [])
 
   const handleSubmit = async ({
-    disciplineGroupId,
+    disciplineGroup,
     content,
   }: ICreatePostFormValues) => {
     try {
       Keyboard.dismiss()
 
-      await createPost(disciplineGroupId, content)
+      await createPost(disciplineGroup.id, content)
     } catch (error) {}
   }
 
@@ -109,7 +107,7 @@ const CreatePostScreen: React.FC = () => {
           }
         >
           <Controller
-            name="disciplineGroupId"
+            name="disciplineGroup"
             control={form.control}
             render={({ field, fieldState }) => (
               <CreatePostInput
@@ -125,7 +123,7 @@ const CreatePostScreen: React.FC = () => {
                 errorMessage={fieldState.error?.message}
                 renderErrorMessage={!!fieldState.error}
                 editable={false}
-                textAlignVertical={undefined}
+                // textAlignVertical={undefined}
                 testID="create-post-discipline-group-input"
               />
             )}
@@ -147,6 +145,7 @@ const CreatePostScreen: React.FC = () => {
                 renderErrorMessage={!!fieldState.error}
                 autoCapitalize="none"
                 multiline
+                textAlignVertical="top"
                 numberOfLines={8}
                 testID="create-post-content-input"
               />

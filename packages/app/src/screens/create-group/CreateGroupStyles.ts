@@ -1,4 +1,5 @@
 import { Button } from '@/components/Button'
+import DropdownInput from '@/components/DropdownInput'
 import { Form } from '@/components/Form'
 import { Input } from '@/components/Input'
 import { Layout } from '@/components/Layout'
@@ -18,6 +19,17 @@ export const InputContainer = styled.Pressable`
 `
 
 export const CreateGroupInput = styled(Input).attrs({
+  inputContainerStyle: {
+    paddingVertical: 4,
+    paddingHorizontal: 4,
+  },
+
+  labelStyle: {
+    paddingVertical: 8,
+  },
+})``
+
+export const CreateGroupDropdownInput = styled(DropdownInput).attrs({
   inputContainerStyle: {
     paddingVertical: 4,
     paddingHorizontal: 4,

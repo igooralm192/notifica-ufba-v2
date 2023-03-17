@@ -18,12 +18,6 @@ export const InputContainer = styled.Pressable`
 `
 
 export const CreatePostInput = styled(Input).attrs({
-  textAlignVertical: 'top',
-  style: {
-    fontSize: 12,
-    paddingHorizontal: 0,
-  },
-
   inputContainerStyle: {
     paddingVertical: 4,
     paddingHorizontal: 4,

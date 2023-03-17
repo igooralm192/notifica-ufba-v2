@@ -20,11 +20,14 @@ import {
   ScrollContainer,
   InputContainer,
   CreateGroupInput,
+  CreateGroupDropdownInput,
   ButtonContainer,
   CreateGroupButton,
 } from './CreateGroupStyles'
 import { GroupCodeInput } from './inputs'
 import { createGroupSchema } from './schemas'
+import DropdownInput from '@/components/DropdownInput'
+import { placesList } from '@/utils/domain'
 
 export interface ICreateGroupFormValues {
   disciplineId: string
@@ -154,11 +157,15 @@ const CreateGroupScreen: React.FC = () => {
               name="place"
               control={form.control}
               render={({ field, fieldState }) => (
-                <CreateGroupInput
+                <CreateGroupDropdownInput
                   label="Local"
                   placeholder="Digite o local da turma"
+                  title="Selecione o local da turma"
+                  options={placesList}
                   value={field.value}
-                  onChangeText={field.onChange}
+                  onSelectOption={value =>
+                    form.setValue('place', value, { shouldValidate: true })
+                  }
                   onBlur={field.onBlur}
                   errorMessage={fieldState.error?.message}
                   renderErrorMessage={!!fieldState.error}

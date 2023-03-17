@@ -90,6 +90,14 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
         menu.hide()
       },
     },
+    {
+      title: 'Criar postagem',
+      icon: { name: 'add', color: '#fff' },
+      onPress: () => {
+        navigation.navigate('CreatePostScreen', {})
+        menu.hide()
+      },
+    },
   ]
 
   const studentActions = [
