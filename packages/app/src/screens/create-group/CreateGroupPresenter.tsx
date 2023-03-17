@@ -22,7 +22,15 @@ export const CreateGroupPresenter: React.FC<React.PropsWithChildren> = ({ childr
     disciplineId,
     ...values
   }: ICreateGroupFormValues) => {
-    await createGroup({ disciplineId, ...values })
+    // TODO: Isolate in a function
+    const currentYear = new Date().getFullYear()
+    const currentSem = Math.floor(new Date().getMonth() / 6) + 1
+
+    await createGroup({
+      ...values,
+      disciplineId,
+      semester: `${currentYear}.${currentSem}`,
+    })
 
     navigation.goBack()
   }

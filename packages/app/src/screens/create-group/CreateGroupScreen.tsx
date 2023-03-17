@@ -6,7 +6,6 @@ import { AppNavigation } from '@/types/navigation'
 
 import { joiResolver } from '@hookform/resolvers/joi'
 import { RouteProp, useRoute } from '@react-navigation/core'
-import Joi from 'joi'
 import React, { useState, useEffect, useLayoutEffect } from 'react'
 import { Keyboard } from 'react-native'
 import { Controller, useForm } from 'react-hook-form'
@@ -24,24 +23,16 @@ import {
   ButtonContainer,
   CreateGroupButton,
 } from './CreateGroupStyles'
+import { GroupCodeInput } from './inputs'
+import { createGroupSchema } from './schemas'
 
 export interface ICreateGroupFormValues {
   disciplineId: string
   code: string
-  semester: string
   description: string
   menuUrl: string
   place: string
 }
-
-const createGroupSchema = Joi.object({
-  disciplineId: Joi.string(),
-  code: Joi.string().required(),
-  semester: Joi.string().required(),
-  description: Joi.string().required(),
-  menuUrl: Joi.string().required(),
-  place: Joi.string().required(),
-})
 
 const CreateGroupScreen: React.FC = () => {
   const navigation = useNavigation()
@@ -127,36 +118,12 @@ const CreateGroupScreen: React.FC = () => {
               name="code"
               control={form.control}
               render={({ field, fieldState }) => (
-                <CreateGroupInput
-                  label="Código"
-                  placeholder="Digite o código da turma"
+                <GroupCodeInput
                   value={field.value}
                   onChangeText={field.onChange}
                   onBlur={field.onBlur}
                   errorMessage={fieldState.error?.message}
                   renderErrorMessage={!!fieldState.error}
-                  autoCapitalize="none"
-                  testID="create-group-code-input"
-                />
-              )}
-            />
-          </InputContainer>
-
-          <InputContainer>
-            <Controller
-              name="semester"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <CreateGroupInput
-                  label="Semestre"
-                  placeholder="Digite o semestre da turma"
-                  value={field.value}
-                  onChangeText={field.onChange}
-                  onBlur={field.onBlur}
-                  errorMessage={fieldState.error?.message}
-                  renderErrorMessage={!!fieldState.error}
-                  autoCapitalize="none"
-                  testID="create-group-semester-input"
                 />
               )}
             />
@@ -208,8 +175,8 @@ const CreateGroupScreen: React.FC = () => {
               control={form.control}
               render={({ field, fieldState }) => (
                 <CreateGroupInput
-                  label="Descricão"
-                  placeholder="Digite uma descricão para a turma"
+                  label="Descrição"
+                  placeholder="Digite uma descrição para a turma"
                   value={field.value}
                   onChangeText={field.onChange}
                   onBlur={field.onBlur}

@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "expo start --dev-client",
+    "start": "npx expo start -c",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
@@ -67,6 +67,7 @@
     "react-native-dotenv": "^3.3.1",
     "react-native-gesture-handler": "~2.5.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-mask-input": "^1.2.3",
     "react-native-modal": "^13.0.1",
     "react-native-reanimated": "~2.9.1",
     "react-native-safe-area-context": "4.3.1",

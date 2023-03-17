@@ -18,11 +18,6 @@ export const InputContainer = styled.Pressable`
 `
 
 export const CreateGroupInput = styled(Input).attrs({
-  style: {
-    fontSize: 12,
-    paddingHorizontal: 0,
-  },
-
   inputContainerStyle: {
     paddingVertical: 4,
     paddingHorizontal: 4,
