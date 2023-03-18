@@ -40,11 +40,7 @@ const registerSchema = Joi.object({
   matriculation: Validations.matriculation.required(),
   course: Validations.course.required(),
   password: Validations.password.required(),
-  confirmPassword: Validations.password.equal(Joi.ref('password')).required().messages({
-    'any.only': 'As senhas não conferem.',
-    'any.required': `Campo obrigatório.`,
-    'string.empty': 'Campo obrigatório.',
-  }),
+  confirmPassword: Validations.confirmPassword.required()
 })
 
 const RegisterScreen: React.FC<RegisterScreenProps> = () => {

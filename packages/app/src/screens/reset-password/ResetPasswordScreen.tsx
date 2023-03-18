@@ -1,10 +1,10 @@
 import { Button } from '@/components/Button'
 import { Input } from '@/components/Input'
+import * as Validations from '@/validations'
 
 import { joiResolver } from '@hookform/resolvers/joi'
 import Joi from 'joi'
-import React from 'react'
-import { useRef } from 'react'
+import React, { useRef } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Keyboard, TextInput } from 'react-native'
 import {
@@ -27,16 +27,8 @@ export interface IResetPasswordFormValues {
 }
 
 const resetPasswordSchema = Joi.object({
-  password: Joi.string().min(6).required().messages({
-    'any.required': `Campo obrigatório.`,
-    'string.empty': 'Campo obrigatório.',
-    'string.min': `Senha precisa ter no mínimo 6 caracteres.`,
-  }),
-  confirmPassword: Joi.any().equal(Joi.ref('password')).required().messages({
-    'any.only': 'As senhas não conferem.',
-    'any.required': `Campo obrigatório.`,
-    'string.empty': 'Campo obrigatório.',
-  }),
+  password: Validations.password.required(),
+  confirmPassword: Validations.confirmPassword.required(),
 })
 
 const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = () => {
