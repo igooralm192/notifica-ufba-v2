@@ -1,4 +1,4 @@
-import { IDiscipline } from '@shared/entities'
+import { IDiscipline, IDisciplineGroup } from '@shared/entities'
 
 import { FullLoading } from '@/components/FullLoading'
 import { useMe } from '@/contexts/me'
@@ -10,31 +10,34 @@ import { AppNavigation } from '@/types/navigation'
 import { RouteProp, useRoute } from '@react-navigation/core'
 import React, { useContext, useState } from 'react'
 
-export type ISearchDisciplinesFilter = IFilterParams & {
+export type ISearchGroupsSubscribeFilter = IFilterParams & {
   code?: string
 }
 
-export interface SearchDisciplinesPresenterContextData {
+export interface SearchGroupsSubscribePresenterContextData {
   disciplines: IUsePaginatedList<IDiscipline>
   code: string
   onCodeChange: (code: string) => void
-  onDisciplineSelected: (discipline: IDiscipline) => void
+  onDisciplineGroupSelected: (
+    discipline: IDiscipline,
+    disciplineGroup: IDisciplineGroup,
+  ) => void
 }
 
-const SearchDisciplinesPresenterContext = React.createContext(
-  {} as SearchDisciplinesPresenterContextData,
+const SearchGroupsSubscribePresenterContext = React.createContext(
+  {} as SearchGroupsSubscribePresenterContextData,
 )
 
-const initialFilter: ISearchDisciplinesFilter = {
+const initialFilter: ISearchGroupsSubscribeFilter = {
   page: 0,
   limit: 10,
 }
 
-export const SearchDisciplinesPresenter: React.FC<React.PropsWithChildren> = ({
+export const SearchGroupsSubscribePresenter: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const navigation = useNavigation()
-  const route = useRoute<RouteProp<AppNavigation, 'SearchDisciplinesScreen'>>()
+  const route = useRoute<RouteProp<AppNavigation, 'SearchGroupsSubscribeScreen'>>()
 
   const [code, setCode] = useState<string>('')
 
@@ -59,9 +62,12 @@ export const SearchDisciplinesPresenter: React.FC<React.PropsWithChildren> = ({
     refresh()
   }
 
-  const handleDisciplineSelected = (discipline: IDiscipline) => {
+  const handleDisciplineGroupSelected = (
+    discipline: IDiscipline,
+    disciplineGroup: IDisciplineGroup,
+  ) => {
     navigation.goBack()
-    route.params.onDisciplineSelected(discipline)
+    route.params.onDisciplineGroupSelected(discipline, disciplineGroup)
   }
 
   const handleCodeChange = (code: string) => {
@@ -71,7 +77,7 @@ export const SearchDisciplinesPresenter: React.FC<React.PropsWithChildren> = ({
   if (isLoading) return <FullLoading />
 
   return (
-    <SearchDisciplinesPresenterContext.Provider
+    <SearchGroupsSubscribePresenterContext.Provider
       value={{
         disciplines: {
           isFetchingMore,
@@ -82,23 +88,23 @@ export const SearchDisciplinesPresenter: React.FC<React.PropsWithChildren> = ({
         },
         code,
         onCodeChange: handleCodeChange,
-        onDisciplineSelected: handleDisciplineSelected,
+        onDisciplineGroupSelected: handleDisciplineGroupSelected,
       }}
     >
       {children}
-    </SearchDisciplinesPresenterContext.Provider>
+    </SearchGroupsSubscribePresenterContext.Provider>
   )
 }
 
-export const withSearchDisciplinesPresenter = (Component: React.FC<any>) => {
+export const withSearchGroupsSubscribePresenter = (Component: React.FC<any>) => {
   return (props: any) => {
     return (
-      <SearchDisciplinesPresenter>
+      <SearchGroupsSubscribePresenter>
         <Component {...props} />
-      </SearchDisciplinesPresenter>
+      </SearchGroupsSubscribePresenter>
     )
   }
 }
 
-export const useSearchDisciplinesPresenter = () =>
-  useContext(SearchDisciplinesPresenterContext)
+export const useSearchGroupsSubscribePresenter = () =>
+  useContext(SearchGroupsSubscribePresenterContext)

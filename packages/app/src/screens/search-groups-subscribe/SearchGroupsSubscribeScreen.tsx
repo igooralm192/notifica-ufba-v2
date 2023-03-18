@@ -3,15 +3,13 @@ import { SearchLayout } from '@/components/SearchLayout'
 import { SearchList } from '@/components/SearchList'
 import React from 'react'
 
-import {
-  useSearchGroupsPresenter,
-  withSearchGroupsPresenter,
-} from '../search-groups/SearchGroupsPresenter'
+
+import { useSearchGroupsSubscribePresenter, withSearchGroupsSubscribePresenter } from './SearchGroupsSubscribePresenter'
 import { SearchGroupsSubscribeItem } from './SearchGroupsSubscribeItem'
 
 const SearchGroupsScreen: React.FC = () => {
   const { disciplines, code, onCodeChange, onDisciplineGroupSelected } =
-    useSearchGroupsPresenter()
+    useSearchGroupsSubscribePresenter()
 
   const renderSearchGroupsItem = ({ item }: { item: IDiscipline }) => {
     return (
@@ -40,4 +38,4 @@ const SearchGroupsScreen: React.FC = () => {
   )
 }
 
-export default withSearchGroupsPresenter(SearchGroupsScreen)
+export default withSearchGroupsSubscribePresenter(SearchGroupsScreen)
