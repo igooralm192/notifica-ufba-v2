@@ -9,9 +9,9 @@ import {
   DisciplineName,
   DisciplineGroupCode,
   DisciplineGroupTeacher,
-} from './ListGroupsItemStyles'
+} from './styles'
 
-export interface ListGroupsItemProps {
+export interface SearchGroupsSubscribeItemProps {
   discipline: IDiscipline
   onDisciplineGroupPress: (
     discipline: IDiscipline,
@@ -19,10 +19,9 @@ export interface ListGroupsItemProps {
   ) => void
 }
 
-const ListGroupsItem: React.FC<ListGroupsItemProps> = ({
-  discipline,
-  onDisciplineGroupPress,
-}) => {
+export const SearchGroupsSubscribeItem: React.FC<
+  SearchGroupsSubscribeItemProps
+> = ({ discipline, onDisciplineGroupPress }) => {
   const { user } = useMe()
   const { theme } = useTheme()
 
@@ -66,7 +65,7 @@ const ListGroupsItem: React.FC<ListGroupsItemProps> = ({
 
             {isMember && (
               <ListItem.Chevron
-                type='material-community'
+                type="material-community"
                 name="check-circle"
                 color={theme.colors.primary}
                 size={20}
@@ -78,5 +77,3 @@ const ListGroupsItem: React.FC<ListGroupsItemProps> = ({
     </ListItem.Accordion>
   )
 }
-
-export default ListGroupsItem

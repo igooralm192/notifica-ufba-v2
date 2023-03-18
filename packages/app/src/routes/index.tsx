@@ -7,7 +7,6 @@ import {
   CreatePostScreen,
   DisciplineGroupInfoScreen,
   LoginScreen,
-  ListGroupsScreen,
   RegisterScreen,
   SplashScreen,
   WelcomeScreen,
@@ -16,7 +15,9 @@ import {
   ResetPasswordScreen,
   EditProfileScreen,
   CreateGroupScreen,
-  ListDisciplinesScreen,
+  SearchGroupsScreen,
+  SearchGroupsSubscribeScreen,
+  SearchDisciplinesScreen,
 } from '@/screens'
 import { AuthState } from '@/store/auth/types'
 
@@ -81,14 +82,20 @@ const Routes: React.FC = () => {
                   />
 
                   <Stack.Screen
-                    name="ListDisciplinesScreen"
-                    component={ListDisciplinesScreen}
+                    name="SearchDisciplinesScreen"
+                    component={SearchDisciplinesScreen}
                     options={{ headerShown: false, presentation: 'modal' }}
                   />
 
                   <Stack.Screen
-                    name="ListGroupsScreen"
-                    component={ListGroupsScreen}
+                    name="SearchGroupsScreen"
+                    component={SearchGroupsScreen}
+                    options={{ headerShown: false, presentation: 'modal' }}
+                  />
+
+                  <Stack.Screen
+                    name="SearchGroupsSubscribeScreen"
+                    component={SearchGroupsSubscribeScreen}
                     options={{ headerShown: false, presentation: 'modal' }}
                   />
 

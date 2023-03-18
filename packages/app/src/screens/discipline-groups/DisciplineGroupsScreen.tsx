@@ -109,7 +109,7 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
         color: '#fff',
       },
       onPress: () => {
-        navigation.navigate('ListGroupsScreen', {
+        navigation.navigate('SearchGroupsSubscribeScreen', {
           onDisciplineGroupSelected: async (_, disciplineGroup) => {
             navigation.navigate('DisciplineGroupInfoScreen', {
               disciplineGroupId: disciplineGroup.id,

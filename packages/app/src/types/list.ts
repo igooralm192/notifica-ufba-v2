@@ -8,3 +8,11 @@ export type IFilterParams = {
   limit: number
   search?: string
 }
+
+export interface IUsePaginatedList<T> {
+  isFetchingMore: boolean
+  isRefreshing: boolean
+  data: T[]
+  onNextPage: () => void
+  onRefresh: () => void
+}

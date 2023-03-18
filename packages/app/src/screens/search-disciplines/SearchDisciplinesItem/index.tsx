@@ -3,14 +3,14 @@ import { IDiscipline } from '@shared/entities'
 import { ListItem } from '@rneui/themed'
 import React from 'react'
 
-import { DisciplineCode, DisciplineName } from './ListDisciplinesItemStyles'
+import { DisciplineCode, DisciplineName } from './styles'
 
-export interface ListDisciplinesItemProps {
+export interface SearchDisciplinesItemProps {
   discipline: IDiscipline
   onDisciplinePress: (discipline: IDiscipline) => void
 }
 
-const ListDisciplinesItem: React.FC<ListDisciplinesItemProps> = ({
+export const SearchDisciplinesItem: React.FC<SearchDisciplinesItemProps> = ({
   discipline,
   onDisciplinePress,
 }) => {
@@ -27,5 +27,3 @@ const ListDisciplinesItem: React.FC<ListDisciplinesItemProps> = ({
     </ListItem>
   )
 }
-
-export default ListDisciplinesItem

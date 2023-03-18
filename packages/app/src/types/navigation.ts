@@ -28,12 +28,19 @@ export type AppNavigation = {
     discipline?: IDiscipline
     disciplineGroup?: IDisciplineGroup
   }
-  ListDisciplinesScreen: {
-    onDisciplineSelected: (
+  
+  SearchDisciplinesScreen: {
+    onDisciplineSelected: (discipline: IDiscipline) => void
+  }
+
+  SearchGroupsScreen: {
+    onDisciplineGroupSelected: (
       discipline: IDiscipline,
+      disciplineGroup: IDisciplineGroup,
     ) => void
   }
-  ListGroupsScreen: {
+
+  SearchGroupsSubscribeScreen: {
     onDisciplineGroupSelected: (
       discipline: IDiscipline,
       disciplineGroup: IDisciplineGroup,

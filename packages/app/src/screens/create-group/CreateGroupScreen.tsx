@@ -87,7 +87,7 @@ const CreateGroupScreen: React.FC = () => {
         <ScrollContainer>
           <InputContainer
             onPress={() =>
-              navigation.navigate('ListDisciplinesScreen', {
+              navigation.navigate('SearchDisciplinesScreen', {
                 onDisciplineSelected: handleDisciplineSelected,
               })
             }

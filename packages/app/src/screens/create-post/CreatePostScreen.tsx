@@ -102,7 +102,7 @@ const CreatePostScreen: React.FC = () => {
         <InputContainer
           onPress={() => {
             if (!route.params.disciplineGroup)
-              navigation.navigate('ListGroupsScreen', {
+              navigation.navigate('SearchGroupsScreen', {
                 onDisciplineGroupSelected: handleDisciplineGroupSelected,
               })
           }}

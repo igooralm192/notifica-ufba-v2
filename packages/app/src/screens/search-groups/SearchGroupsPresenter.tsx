@@ -4,26 +4,19 @@ import { FullLoading } from '@/components/FullLoading'
 import { useMe } from '@/contexts/me'
 import { useNavigation } from '@/helpers'
 import { useGetAllDisciplines } from '@/hooks/api'
-import { IFilterParams } from '@/types/list'
+import { IFilterParams, IUsePaginatedList } from '@/types/list'
 import { AppNavigation } from '@/types/navigation'
 
 import { RouteProp, useRoute } from '@react-navigation/core'
 import React, { useContext, useState } from 'react'
 
-export type IListGroupsFilter = IFilterParams & {
+export type ISearchGroupsFilter = IFilterParams & {
   code?: string
 }
 
-export type IListGroupsFilterUpdater = (
-  filter: IListGroupsFilter,
-) => IListGroupsFilter
-
-export interface ListGroupsPresenterContextData {
-  isFetchingMore: boolean
-  isRefreshing: boolean
-  disciplines: IDiscipline[]
-  onNextPage: () => void
-  onRefresh: () => void
+export interface SearchGroupsPresenterContextData {
+  disciplines: IUsePaginatedList<IDiscipline>
+  code: string
   onCodeChange: (code: string) => void
   onDisciplineGroupSelected: (
     discipline: IDiscipline,
@@ -31,18 +24,21 @@ export interface ListGroupsPresenterContextData {
   ) => void
 }
 
-const ListGroupsPresenterContext = React.createContext(
-  {} as ListGroupsPresenterContextData,
+const SearchGroupsPresenterContext = React.createContext(
+  {} as SearchGroupsPresenterContextData,
 )
 
-const initialFilter: IListGroupsFilter = {
+const initialFilter: ISearchGroupsFilter = {
   page: 0,
   limit: 10,
 }
 
-export const ListGroupsPresenter: React.FC = ({ children }) => {
+export const SearchGroupsPresenter: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   const navigation = useNavigation()
-  const route = useRoute<RouteProp<AppNavigation, 'ListGroupsScreen'>>()
+  const route = useRoute<RouteProp<AppNavigation, 'SearchGroupsScreen'>>()
+
   const { user } = useMe()
 
   const [code, setCode] = useState<string>('')
@@ -55,7 +51,11 @@ export const ListGroupsPresenter: React.FC = ({ children }) => {
     hasNextPage,
     fetchNextPage,
     refresh,
-  } = useGetAllDisciplines({ ...initialFilter, code, teacherId: user?.teacher?.id })
+  } = useGetAllDisciplines({
+    ...initialFilter,
+    code,
+    teacherId: user?.teacher?.id,
+  })
 
   const handleNextPage = () => {
     if (!isFetchingMore && hasNextPage) fetchNextPage()
@@ -80,31 +80,34 @@ export const ListGroupsPresenter: React.FC = ({ children }) => {
   if (isLoading) return <FullLoading />
 
   return (
-    <ListGroupsPresenterContext.Provider
+    <SearchGroupsPresenterContext.Provider
       value={{
-        isFetchingMore,
-        isRefreshing,
-        disciplines,
-        onNextPage: handleNextPage,
-        onRefresh: handleRefresh,
+        disciplines: {
+          isFetchingMore,
+          isRefreshing,
+          data: disciplines,
+          onNextPage: handleNextPage,
+          onRefresh: handleRefresh,
+        },
+        code,
         onCodeChange: handleCodeChange,
         onDisciplineGroupSelected: handleDisciplineGroupSelected,
       }}
     >
       {children}
-    </ListGroupsPresenterContext.Provider>
+    </SearchGroupsPresenterContext.Provider>
   )
 }
 
-export const withListGroupsPresenter = (Component: React.FC<any>) => {
+export const withSearchGroupsPresenter = (Component: React.FC<any>) => {
   return (props: any) => {
     return (
-      <ListGroupsPresenter>
+      <SearchGroupsPresenter>
         <Component {...props} />
-      </ListGroupsPresenter>
+      </SearchGroupsPresenter>
     )
   }
 }
 
-export const useListGroupsPresenter = () =>
-  useContext(ListGroupsPresenterContext)
+export const useSearchGroupsPresenter = () =>
+  useContext(SearchGroupsPresenterContext)
