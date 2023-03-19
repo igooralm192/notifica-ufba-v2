@@ -11,6 +11,4 @@ export const Container = styled(KeyboardAwareScrollView).attrs(
       },
     }
   },
-)`
-  margin-top: ${({theme}) => theme.insets.top}px;
-`
+)``

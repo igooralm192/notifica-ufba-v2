@@ -1,43 +1,26 @@
 import { useAuth } from '@/contexts/auth'
 import { useToast } from '@/contexts/toast'
-import { useNavigation } from '@/helpers'
 import { useUpdateMyUser } from '@/hooks/api'
 import { AuthState } from '@/store/auth/types'
-import { getRouteByName } from '@/utils/navigation'
-
 import * as Notifications from 'expo-notifications'
 import React, { useContext, useEffect } from 'react'
 import { Platform } from 'react-native'
 
 import appConfig from '../../../app.config'
-export interface MessagingContextData {
-  showNotification: (title: string, body: string) => void
-}
+import { NotificationData } from './types'
+import { useMessagingListeners } from './useMessagingListeners'
 
-export type ReceiveNotificationArgs = {
-  title: string
-  body: string
-  data: NotificationData
-}
-
-export type TapNotificationArgs = {
-  data: NotificationData
-}
-
-export type NotificationData = {
-  type: 'message' | 'post'
-  disciplineGroupId: string
-  disciplineGroupCode: string
-  disciplineCode: string
-  disciplineName: string
-}
+export interface MessagingContextData {}
 
 const MessagingContext = React.createContext({} as MessagingContextData)
 
-export const MessagingProvider: React.FC = ({ children }) => {
+export const MessagingProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   const auth = useAuth()
-  const navigation = useNavigation()
   const toast = useToast()
+
+  const { onReceiveNotification, onTapNotification } = useMessagingListeners()
 
   const { update } = useUpdateMyUser()
 
@@ -69,57 +52,6 @@ export const MessagingProvider: React.FC = ({ children }) => {
     return token
   }
 
-  const showNotification = async (
-    title: string,
-    body: string,
-    data?: Record<string, any>,
-  ) => {
-    toast.notification(title, body, () => {
-      navigateToDisciplineGroupTabs(data as NotificationData)
-    })
-  }
-
-  const navigateToDisciplineGroupTabs = (data: NotificationData) => {
-    navigation.navigate('DisciplineGroupTabsScreen', {
-      disciplineGroupId: data.disciplineGroupId,
-      initialTab: data.type === 'post' ? 'mural' : 'chat',
-    })
-  }
-
-  const handleReceiveNotification = ({
-    title,
-    body,
-    data,
-  }: ReceiveNotificationArgs) => {
-    if (!data.type) return
-
-    switch (data.type) {
-      case 'post':
-      case 'message': {
-        if (getRouteByName(navigation.getState(), 'DisciplineGroupTabsScreen'))
-          return
-      }
-      default:
-        showNotification(title, body, data)
-    }
-  }
-
-  const handleTapNotification = ({ data }: TapNotificationArgs) => {
-    if (!data.type) return
-
-    switch (data.type) {
-      case 'post':
-      case 'message': {
-        if (getRouteByName(navigation.getState(), 'DisciplineGroupTabsScreen'))
-          return
-
-        navigateToDisciplineGroupTabs(data)
-      }
-      default:
-        return
-    }
-  }
-
   useEffect(() => {
     if (Platform.OS === 'android') {
       Notifications.setNotificationChannelAsync('default', {
@@ -138,7 +70,7 @@ export const MessagingProvider: React.FC = ({ children }) => {
         const { data } = notification.request.content
 
         if (data)
-          handleTapNotification({
+          onTapNotification({
             data: data as NotificationData,
           })
       },
@@ -155,12 +87,13 @@ export const MessagingProvider: React.FC = ({ children }) => {
       notification => {
         const { title, body, data } = notification.request.content
 
-        if (title && body && data)
-          handleReceiveNotification({
+        if (title && body && data) {
+          onReceiveNotification({
             title,
             body,
             data: data as NotificationData,
           })
+        }
       },
     )
 
@@ -176,9 +109,9 @@ export const MessagingProvider: React.FC = ({ children }) => {
 
       const { data } = notification.notification.request.content
 
-      if (data) handleTapNotification({ data: data as NotificationData })
+      if (data) onTapNotification({ data: data as NotificationData })
     })
-  }, [])
+  }, [auth.state])
 
   useEffect(() => {
     if (auth.state !== AuthState.AUTHENTICATED) return
@@ -189,9 +122,7 @@ export const MessagingProvider: React.FC = ({ children }) => {
   }, [auth.state])
 
   return (
-    <MessagingContext.Provider value={{ showNotification }}>
-      {children}
-    </MessagingContext.Provider>
+    <MessagingContext.Provider value={{}}>{children}</MessagingContext.Provider>
   )
 }
 

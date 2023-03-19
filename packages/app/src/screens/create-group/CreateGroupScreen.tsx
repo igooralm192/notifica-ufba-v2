@@ -104,6 +104,7 @@ const CreateGroupScreen: React.FC = () => {
                       ? `${discipline?.code} - ${discipline?.name}`
                       : undefined
                   }
+                  pointerEvents="none"
                   onChangeText={field.onChange}
                   onBlur={field.onBlur}
                   errorMessage={fieldState.error?.message}

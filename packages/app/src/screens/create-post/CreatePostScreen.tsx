@@ -115,6 +115,7 @@ const CreatePostScreen: React.FC = () => {
                 label="Turma"
                 placeholder="Selecione uma turma"
                 disabled={!!route.params.disciplineGroup}
+                pointerEvents='none'
                 value={
                   discipline && disciplineGroup
                     ? `${discipline?.code} - ${disciplineGroup?.code}`

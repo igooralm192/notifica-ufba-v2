@@ -35,8 +35,13 @@ export const removeRoute = (
   const currentRoute = state.routes[state.index]
 
   if (removedRoute) {
+    const isSameRoute = currentRoute.key === removedRoute.key
     const filteredRoutes = state.routes.filter(r => r.key !== removedRoute.key)
-    const newCurrentRouteIndex = filteredRoutes.findIndex(r => r.key === currentRoute.key)
+    const newCurrentRouteIndex = !isSameRoute
+      ? filteredRoutes.findIndex(r => r.key === currentRoute.key)
+      : filteredRoutes.length > 0
+      ? filteredRoutes.length - 1
+      : 0
 
     return { ...state, index: newCurrentRouteIndex, routes: filteredRoutes }
   }
