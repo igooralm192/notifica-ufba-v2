@@ -2,8 +2,9 @@ import { useAuth } from '@/contexts/auth'
 import { useToast } from '@/contexts/toast'
 import { useUpdateMyUser } from '@/hooks/api'
 import { AuthState } from '@/store/auth/types'
+import { useFocusEffect } from '@react-navigation/native'
 import * as Notifications from 'expo-notifications'
-import React, { useContext, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect } from 'react'
 import { Platform } from 'react-native'
 
 import appConfig from '../../../app.config'
@@ -102,16 +103,18 @@ export const MessagingProvider: React.FC<React.PropsWithChildren> = ({
     }
   }, [])
 
-  useEffect(() => {
-    // Handle Expo notifications ON TAP IN KILLED STATE
-    Notifications.getLastNotificationResponseAsync().then(notification => {
-      if (notification == null) return
+  useFocusEffect(
+    useCallback(() => {
+      // Handle Expo notifications ON TAP IN KILLED STATE
+      Notifications.getLastNotificationResponseAsync().then(notification => {
+        if (notification == null) return
 
-      const { data } = notification.notification.request.content
+        const { data } = notification.notification.request.content
 
-      if (data) onTapNotification({ data: data as NotificationData })
-    })
-  }, [auth.state])
+        if (data) onTapNotification({ data: data as NotificationData })
+      })
+    }, []),
+  )
 
   useEffect(() => {
     if (auth.state !== AuthState.AUTHENTICATED) return

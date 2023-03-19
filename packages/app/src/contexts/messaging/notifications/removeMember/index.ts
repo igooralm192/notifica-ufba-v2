@@ -1,16 +1,11 @@
 import { useToast } from '@/contexts/toast'
 import { useNavigation } from '@/helpers'
-import { AppNavigation } from '@/types/navigation'
-import { getRouteByName, removeRoute } from '@/utils/navigation'
-
-import { CommonActions } from '@react-navigation/native'
-import { useQueryClient } from 'react-query'
+import { getMessagingStore } from '@/state/zustand/messaging'
 
 import { RemoveMemberNotificationParams } from './types'
 
 export const useRemoveMemberNotification = () => {
   const navigation = useNavigation()
-  const queryClient = useQueryClient()
   const toast = useToast()
 
   const showNotification = async (
@@ -30,8 +25,9 @@ export const useRemoveMemberNotification = () => {
   }
 
   const handleTap = (params: RemoveMemberNotificationParams) => {
-    if (getRouteByName(navigation.getState(), 'DisciplineGroupTabsScreen'))
-      return
+    getMessagingStore().setState({
+      removeMemberMessage: { disciplineGroupId: params.disciplineGroupId },
+    })
 
     return navigateToGroupInfo(params)
   }
@@ -41,26 +37,9 @@ export const useRemoveMemberNotification = () => {
     body: string,
     params: RemoveMemberNotificationParams,
   ) => {
-    queryClient.invalidateQueries(['disciplineGroups'])
-
-    const route = getRouteByName(
-      navigation.getState(),
-      'DisciplineGroupTabsScreen',
-    )
-
-    const disciplineGroupTabsParams = route?.params as
-      | AppNavigation['DisciplineGroupTabsScreen']
-      | null
-
-    if (
-      disciplineGroupTabsParams?.disciplineGroupId === params.disciplineGroupId
-    ) {
-      navigation.dispatch(state =>
-        CommonActions.reset(
-          removeRoute(state, r => r.name === 'DisciplineGroupTabsScreen'),
-        ),
-      )
-    }
+    getMessagingStore().setState({
+      removeMemberMessage: { disciplineGroupId: params.disciplineGroupId },
+    })
 
     showNotification(title, body, params)
   }

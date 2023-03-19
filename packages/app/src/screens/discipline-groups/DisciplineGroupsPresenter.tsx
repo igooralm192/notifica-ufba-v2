@@ -8,9 +8,11 @@ import {
   useUnsubscribeStudent,
 } from '@/hooks/api'
 import { useDebounce } from '@/hooks/common'
+import { getMessagingStore } from '@/state/zustand/messaging'
 import { IFilterParams } from '@/types/list'
 
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { useQueryClient } from 'react-query'
 
 export interface DisciplineGroupsPresenterContextData {
   isFetchingMore: boolean
@@ -58,8 +60,9 @@ const initialFilter: IDisciplineGroupsFilterParams = {
   search: '',
 }
 
-export const DisciplineGroupsPresenter: React.FC = ({ children }) => {
+export const DisciplineGroupsPresenter: React.FC<React.PropsWithChildren> = ({ children }) => {
   const { user } = useMe()
+  const queryClient = useQueryClient()
 
   const [searchOpen, setSearchOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -112,6 +115,17 @@ export const DisciplineGroupsPresenter: React.FC = ({ children }) => {
   const handleSearchChange = (text: string) => {
     setFilter({ ...filter, search: text })
   }
+
+  useEffect(() => {
+    const unsubscribe = getMessagingStore().subscribe(
+      state => state.removeMemberMessage,
+      () => {
+        queryClient.invalidateQueries(['disciplineGroups'])
+      },
+    )
+
+    return () => unsubscribe()
+  }, [])
 
   if (isLoading) return <FullLoading />
 

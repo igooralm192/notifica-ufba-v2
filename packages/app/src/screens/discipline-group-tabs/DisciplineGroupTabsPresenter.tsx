@@ -5,7 +5,11 @@ import { useGetDisciplineGroup } from '@/hooks/api'
 import { AppNavigation } from '@/types/navigation'
 
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { getMessagingStore, useMessagingStore } from '@/state/zustand/messaging'
+import { getRouteByName, removeRoute } from '@/utils/navigation'
+import { useNavigation } from '@/helpers'
+import { CommonActions } from '@react-navigation/native'
 
 interface DisciplineGroupTabsPresenterProps {
   disciplineGroupId: string
@@ -25,13 +29,44 @@ const DisciplineGroupTabsPresenterContext = React.createContext(
 )
 
 export const DisciplineGroupTabsPresenter: React.FC<
-  DisciplineGroupTabsPresenterProps
+  React.PropsWithChildren<DisciplineGroupTabsPresenterProps>
 > = ({ disciplineGroupId, initialTab, children }) => {
+  const navigation = useNavigation()
+
   const [index, setIndex] = useState(initialTab === 'chat' ? 1 : 0)
 
   const { isLoading, disciplineGroup } = useGetDisciplineGroup({
     disciplineGroupId,
   })
+
+  useEffect(() => {
+    const unsubscribe = getMessagingStore().subscribe(
+      state => state.removeMemberMessage,
+      params => {
+        const route = getRouteByName(
+          navigation.getState(),
+          'DisciplineGroupTabsScreen',
+        )
+
+        const disciplineGroupTabsParams = route?.params as
+          | AppNavigation['DisciplineGroupTabsScreen']
+          | null
+
+        if (
+          disciplineGroupTabsParams?.disciplineGroupId ===
+          params?.disciplineGroupId
+        ) {
+          navigation.dispatch(state =>
+            CommonActions.reset(
+              removeRoute(state, r => r.name === 'DisciplineGroupTabsScreen'),
+            ),
+          )
+        }
+      },
+    )
+
+    return () => unsubscribe()
+  }, [])
 
   if (isLoading) return <FullLoading />
   if (!disciplineGroup) return null
