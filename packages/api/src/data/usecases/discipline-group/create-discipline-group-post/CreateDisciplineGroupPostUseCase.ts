@@ -4,11 +4,13 @@ import {
   DisciplineGroupDoesNotExistError,
   UserDoesNotExistError,
 } from '@/domain/errors'
-import { ICreateDisciplineGroupPostUseCase } from '@/domain/usecases'
+import {
+  ICreateDisciplineGroupPostUseCase,
+  ICreateNotificationUseCase,
+} from '@/domain/usecases'
 import { BaseError } from '@/domain/helpers'
 
 import {
-  ICreateMessagingService,
   IFindAllStudentRepository,
   IFindOneDisciplineGroupRepository,
   IDisciplineGroupPostRepository,
@@ -23,7 +25,7 @@ export class CreateDisciplineGroupPostUseCase
     private readonly findOneDisciplineGroupRepository: IFindOneDisciplineGroupRepository,
     private readonly findAllStudentRepository: IFindAllStudentRepository,
     private readonly createDisciplineGroupPostRepository: IDisciplineGroupPostRepository.Create,
-    private readonly createMessagingService: ICreateMessagingService,
+    private readonly createNotificationUseCase: ICreateNotificationUseCase,
   ) {}
 
   async run({
@@ -66,21 +68,17 @@ export class CreateDisciplineGroupPostUseCase
       include: { user: true },
     })
 
-    const allUserPushTokens = allStudents
-      .filter(({ user }) => user.id != userId && !!user.pushToken === true)
-      .map(({ user }) => user!.pushToken)
-
-    this.createMessagingService.create({
-      title: `${disciplineGroup.discipline?.code} - ${disciplineGroup.code}`,
-      body: 'Há uma nova postagem para esta turma!',
-      data: {
-        type: 'post',
-        disciplineGroupId: disciplineGroup.id,
-        disciplineGroupCode: disciplineGroup.code,
-        disciplineCode: disciplineGroup.discipline?.code,
-        disciplineName: disciplineGroup.discipline?.name,
+    this.createNotificationUseCase.create({
+      params: { userId },
+      body: {
+        type: 'createPost',
+        params: {
+          disciplineGroup,
+          content,
+          sentBy: user,
+          receivedBy: allStudents.map(s => s.user),
+        },
       },
-      tokens: allUserPushTokens,
     })
 
     return right(disciplineGroupPost)

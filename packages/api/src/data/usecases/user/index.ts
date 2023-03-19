@@ -1,4 +1,5 @@
 export * from './authenticate-user/AuthenticateUserUseCase'
+export * from './create-notification/CreateNotificationUseCase'
 export * from './create-user/CreateUserUseCase'
 export * from './forgot-password/ForgotPasswordUseCase'
 export * from './get-user-by-id/GetUserByIdUseCase'

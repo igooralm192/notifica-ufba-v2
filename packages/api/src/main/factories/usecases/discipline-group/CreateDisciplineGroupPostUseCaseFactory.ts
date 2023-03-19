@@ -6,7 +6,7 @@ import {
   makeStudentRepository,
   makeUserRepository,
 } from '@/main/factories/repositories'
-import { makeMessagingService } from '@/main/factories/services'
+import { makeCreateNotificationUseCase } from '@/main/factories/usecases'
 
 export const makeCreateDisciplineGroupPostUseCase =
   (): ICreateDisciplineGroupPostUseCase => {
@@ -14,13 +14,13 @@ export const makeCreateDisciplineGroupPostUseCase =
     const disciplineGroupRepository = makeDisciplineGroupRepository()
     const studentRepository = makeStudentRepository()
     const disciplineGroupPostRepository = makeDisciplineGroupPostRepository()
-    const messagingService = makeMessagingService()
+    const createNotificationUseCase = makeCreateNotificationUseCase()
 
     return new CreateDisciplineGroupPostUseCase(
       userRepository,
       disciplineGroupRepository,
       studentRepository,
       disciplineGroupPostRepository,
-      messagingService,
+      createNotificationUseCase,
     )
   }

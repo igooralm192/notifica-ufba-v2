@@ -1,16 +1,20 @@
 import {
   DisciplineGroupDoesNotExistError,
+  TeacherDoesNotExistError,
   UserDoesNotExistError,
 } from '@/domain/errors'
-import { IPostMessageUseCase } from '@/domain/usecases'
+import {
+  ICreateNotificationUseCase,
+  IPostMessageUseCase,
+} from '@/domain/usecases'
 import { BaseError } from '@/domain/helpers'
 import { Either, left, right } from '@shared/utils'
 
 import {
   ICreateDisciplineGroupMessageRepository,
-  ICreateMessagingService,
   IFindAllStudentRepository,
   IFindOneDisciplineGroupRepository,
+  ITeacherRepository,
   IUserRepository,
 } from '@/data/contracts'
 
@@ -18,9 +22,10 @@ export class PostMessageUseCase implements IPostMessageUseCase {
   constructor(
     private readonly findOneUserRepository: IUserRepository.FindOne,
     private readonly findOneDisciplineGroupRepository: IFindOneDisciplineGroupRepository,
+    private readonly findOneTeacherRepository: ITeacherRepository.FindOne,
     private readonly findAllStudentRepository: IFindAllStudentRepository,
     private readonly createDisciplineGroupMessageRepository: ICreateDisciplineGroupMessageRepository,
-    private readonly createMessagingService: ICreateMessagingService,
+    private readonly createNotificationUseCase: ICreateNotificationUseCase,
   ) {}
 
   async run({
@@ -46,14 +51,18 @@ export class PostMessageUseCase implements IPostMessageUseCase {
       return left(new DisciplineGroupDoesNotExistError())
     }
 
+    const teacher = await this.findOneTeacherRepository.findOne({
+      where: { id: disciplineGroup.teacherId },
+    })
+
+    if (!teacher) {
+      return left(new TeacherDoesNotExistError())
+    }
+
     const allStudents = await this.findAllStudentRepository.findAll({
       where: { id: { in: disciplineGroup.studentIds } },
       include: { user: true },
     })
-
-    const allUserPushTokens = allStudents
-      .filter(({ user }) => user.id != userId && !!user.pushToken === true)
-      .map(({ user }) => user!.pushToken)
 
     if (!onlyNotify)
       await this.createDisciplineGroupMessageRepository.create({
@@ -64,17 +73,17 @@ export class PostMessageUseCase implements IPostMessageUseCase {
       })
 
     // TODO: Add event
-    this.createMessagingService.create({
-      title: `${disciplineGroup.discipline?.code} - ${disciplineGroup.code}`,
-      body: message,
-      data: {
-        type: 'message',
-        disciplineGroupId: disciplineGroup.id,
-        disciplineGroupCode: disciplineGroup.code,
-        disciplineCode: disciplineGroup.discipline?.code,
-        disciplineName: disciplineGroup.discipline?.name,
+    this.createNotificationUseCase.create({
+      params: { userId },
+      body: {
+        type: 'createMessage',
+        params: {
+          disciplineGroup,
+          message,
+          sentBy: user,
+          receivedBy: [teacher.user, ...allStudents.map(s => s.user)],
+        },
       },
-      tokens: allUserPushTokens,
     })
 
     return right(undefined)

@@ -7,11 +7,11 @@ import {
 } from '@/domain/errors'
 import { BaseError } from '@/domain/helpers'
 import {
+  ICreateNotificationUseCase,
   IRemoveDisciplineGroupStudentUseCase,
   IUnsubscribeStudentUseCase,
 } from '@/domain/usecases'
 import {
-  ICreateMessagingService,
   IFindOneDisciplineGroupRepository,
   IFindOneStudentRepository,
   ITeacherRepository,
@@ -25,7 +25,7 @@ export class RemoveDisciplineGroupStudentUseCase
     private readonly findOneTeacherRepository: ITeacherRepository.FindOne,
     private readonly findOneDisciplineGroupRepository: IFindOneDisciplineGroupRepository,
     private readonly unsubscribeStudentUseCase: IUnsubscribeStudentUseCase,
-    private readonly createMessagingService: ICreateMessagingService,
+    private readonly createNotificationUseCase: ICreateNotificationUseCase,
   ) {}
 
   async removeStudent({
@@ -78,10 +78,12 @@ export class RemoveDisciplineGroupStudentUseCase
       params: { disciplineGroupId },
     })
 
-    this.createMessagingService.create({
-      title: `${disciplineGroup.discipline?.code} - ${disciplineGroup.code}`,
-      body: 'Você foi removido desta turma pelo seu professor!',
-      tokens: [student.user.pushToken],
+    this.createNotificationUseCase.create({
+      params: { userId: teacher.userId },
+      body: {
+        type: 'removeMember',
+        params: { disciplineGroup, member: student.user },
+      },
     })
 
     return unsubscribeResult
