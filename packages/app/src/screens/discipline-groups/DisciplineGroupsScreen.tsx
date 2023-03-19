@@ -110,7 +110,7 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
       },
       onPress: () => {
         navigation.navigate('SearchGroupsSubscribeScreen', {
-          onDisciplineGroupSelected: async (_, disciplineGroup) => {
+          onDisciplineGroupSelected: (_, disciplineGroup) => {
             navigation.navigate('DisciplineGroupInfoScreen', {
               disciplineGroupId: disciplineGroup.id,
             })
@@ -264,27 +264,72 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
         />
       </ListContainer>
 
-      {menuActions.length > 0 && (
-        <SpeedDial
-          isOpen={menu.open}
-          icon={{ name: 'menu', color: '#fff' }}
-          openIcon={{ name: 'close', color: '#fff' }}
-          onOpen={menu.show}
-          onClose={menu.hide}
-          color={theme.colors.primary}
-        >
-          {menuActions.map(action => (
-            <SpeedDial.Action
-              key={action.title}
-              icon={action.icon}
-              color={theme.colors.primary}
-              title={action.title}
-              onPress={action.onPress}
-              titleStyle={{ overflow: 'hidden' }}
-            />
-          ))}
-        </SpeedDial>
-      )}
+      <SpeedDial
+        isOpen={menu.open}
+        icon={{ name: 'menu', color: '#fff' }}
+        openIcon={{ name: 'close', color: '#fff' }}
+        onOpen={menu.show}
+        onClose={menu.hide}
+        color={theme.colors.primary}
+      >
+        {user?.type === 'TEACHER' ? (
+          <SpeedDial.Action
+            key={'Criar turma'}
+            icon={{ name: 'add', color: '#fff' }}
+            color={theme.colors.primary}
+            title={'Criar turma'}
+            onPress={() => {
+              navigation.navigate('CreateGroupScreen', {})
+              menu.hide()
+            }}
+            titleStyle={{ overflow: 'hidden' }}
+          />
+        ) : (
+          <></>
+        )}
+
+        {user?.type === 'TEACHER' ? (
+          <SpeedDial.Action
+            key={'Criar postagem'}
+            icon={{ name: 'add', color: '#fff' }}
+            color={theme.colors.primary}
+            title={'Criar postagem'}
+            onPress={() => {
+              navigation.navigate('CreatePostScreen', {})
+              menu.hide()
+            }}
+            titleStyle={{ overflow: 'hidden' }}
+          />
+        ) : (
+          <></>
+        )}
+
+        {user?.type === 'STUDENT' ? (
+          <SpeedDial.Action
+            key={'Entrar em uma turma'}
+            icon={{
+              name: 'location-enter',
+              type: 'material-community',
+              color: '#fff',
+            }}
+            color={theme.colors.primary}
+            title={'Entrar em uma turma'}
+            onPress={() => {
+              navigation.navigate('SearchGroupsSubscribeScreen', {
+                onDisciplineGroupSelected: (_, disciplineGroup) => {
+                  navigation.navigate('DisciplineGroupInfoScreen', {
+                    disciplineGroupId: disciplineGroup.id,
+                  })
+                },
+              })
+              menu.hide()
+            }}
+            titleStyle={{ overflow: 'hidden' }}
+          />
+        ) : (
+          <></>
+        )}
+      </SpeedDial>
     </Container>
   )
 }
