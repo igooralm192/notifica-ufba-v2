@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "yarn ts-node-dev -r tsconfig-paths/register --respawn --notify false --prefer-ts --ignore-watch node_modules --transpile-only src/main/server.ts",
-    "start": "node ../../dist/api/src/main/server.js",
+    "start": "NODE_ENV=production node ../../dist/api/src/main/server.js",
     "build": "yarn tsc --build",
     "prisma:generate": "yarn prisma generate --schema=src/infra/database/prisma/schemas/mongodb-schema.prisma",
     "prisma:push": "yarn prisma db push --schema=src/infra/database/prisma/schemas/mongodb-schema.prisma"

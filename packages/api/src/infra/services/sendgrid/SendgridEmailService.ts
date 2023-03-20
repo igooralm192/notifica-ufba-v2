@@ -1,12 +1,11 @@
 import { IEmailService } from '@/data/contracts'
-import sendgrid, {ClientResponse} from '@sendgrid/mail'
+import sendgrid from '@sendgrid/mail'
 
 export class SendgridEmailService implements IEmailService.SendMail {
   constructor(
     API_KEY: string
   ) {
     sendgrid.setApiKey(API_KEY)
-    console.log({API_KEY})
   }
 
   async sendMail({
