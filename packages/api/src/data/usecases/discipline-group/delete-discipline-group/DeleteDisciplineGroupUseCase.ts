@@ -2,7 +2,9 @@ import { Either, left, right } from '@shared/utils'
 import { BaseError } from '@/domain/helpers'
 import { IDeleteDisciplineGroupUseCase } from '@/domain/usecases'
 import {
+  IDeleteAllDisciplineGroupMessageRepository,
   IDeleteDisciplineGroupRepository,
+  IDisciplineGroupPostRepository,
   IFindOneDisciplineGroupRepository,
 } from '@/data/contracts'
 import { DisciplineGroupDoesNotExistError } from '@/domain/errors'
@@ -12,6 +14,8 @@ export class DeleteDisciplineGroupUseCase
 {
   constructor(
     private readonly findOneDisciplineGroupRepository: IFindOneDisciplineGroupRepository,
+    private readonly deleteAllDisciplineGroupPostRepository: IDisciplineGroupPostRepository.DeleteAll,
+    private readonly deleteAllDisciplineGroupMessageRepository: IDeleteAllDisciplineGroupMessageRepository,
     private readonly deleteDisciplineGroupRepository: IDeleteDisciplineGroupRepository,
   ) {}
 
@@ -30,6 +34,15 @@ export class DeleteDisciplineGroupUseCase
     if (!disciplineGroup) {
       return left(new DisciplineGroupDoesNotExistError())
     }
+
+    await Promise.all([
+      this.deleteAllDisciplineGroupPostRepository.deleteAll({
+        where: { disciplineGroupId },
+      }),
+      this.deleteAllDisciplineGroupMessageRepository.deleteAll({
+        where: { disciplineGroupId },
+      }),
+    ])
 
     await this.deleteDisciplineGroupRepository.delete({
       where: { id: disciplineGroup.id },

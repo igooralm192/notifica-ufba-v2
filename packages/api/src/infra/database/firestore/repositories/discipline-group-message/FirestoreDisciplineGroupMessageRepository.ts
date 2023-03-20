@@ -1,6 +1,7 @@
 import { IDisciplineGroupMessage } from '@shared/entities'
 import {
   ICreateDisciplineGroupMessageRepository,
+  IDeleteAllDisciplineGroupMessageRepository,
   IFindAllDisciplineGroupMessageRepository,
 } from '@/data/contracts'
 import { FirestoreRepository } from '@/infra/database/firestore/helpers'
@@ -12,7 +13,8 @@ export class FirestoreDisciplineGroupMessageRepository
   extends FirestoreRepository
   implements
     ICreateDisciplineGroupMessageRepository,
-    IFindAllDisciplineGroupMessageRepository
+    IFindAllDisciplineGroupMessageRepository,
+    IDeleteAllDisciplineGroupMessageRepository
 {
   async create({
     body,
@@ -39,7 +41,28 @@ export class FirestoreDisciplineGroupMessageRepository
     return disciplineGroupMessage
   }
 
-  async findAll(input: IFindAllDisciplineGroupMessageRepository.Input): Promise<IFindAllDisciplineGroupMessageRepository.Output> {
+  async deleteAll(
+    input: IDeleteAllDisciplineGroupMessageRepository.Input,
+  ): Promise<IDeleteAllDisciplineGroupMessageRepository.Output> {
+    const { where } = input
+
+    await this.deleteCollection(
+      this.client
+        .collection('disciplineGroupMessages')
+        .doc(where.disciplineGroupId)
+        .collection('messages'),
+      20,
+    )
+
+    await this.client
+      .collection('disciplineGroupMessages')
+      .doc(where.disciplineGroupId)
+      .delete()
+  }
+
+  async findAll(
+    input: IFindAllDisciplineGroupMessageRepository.Input,
+  ): Promise<IFindAllDisciplineGroupMessageRepository.Output> {
     const { take, skip, where } = input
 
     let query = this.client
@@ -54,7 +77,9 @@ export class FirestoreDisciplineGroupMessageRepository
     return query.get().then(snapshot => {
       const disciplineGroupMessages = snapshot.docs.map(doc => doc.data())
 
-      return disciplineGroupMessages.map(this.mapDocumentDataToDisciplineGroupMessage)
+      return disciplineGroupMessages.map(
+        this.mapDocumentDataToDisciplineGroupMessage,
+      )
     })
   }
 
@@ -69,5 +94,44 @@ export class FirestoreDisciplineGroupMessageRepository
       disciplineGroupId: data.disciplineGroupId,
       sentAt: data.sentAt.toDate(),
     }
+  }
+
+  private async deleteCollection(
+    collectionRef: FirebaseFirestore.CollectionReference<DocumentData>,
+    batchSize: number,
+  ) {
+    const query = collectionRef.orderBy('__name__').limit(batchSize)
+
+    return new Promise((resolve, reject) => {
+      this.deleteQueryBatch(query, resolve).catch(reject)
+    })
+  }
+
+  private async deleteQueryBatch(
+    query: FirebaseFirestore.Query<DocumentData>,
+    resolve: (_: unknown) => void,
+  ) {
+    const snapshot = await query.get()
+
+    const batchSize = snapshot.size
+    if (batchSize === 0) {
+      // When there are no documents left, we are done
+      resolve({})
+      return
+    }
+
+    // Delete documents in a batch
+    const batch = this.client.batch()
+    snapshot.docs.forEach(doc => {
+      batch.delete(doc.ref)
+    })
+
+    await batch.commit()
+
+    // Recurse on the next process tick, to avoid
+    // exploding the stack.
+    process.nextTick(() => {
+      this.deleteQueryBatch(query, resolve)
+    })
   }
 }

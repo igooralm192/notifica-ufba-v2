@@ -1,8 +1,8 @@
 import { IDisciplineGroupMessage } from '@shared/entities'
 
 export type IDisciplineGroupMessageRepositoryListInput = {
-  where: {
-    disciplineGroupId: string
+  where?: {
+    disciplineGroupId?: string
   }
   take?: number
   skip?: number
@@ -38,3 +38,16 @@ export interface IFindAllDisciplineGroupMessageRepository {
     input: IFindAllDisciplineGroupMessageRepository.Input,
   ): Promise<IFindAllDisciplineGroupMessageRepository.Output>
 }
+
+export namespace IDeleteAllDisciplineGroupMessageRepository {
+  export type Input = IDisciplineGroupMessageRepositoryListInput
+
+  export type Output = void
+}
+
+export interface IDeleteAllDisciplineGroupMessageRepository {
+  deleteAll(
+    input: IDeleteAllDisciplineGroupMessageRepository.Input,
+  ): Promise<IDeleteAllDisciplineGroupMessageRepository.Output>
+}
+

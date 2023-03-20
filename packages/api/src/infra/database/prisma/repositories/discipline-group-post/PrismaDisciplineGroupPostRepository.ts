@@ -11,7 +11,8 @@ export class PrismaDisciplineGroupPostRepository
     IDisciplineGroupPostRepository.Count,
     IDisciplineGroupPostRepository.FindAll,
     IDisciplineGroupPostRepository.FindOne,
-    IDisciplineGroupPostRepository.DeleteOne
+    IDisciplineGroupPostRepository.DeleteOne,
+    IDisciplineGroupPostRepository.DeleteAll
 {
   async create({
     title,
@@ -80,6 +81,16 @@ export class PrismaDisciplineGroupPostRepository
 
     await this.client.disciplineGroupPost.delete({
       where: { id },
+    })
+  }
+
+  async deleteAll({
+    where,
+  }: IDisciplineGroupPostRepository.DeleteAll.Input): Promise<void> {
+    const { disciplineGroupId } = where
+
+    await this.client.disciplineGroupPost.deleteMany({
+      where: { disciplineGroupId },
     })
   }
 

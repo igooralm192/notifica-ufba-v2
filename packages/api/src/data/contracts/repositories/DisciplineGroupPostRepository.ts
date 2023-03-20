@@ -76,4 +76,17 @@ export namespace IDisciplineGroupPostRepository {
   export interface DeleteOne {
     deleteOne(input: DeleteOne.Input): Promise<DeleteOne.Output>
   }
+
+  export namespace DeleteAll {
+    export type Input = {
+      where: {
+        disciplineGroupId?: string
+      }
+    }
+    export type Output = void
+  }
+
+  export interface DeleteAll {
+    deleteAll(input: DeleteAll.Input): Promise<DeleteAll.Output>
+  }
 }
