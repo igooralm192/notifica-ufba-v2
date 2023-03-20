@@ -3,9 +3,10 @@ import styled from 'styled-components/native'
 
 export const Container = styled.View`
   width: 300px;
+  padding: 4px 0;
+  align-self: center;
   background-color: white;
   border-radius: 16px;
-  padding: 4px 0;
 `
 
 export const CommonContainer = styled.View`

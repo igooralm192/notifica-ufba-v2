@@ -31,30 +31,21 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 }) => {
   return (
     <Modal {...props}>
-      <Pressable
-        onPress={onBack}
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Container>
-          <TitleContainer>
-            <Title>{title}</Title>
-          </TitleContainer>
+      <Container>
+        <TitleContainer>
+          <Title>{title}</Title>
+        </TitleContainer>
 
-          <BodyContainer>
-            <Body>{body}</Body>
-          </BodyContainer>
+        <BodyContainer>
+          <Body>{body}</Body>
+        </BodyContainer>
 
-          <ActionsContainer>
-            <NoButton title="Não" color="grey4" onPress={onBack} />
-            <Spacer d="horizontal" s={4} />
-            <YesButton title="Sim" color="error" onPress={onConfirm} />
-          </ActionsContainer>
-        </Container>
-      </Pressable>
+        <ActionsContainer>
+          <NoButton title="Não" color="grey4" onPress={onBack} />
+          <Spacer d="horizontal" s={4} />
+          <YesButton title="Sim" color="error" onPress={onConfirm} />
+        </ActionsContainer>
+      </Container>
     </Modal>
   )
 }
