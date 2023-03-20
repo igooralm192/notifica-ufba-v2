@@ -3,6 +3,8 @@ import { Spacer } from '@/components/Spacer'
 import React from 'react'
 import { FlatList, FlatListProps, RefreshControl } from 'react-native'
 
+import { NoResultsText } from './styles'
+
 export interface SearchListProps<T> extends FlatListProps<T> {
   isFetchingMore: boolean
   isRefreshing: boolean
@@ -27,6 +29,9 @@ export function SearchList<T>({
       onEndReached={onNextPage}
       onEndReachedThreshold={0.15}
       ItemSeparatorComponent={Spacer}
+      ListEmptyComponent={() => {
+        return <NoResultsText>Nenhum resultado encontrado.</NoResultsText>
+      }}
       ListFooterComponent={isFetchingMore ? FooterLoading : undefined}
       refreshControl={
         <RefreshControl
