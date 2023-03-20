@@ -151,7 +151,7 @@ export class PrismaDisciplineGroupRepository
     where,
   }: IDeleteDisciplineGroupRepository.Input): Promise<void> {
     await this.client.disciplineGroup
-      .delete({ where: { id: where.id } })
+      .delete({ where: { id: where.id },  })
       .catch(() => null)
   }
 

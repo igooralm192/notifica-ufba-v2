@@ -5,7 +5,7 @@ type IDisciplineGroupPostRepository = IDisciplineGroupPostRepository.Create &
   IDisciplineGroupPostRepository.Count &
   IDisciplineGroupPostRepository.FindAll &
   IDisciplineGroupPostRepository.FindOne &
-  IDisciplineGroupPostRepository.Delete
+  IDisciplineGroupPostRepository.DeleteOne
 
 export const makeDisciplineGroupPostRepository =
   (): IDisciplineGroupPostRepository => {

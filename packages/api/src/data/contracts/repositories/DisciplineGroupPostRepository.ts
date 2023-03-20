@@ -64,7 +64,7 @@ export namespace IDisciplineGroupPostRepository {
     findOne(input: FindOne.Input): Promise<FindOne.Output>
   }
 
-  export namespace Delete {
+  export namespace DeleteOne {
     export type Input = {
       where: {
         id?: string
@@ -73,7 +73,7 @@ export namespace IDisciplineGroupPostRepository {
     export type Output = void
   }
 
-  export interface Delete {
-    delete(input: Delete.Input): Promise<Delete.Output>
+  export interface DeleteOne {
+    deleteOne(input: DeleteOne.Input): Promise<DeleteOne.Output>
   }
 }

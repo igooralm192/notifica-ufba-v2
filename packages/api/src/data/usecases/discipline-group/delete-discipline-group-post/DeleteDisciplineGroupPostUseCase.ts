@@ -17,7 +17,7 @@ export class DeleteDisciplineGroupPostUseCase
   constructor(
     private readonly findOneDisciplineGroupRepository: IFindOneDisciplineGroupRepository,
     private readonly findOneDisciplineGroupPostRepository: IDisciplineGroupPostRepository.FindOne,
-    private readonly deleteDisciplineGroupPostRepository: IDisciplineGroupPostRepository.Delete,
+    private readonly deleteDisciplineGroupPostRepository: IDisciplineGroupPostRepository.DeleteOne,
   ) {}
 
   async delete(
@@ -54,7 +54,7 @@ export class DeleteDisciplineGroupPostUseCase
       )
     }
 
-    await this.deleteDisciplineGroupPostRepository.delete({
+    await this.deleteDisciplineGroupPostRepository.deleteOne({
       where: { id: disciplineGroupPostId },
     })
 
