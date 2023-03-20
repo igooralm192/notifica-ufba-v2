@@ -47,6 +47,8 @@ export type AppNavigation = {
     ) => void
   }
 
+  SendFeedbackScreen: undefined
+
   DisciplineGroupTabsScreen: {
     disciplineGroupId: string
     initialTab?: 'mural' | 'chat'

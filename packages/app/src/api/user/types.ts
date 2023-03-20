@@ -64,3 +64,10 @@ export namespace IGetUserProfilePictureEndpoint {
     url?: string
   }
 }
+
+export namespace ISendFeedbackEndpoint {
+  export interface Request {
+    feedback: string
+  }
+}
+

@@ -12,6 +12,7 @@ import {
   IResetPasswordEndpoint,
   IUpdateProfilePictureEndpoint,
   IGetUserProfilePictureEndpoint,
+  ISendFeedbackEndpoint,
 } from './types'
 
 export const login = async ({
@@ -89,4 +90,10 @@ export const getUserProfilePictureUrl = async ({
       ? `${response.data.url}?${new Date().valueOf()}`
       : undefined,
   }
+}
+
+export const sendFeedback = async ({
+  feedback
+}: ISendFeedbackEndpoint.Request): Promise<void> => {
+  await api.post('/send-feedback', { feedback })
 }

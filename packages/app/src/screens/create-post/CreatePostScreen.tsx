@@ -115,7 +115,7 @@ const CreatePostScreen: React.FC = () => {
                 label="Turma"
                 placeholder="Selecione uma turma"
                 disabled={!!route.params.disciplineGroup}
-                pointerEvents='none'
+                pointerEvents="none"
                 value={
                   discipline && disciplineGroup
                     ? `${discipline?.code} - ${disciplineGroup?.code}`
@@ -146,10 +146,10 @@ const CreatePostScreen: React.FC = () => {
                 onBlur={field.onBlur}
                 errorMessage={fieldState.error?.message}
                 renderErrorMessage={!!fieldState.error}
-                autoCapitalize="none"
+                autoCapitalize="sentences"
                 multiline
                 textAlignVertical="top"
-                numberOfLines={8}
+                inputStyle={{ minHeight: 200 }}
                 testID="create-post-content-input"
               />
             )}

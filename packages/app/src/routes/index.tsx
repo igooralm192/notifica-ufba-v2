@@ -18,6 +18,7 @@ import {
   SearchGroupsScreen,
   SearchGroupsSubscribeScreen,
   SearchDisciplinesScreen,
+  SendFeedbackScreen,
 } from '@/screens'
 import { AuthState } from '@/store/auth/types'
 
@@ -97,6 +98,11 @@ const Routes: React.FC = () => {
                     name="SearchGroupsSubscribeScreen"
                     component={SearchGroupsSubscribeScreen}
                     options={{ headerShown: false, presentation: 'modal' }}
+                  />
+
+                  <Stack.Screen
+                    name="SendFeedbackScreen"
+                    component={SendFeedbackScreen}
                   />
 
                   <Stack.Screen

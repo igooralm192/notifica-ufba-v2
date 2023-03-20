@@ -190,9 +190,9 @@ const CreateGroupScreen: React.FC = () => {
                   onBlur={field.onBlur}
                   errorMessage={fieldState.error?.message}
                   renderErrorMessage={!!fieldState.error}
-                  autoCapitalize="none"
+                  autoCapitalize="sentences"
                   multiline
-                  numberOfLines={8}
+                  inputStyle={{ minHeight: 200 }}
                   textAlignVertical="top"
                   testID="create-group-description-input"
                 />

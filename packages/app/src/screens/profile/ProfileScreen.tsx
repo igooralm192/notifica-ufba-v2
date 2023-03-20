@@ -8,7 +8,7 @@ import { useBoolean } from '@/hooks/common'
 
 import { Icon, useTheme } from '@rneui/themed'
 import React, { useRef, useState } from 'react'
-import { Text, TouchableOpacity } from 'react-native'
+import { ScrollView, Text, TouchableOpacity } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 
 import { PreviewPictureModal } from './PreviewPictureModal'
@@ -16,16 +16,12 @@ import { useProfilePresenter, withProfilePresenter } from './ProfilePresenter'
 import {
   Container,
   UserContainer,
-  PhotoContainer,
   PhotoEditContainer,
-  Photo,
-  UserImagePlaceholder,
   UserName,
   OptionContainer,
   OptionIcon,
   OptionName,
 } from './ProfileStyles'
-import { delay } from '@/utils/delay'
 
 export interface ProfileScreenProps {}
 
@@ -106,42 +102,55 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
 
   return (
     <Container headerProps={{ title: 'Perfil', back: false }}>
-      <UserContainer>
-        <TouchableOpacity activeOpacity={0.6} onPress={editPictureVisible.on}>
-          <UserProfilePicture userId={user.id} />
+      <ScrollView>
+        <UserContainer>
+          <TouchableOpacity activeOpacity={0.6} onPress={editPictureVisible.on}>
+            <UserProfilePicture userId={user.id} />
 
-          <PhotoEditContainer>
-            <Icon
-              type="material-community"
-              name="pencil-outline"
-              color="white"
-              size={16}
-            />
-          </PhotoEditContainer>
-        </TouchableOpacity>
+            <PhotoEditContainer>
+              <Icon
+                type="material-community"
+                name="pencil-outline"
+                color="white"
+                size={16}
+              />
+            </PhotoEditContainer>
+          </TouchableOpacity>
 
-        <Spacer />
+          <Spacer />
 
-        <UserName>{user.name}</UserName>
-      </UserContainer>
+          <UserName>{user.name}</UserName>
+        </UserContainer>
 
-      <Spacer s={16} />
+        <Spacer s={16} />
 
-      <OptionContainer
-        onPress={() =>
-          navigation.navigate('EditProfileScreen', { userId: user.id })
-        }
-      >
-        <OptionIcon name="edit" />
-        <OptionName>Editar perfil</OptionName>
-      </OptionContainer>
+        <OptionContainer
+          onPress={() =>
+            navigation.navigate('EditProfileScreen', { userId: user.id })
+          }
+        >
+          <OptionIcon name="edit" />
+          <OptionName>Editar perfil</OptionName>
+        </OptionContainer>
 
-      <Spacer s={12} />
+        <Spacer s={12} />
 
-      <OptionContainer onPress={logout}>
-        <OptionIcon name="logout" />
-        <OptionName>Sair</OptionName>
-      </OptionContainer>
+        <OptionContainer
+          onPress={() =>
+            navigation.navigate('SendFeedbackScreen')
+          }
+        >
+          <OptionIcon name="send" />
+          <OptionName>Enviar feedback</OptionName>
+        </OptionContainer>
+
+        <Spacer s={12} />
+
+        <OptionContainer onPress={logout}>
+          <OptionIcon name="logout" />
+          <OptionName>Sair</OptionName>
+        </OptionContainer>
+      </ScrollView>
 
       <BottomSheet
         visible={editPictureVisible.value}

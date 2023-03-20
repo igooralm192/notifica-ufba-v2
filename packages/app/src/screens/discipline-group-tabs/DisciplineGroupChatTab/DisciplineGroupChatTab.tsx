@@ -80,6 +80,7 @@ const DisciplineGroupChatTab: React.FC = () => {
             placeholder="Envie uma mensagem"
             value={message}
             onChangeText={setMessage}
+            autoCapitalize="sentences"
             multiline
           />
         </SendInputContainer>
