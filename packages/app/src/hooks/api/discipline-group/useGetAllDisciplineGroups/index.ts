@@ -9,6 +9,7 @@ export const useGetAllDisciplineGroups = (
 ): IUseGetAllDisciplineGroups.Output => {
   const {
     isLoading,
+    isFetching,
     data,
     fetchNextPage,
     hasNextPage,
@@ -48,6 +49,7 @@ export const useGetAllDisciplineGroups = (
 
   return {
     isLoading,
+    isFetching,
     isFetchingMore: isFetchingNextPage,
     isRefreshing: isRefetching,
     hasNextPage: !!hasNextPage,

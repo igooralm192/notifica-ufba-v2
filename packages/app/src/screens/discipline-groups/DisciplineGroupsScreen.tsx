@@ -3,10 +3,10 @@ import { Spacer } from '@/components/Spacer'
 import { useMe } from '@/contexts/me'
 import { useStatusBar } from '@/contexts/status-bar'
 import { useNavigation } from '@/helpers'
-import { useBoolean } from '@/hooks/common'
+import { delay } from '@/utils/delay'
 
 import { Icon, SpeedDial, useTheme } from '@rneui/themed'
-import React, { useEffect, useRef } from 'react'
+import React, {  useRef } from 'react'
 import { Keyboard, RefreshControl, TextInput } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Animated, {
@@ -34,8 +34,8 @@ import {
   HeaderButton,
   ListContainer,
 } from './DisciplineGroupsStyles'
-import { StackActions } from '@react-navigation/routers'
-import { delay } from '@/utils/delay'
+import { AddDisciplineGroupPlaceholder } from './AddDisciplineGroupPlaceholder'
+import { NoDisciplineGroupsPlaceholder } from './NoDisciplineGroupsPlaceholder'
 
 export interface DisciplineGroupsScreenProps {}
 
@@ -81,59 +81,23 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
     }
   })
 
-  const teacherActions = [
-    {
-      title: 'Criar turma',
-      icon: { name: 'add', color: '#fff' },
-      onPress: () => {
-        navigation.navigate('CreateGroupScreen', {})
-        menu.hide()
-      },
-    },
-    {
-      title: 'Criar postagem',
-      icon: { name: 'add', color: '#fff' },
-      onPress: () => {
-        navigation.navigate('CreatePostScreen', {})
-        menu.hide()
-      },
-    },
-  ]
+  const navigateToCreateGroup = () => {
+    navigation.navigate('CreateGroupScreen', {})
+  }
 
-  const studentActions = [
-    {
-      title: 'Entrar em uma turma',
-      icon: {
-        name: 'location-enter',
-        type: 'material-community',
-        color: '#fff',
-      },
-      onPress: () => {
-        navigation.navigate('SearchGroupsSubscribeScreen', {
-          onDisciplineGroupSelected: (_, disciplineGroup) => {
-            navigation.navigate('DisciplineGroupInfoScreen', {
-              disciplineGroupId: disciplineGroup.id,
-            })
-          },
+  const navigateToCreatePost = () => {
+    navigation.navigate('CreatePostScreen', {})
+  }
+
+  const navigateToSearchGroupsSubscribe = () => {
+    navigation.navigate('SearchGroupsSubscribeScreen', {
+      onDisciplineGroupSelected: (_, disciplineGroup) => {
+        navigation.navigate('DisciplineGroupInfoScreen', {
+          disciplineGroupId: disciplineGroup.id,
         })
-        menu.hide()
       },
-    },
-  ]
-
-  const menuActions = user?.type === 'TEACHER' ? teacherActions : studentActions
-
-  useEffect(() => {
-    if (!searchInputRef?.current?.isFocused?.() && search.open) {
-      searchInputRef?.current?.focus()
-      return
-    }
-
-    if (searchInputRef?.current?.isFocused?.() && !search.open) {
-      Keyboard.dismiss()
-      return
-    }
-  }, [search.open])
+    })
+  }
 
   useStatusBar('primary')
 
@@ -186,7 +150,11 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
               searchButtonStyles,
             ]}
             disabled={search.open}
-            onPress={search.show}
+            onPress={async () => {
+              search.show()
+              await delay(300)
+              searchInputRef?.current?.focus()
+            }}
           >
             <AnimatedIcon
               style={{ alignSelf: 'center' }}
@@ -233,7 +201,11 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
                   backgroundColor: theme.colors.white,
                 },
               ]}
-              onPress={search.hide}
+              onPress={async () => {
+                search.hide()
+                await delay(300)
+                Keyboard.dismiss()
+              }}
             >
               <Icon name="close" size={20} color="black" />
             </HeaderButton>
@@ -249,6 +221,27 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
           renderItem={({ item }) => (
             <DisciplineGroupListItem disciplineGroup={item} />
           )}
+          ListEmptyComponent={() => {
+            const placeholderMap = {
+              TEACHER: 'Ainda não há nada por aqui, crie já uma turma.',
+              STUDENT: 'Ainda não há nada por aqui, entre já em uma turma.',
+            }
+
+            const buttonTitleMap = {
+              TEACHER: 'Criar turma',
+              STUDENT: 'Entrar em uma turma',
+            }
+
+            if (search.dText.length > 0) return <NoDisciplineGroupsPlaceholder />
+
+            return (
+              <AddDisciplineGroupPlaceholder
+                placeholder={placeholderMap[user?.type || 'STUDENT']}
+                buttonTitle={buttonTitleMap[user?.type || 'STUDENT']}
+                onAddDisciplineGroup={navigateToSearchGroupsSubscribe}
+              />
+            )
+          }}
           ItemSeparatorComponent={Spacer}
           contentContainerStyle={{ padding: 16 }}
           onEndReached={onNextPage}
@@ -279,7 +272,7 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
             color={theme.colors.primary}
             title={'Criar turma'}
             onPress={() => {
-              navigation.navigate('CreateGroupScreen', {})
+              navigateToCreateGroup()
               menu.hide()
             }}
             titleStyle={{ overflow: 'hidden' }}
@@ -288,47 +281,45 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
           <></>
         )}
 
-        {user?.type === 'TEACHER' ? (
-          <SpeedDial.Action
-            key={'Criar postagem'}
-            icon={{ name: 'add', color: '#fff' }}
-            color={theme.colors.primary}
-            title={'Criar postagem'}
-            onPress={() => {
-              navigation.navigate('CreatePostScreen', {})
-              menu.hide()
-            }}
-            titleStyle={{ overflow: 'hidden' }}
-          />
-        ) : (
-          <></>
-        )}
+        {
+          user?.type === 'TEACHER' ? (
+            <SpeedDial.Action
+              key={'Criar postagem'}
+              icon={{ name: 'add', color: '#fff' }}
+              color={theme.colors.primary}
+              title={'Criar postagem'}
+              onPress={() => {
+                navigateToCreatePost()
+                menu.hide()
+              }}
+              titleStyle={{ overflow: 'hidden' }}
+            />
+          ) : (
+            <></>
+          )
+        }
 
-        {user?.type === 'STUDENT' ? (
-          <SpeedDial.Action
-            key={'Entrar em uma turma'}
-            icon={{
-              name: 'location-enter',
-              type: 'material-community',
-              color: '#fff',
-            }}
-            color={theme.colors.primary}
-            title={'Entrar em uma turma'}
-            onPress={() => {
-              navigation.navigate('SearchGroupsSubscribeScreen', {
-                onDisciplineGroupSelected: (_, disciplineGroup) => {
-                  navigation.navigate('DisciplineGroupInfoScreen', {
-                    disciplineGroupId: disciplineGroup.id,
-                  })
-                },
-              })
-              menu.hide()
-            }}
-            titleStyle={{ overflow: 'hidden' }}
-          />
-        ) : (
-          <></>
-        )}
+        {
+          user?.type === 'STUDENT' ? (
+            <SpeedDial.Action
+              key={'Entrar em uma turma'}
+              icon={{
+                name: 'location-enter',
+                type: 'material-community',
+                color: '#fff',
+              }}
+              color={theme.colors.primary}
+              title={'Entrar em uma turma'}
+              onPress={() => {
+                navigateToSearchGroupsSubscribe()
+                menu.hide()
+              }}
+              titleStyle={{ overflow: 'hidden' }}
+            />
+          ) : (
+            <></>
+          )
+        }
       </SpeedDial>
     </Container>
   )

@@ -9,6 +9,7 @@ export namespace IUseGetAllDisciplineGroups {
 
   export type Output = {
     isLoading: boolean
+    isFetching: boolean
     isFetchingMore: boolean
     isRefreshing: boolean
     hasNextPage: boolean

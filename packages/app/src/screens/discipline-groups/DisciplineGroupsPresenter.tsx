@@ -15,6 +15,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useQueryClient } from 'react-query'
 
 export interface DisciplineGroupsPresenterContextData {
+  isFetching: boolean
   isFetchingMore: boolean
   isRefreshing: boolean
   disciplineGroups: IDisciplineGroup[]
@@ -34,6 +35,7 @@ export interface DisciplineGroupsPresenterContextData {
   search: {
     open: boolean
     text: string
+    dText: string
     show: () => void
     hide: () => void
     onChange: (text: string) => void
@@ -74,6 +76,7 @@ export const DisciplineGroupsPresenter: React.FC<React.PropsWithChildren> = ({ c
 
   const {
     isLoading,
+    isFetching,
     isFetchingMore,
     isRefreshing,
     disciplineGroups,
@@ -132,6 +135,7 @@ export const DisciplineGroupsPresenter: React.FC<React.PropsWithChildren> = ({ c
   return (
     <DisciplineGroupsPresenterContext.Provider
       value={{
+        isFetching,
         isFetchingMore,
         isRefreshing,
         disciplineGroups,
@@ -149,6 +153,7 @@ export const DisciplineGroupsPresenter: React.FC<React.PropsWithChildren> = ({ c
         search: {
           open: searchOpen,
           text: filter.search ?? '',
+          dText: dSearchText,
           show: showSearch,
           hide: hideSearch,
           onChange: handleSearchChange,
