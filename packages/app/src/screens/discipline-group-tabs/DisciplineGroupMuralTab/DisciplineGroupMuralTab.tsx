@@ -11,6 +11,7 @@ import {
   useDisciplineGroupMuralPresenter,
   withDisciplineGroupMuralPresenter,
 } from './DisciplineGroupMuralPresenter'
+import { AddDisciplineGroupPostPlaceholder } from './AddDisciplineGroupPostPlaceholder'
 
 export interface DisciplineGroupMuralTabProps {}
 
@@ -40,6 +41,33 @@ const DisciplineGroupMuralTab: React.FC<DisciplineGroupMuralTabProps> = () => {
         )}
         ItemSeparatorComponent={Spacer}
         contentContainerStyle={{ padding: 16 }}
+        ListEmptyComponent={() => {
+          const placeholderMap = {
+            TEACHER: 'Ainda não há nada por aqui, crie já uma postagem.',
+            STUDENT:
+              'Ainda não há nada por aqui, aguarde o professor da turma postar algo.',
+          }
+
+          const buttonTitleMap = {
+            TEACHER: 'Criar postagem',
+            STUDENT: '',
+          }
+
+          const onAddDisciplineGroupMap = {
+            TEACHER: navigate.toCreatePost,
+            STUDENT: undefined,
+          }
+
+          return (
+            <AddDisciplineGroupPostPlaceholder
+              placeholder={placeholderMap[user?.type || 'STUDENT']}
+              buttonTitle={buttonTitleMap[user?.type || 'STUDENT']}
+              onAddDisciplineGroupPost={
+                onAddDisciplineGroupMap[user?.type || 'STUDENT']
+              }
+            />
+          )
+        }}
         onEndReached={onNextPage}
         onEndReachedThreshold={0.15}
         ListFooterComponent={isFetchingMore ? FooterLoading : undefined}

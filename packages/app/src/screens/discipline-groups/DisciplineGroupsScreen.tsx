@@ -232,13 +232,20 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
               STUDENT: 'Entrar em uma turma',
             }
 
+            const onAddDisciplineGroupMap = {
+              TEACHER: navigateToCreateGroup,
+              STUDENT: navigateToSearchGroupsSubscribe
+            }
+
             if (search.dText.length > 0) return <NoDisciplineGroupsPlaceholder />
 
             return (
               <AddDisciplineGroupPlaceholder
                 placeholder={placeholderMap[user?.type || 'STUDENT']}
                 buttonTitle={buttonTitleMap[user?.type || 'STUDENT']}
-                onAddDisciplineGroup={navigateToSearchGroupsSubscribe}
+                onAddDisciplineGroup={
+                  onAddDisciplineGroupMap[user?.type || 'STUDENT']
+                }
               />
             )
           }}
