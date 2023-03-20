@@ -8,9 +8,11 @@
     "api:dev": "yarn workspace api dev",
     "api:build": "yarn workspace api build",
     "api:start": "yarn workspace api start",
-    "app:start": "yarn workspace app start"
+    "app:start": "yarn workspace app start",
+    "prepare": "husky install"
   },
   "dependencies": {
+    "husky": "^8.0.3",
     "module-alias": "^2.2.2"
   },
   "devDependencies": {
