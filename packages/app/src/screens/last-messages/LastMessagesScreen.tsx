@@ -1,5 +1,3 @@
-import { ILastMessageDTO } from '@shared/dtos'
-
 import { Spacer } from '@/components/Spacer'
 import { FooterLoading } from '@/components/FooterLoading'
 import { useStatusBar } from '@/contexts/status-bar'
@@ -12,7 +10,7 @@ import {
   useLastMessagesPresenter,
   withLastMessagesPresenter,
 } from './LastMessagesPresenter'
-import { Container } from './LastMessagesStyles'
+import { Container, NoResultsText } from './LastMessagesStyles'
 
 export interface LastMessagesScreenProps {}
 
@@ -31,6 +29,9 @@ const LastMessagesScreen: React.FC<LastMessagesScreenProps> = () => {
             key={item.disciplineGroupCode}
             lastMessage={item}
           />
+        )}
+        ListEmptyComponent={() => (
+          <NoResultsText>Não há mensagens novas.</NoResultsText>
         )}
         ItemSeparatorComponent={Spacer}
         onEndReached={onNextPage}
