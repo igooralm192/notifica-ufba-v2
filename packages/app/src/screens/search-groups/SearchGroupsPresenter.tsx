@@ -4,6 +4,7 @@ import { FullLoading } from '@/components/FullLoading'
 import { useMe } from '@/contexts/me'
 import { useNavigation } from '@/helpers'
 import { useGetAllDisciplines } from '@/hooks/api'
+import { useDebounce } from '@/hooks/common'
 import { IFilterParams, IUsePaginatedList } from '@/types/list'
 import { AppNavigation } from '@/types/navigation'
 
@@ -42,6 +43,7 @@ export const SearchGroupsPresenter: React.FC<React.PropsWithChildren> = ({
   const { user } = useMe()
 
   const [code, setCode] = useState<string>('')
+  const dCode = useDebounce(code ?? '', 300)
 
   const {
     isLoading,
@@ -53,7 +55,7 @@ export const SearchGroupsPresenter: React.FC<React.PropsWithChildren> = ({
     refresh,
   } = useGetAllDisciplines({
     ...initialFilter,
-    code,
+    code: dCode,
     teacherId: user?.teacher?.id,
   })
 

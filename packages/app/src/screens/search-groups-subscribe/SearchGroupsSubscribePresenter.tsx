@@ -1,9 +1,9 @@
 import { IDiscipline, IDisciplineGroup } from '@shared/entities'
 
 import { FullLoading } from '@/components/FullLoading'
-import { useMe } from '@/contexts/me'
 import { useNavigation } from '@/helpers'
 import { useGetAllDisciplines } from '@/hooks/api'
+import { useDebounce } from '@/hooks/common'
 import { IFilterParams, IUsePaginatedList } from '@/types/list'
 import { AppNavigation } from '@/types/navigation'
 
@@ -33,13 +33,15 @@ const initialFilter: ISearchGroupsSubscribeFilter = {
   limit: 10,
 }
 
-export const SearchGroupsSubscribePresenter: React.FC<React.PropsWithChildren> = ({
-  children,
-}) => {
+export const SearchGroupsSubscribePresenter: React.FC<
+  React.PropsWithChildren
+> = ({ children }) => {
   const navigation = useNavigation()
-  const route = useRoute<RouteProp<AppNavigation, 'SearchGroupsSubscribeScreen'>>()
+  const route =
+    useRoute<RouteProp<AppNavigation, 'SearchGroupsSubscribeScreen'>>()
 
   const [code, setCode] = useState<string>('')
+  const dCode = useDebounce(code ?? '', 300)
 
   const {
     isLoading,
@@ -51,7 +53,7 @@ export const SearchGroupsSubscribePresenter: React.FC<React.PropsWithChildren> =
     refresh,
   } = useGetAllDisciplines({
     ...initialFilter,
-    code,
+    code: dCode,
   })
 
   const handleNextPage = () => {
