@@ -95,5 +95,6 @@ export const getUserProfilePictureUrl = async ({
 export const sendFeedback = async ({
   feedback
 }: ISendFeedbackEndpoint.Request): Promise<void> => {
-  await api.post('/send-feedback', { feedback })
+  console.log('OXI', feedback)
+  await api.post('/users/send-feedback', { feedback })
 }
