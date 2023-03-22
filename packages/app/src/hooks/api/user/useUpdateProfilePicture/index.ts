@@ -1,5 +1,4 @@
 import api from '@/api'
-import { Log } from '@/config/logger'
 import { useToast } from '@/contexts/toast'
 import { useMutation, useQueryClient } from 'react-query'
 

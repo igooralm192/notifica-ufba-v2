@@ -1,12 +1,11 @@
 import api from '@/api'
 import { FullLoading } from '@/components/FullLoading'
-import { Log } from '@/config/logger'
 import { ErrorCode } from '@/errors/codes'
 import { errorMessages } from '@/errors/messages'
 import { BaseError } from '@/helpers'
 import { getAuthStore } from '@/state/zustand/auth'
-import { AxiosError } from 'axios'
 
+import { AxiosError } from 'axios'
 import React, { useContext, useEffect } from 'react'
 import { useState } from 'react'
 
@@ -38,8 +37,6 @@ const ApiProviderBase: React.FC = ({ children }) => {
     const interceptorId = api.instance.interceptors.response.use(
       response => response,
       (err: AxiosError) => {
-        // @ts-ignore
-        Log.error('API Error', { err })
         //@ts-ignore
         if (!err?.response) {
           return Promise.reject(

@@ -75,7 +75,7 @@ export const updateProfilePicture = async ({
     headers: {
       'content-type': 'multipart/form-data',
     },
-    timeout: 60000
+    timeout: 60000,
   })
 
   return { url: response.data.url }
