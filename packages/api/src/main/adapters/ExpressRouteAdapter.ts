@@ -22,7 +22,7 @@ export class ExpressRouteAdapter {
       })
 
       if (controllerResponse.statusCode >= 400) {
-        console.error({
+        console.log({
           url: request.url,
           error: controllerResponse.body,
         })

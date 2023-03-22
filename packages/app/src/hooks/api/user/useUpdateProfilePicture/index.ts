@@ -1,4 +1,5 @@
 import api from '@/api'
+import { Log } from '@/config/logger'
 import { useToast } from '@/contexts/toast'
 import { useMutation, useQueryClient } from 'react-query'
 
@@ -20,6 +21,10 @@ export const useUpdateProfilePicture = (
           queryClient.invalidateQueries(['userProfilePicture', userId])
 
         toast.success('Foto de perfil atualizada com sucesso!')
+      },
+      onError: error => {
+        // @ts-ignore
+        Log.error('Update Profile Picture Error', { error })
       },
     },
   )
