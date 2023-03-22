@@ -14,7 +14,7 @@ export const useUpdateProfilePicture = (
     (input: IUseUpdateProfilePicture.Body) =>
       api.user.updateProfilePicture(input),
     {
-      retry: true,
+      retry: 5,
       onSuccess: () => {
         if (userId)
           queryClient.invalidateQueries(['userProfilePicture', userId])
