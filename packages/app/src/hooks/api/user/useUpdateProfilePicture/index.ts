@@ -22,10 +22,6 @@ export const useUpdateProfilePicture = (
 
         toast.success('Foto de perfil atualizada com sucesso!')
       },
-      onError: error => {
-        // @ts-ignore
-        Log.error('Update Profile Picture Error', { error })
-      },
     },
   )
 
