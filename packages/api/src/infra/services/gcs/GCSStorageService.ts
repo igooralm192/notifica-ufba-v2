@@ -1,4 +1,6 @@
 import { IStorageService } from '@/data/contracts'
+import { UploadFileError } from '@/data/errors'
+import { right } from '@shared/utils'
 
 import { Storage, getStorage } from 'firebase-admin/storage'
 import mime from 'mime-types'
@@ -37,11 +39,14 @@ export class GCSStorageService
     return new Promise((resolve, reject) => {
       blobStream
         .on('finish', () => {
-          const publicUrl = new URL(`${this.BASE_URL}/${bucket.name}/${blob.name}`)
-          resolve({ url: publicUrl.toString() })
+          const publicUrl = new URL(
+            `${this.BASE_URL}/${bucket.name}/${blob.name}`,
+          )
+          resolve(right({ url: publicUrl.toString() }))
         })
-        .on('error', () => {
-          reject(`Unable to upload file, something went wrong`)
+        .on('error', err => {
+          console.log('UPLOAD FILE ERROR', err)
+          reject(new UploadFileError(err))
         })
         .end(file.buffer)
     })
@@ -49,7 +54,7 @@ export class GCSStorageService
 
   async getFileUrl({
     path,
-    filename
+    filename,
   }: IStorageService.GetFileUrl.Input): Promise<IStorageService.GetFileUrl.Output> {
     const bucket = this.client.bucket()
 

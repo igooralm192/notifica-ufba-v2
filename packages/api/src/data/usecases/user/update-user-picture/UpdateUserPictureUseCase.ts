@@ -24,7 +24,7 @@ export class UpdateUserPictureUseCase implements IUpdateUserPictureUseCase {
 
     const userPicturePath = `users/${userId}`
 
-    const { url } = await this.saveStorageService.save({
+    const uploadFileResponse = await this.saveStorageService.save({
       path: userPicturePath,
       file: {
         originalName: file.originalName,
@@ -33,6 +33,8 @@ export class UpdateUserPictureUseCase implements IUpdateUserPictureUseCase {
       },
     })
 
-    return right({ url })
+    if (uploadFileResponse.isLeft()) return uploadFileResponse
+
+    return right({ url: uploadFileResponse.value.url })
   }
 }

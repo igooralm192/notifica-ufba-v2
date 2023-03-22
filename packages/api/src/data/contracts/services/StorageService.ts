@@ -1,3 +1,6 @@
+import { BaseError } from '@/domain/helpers'
+import { Either } from '@shared/utils'
+
 export namespace IStorageService {
   export namespace Save {
     export interface Input {
@@ -9,9 +12,12 @@ export namespace IStorageService {
       }
     }
 
-    export interface Output {
-      url: string
-    }
+    export type Output = Either<
+      BaseError,
+      {
+        url: string
+      }
+    >
   }
 
   export interface Save {

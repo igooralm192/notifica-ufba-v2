@@ -2,6 +2,8 @@ import { IUpdateUserPictureUseCase } from '@/domain/usecases'
 import { BaseController } from '@/application/helpers'
 import { MissingParamsError } from '@/application/errors'
 import { IValidation } from '@/validation/protocols'
+import { UserDoesNotExistError } from '@/domain/errors'
+import { UploadFileError } from '@/data/errors'
 
 export namespace IUpdateUserPictureController {
   export type Request = BaseController.Request
@@ -37,6 +39,10 @@ export class UpdateUserPictureController extends BaseController {
     }
 
     switch (result.value.constructor) {
+      case UserDoesNotExistError:
+        return this.notFound(result.value)
+      case UploadFileError:
+        return this.badRequest(result.value)
       default:
         return this.fail(result.value)
     }
