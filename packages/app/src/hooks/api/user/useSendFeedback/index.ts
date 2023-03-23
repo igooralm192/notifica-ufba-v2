@@ -1,5 +1,6 @@
 import api from '@/api'
 import { useToast } from '@/contexts/toast'
+import { getLimitStore } from '@/state/zustand/limit'
 import { useMutation } from 'react-query'
 
 import { IUseSendFeedback } from './types'
@@ -8,10 +9,23 @@ export const useSendFeedback = (): IUseSendFeedback.Output => {
   const toast = useToast()
 
   const { isLoading: isSending, mutate: sendFeedback } = useMutation(
-    (input: IUseSendFeedback.Body) => api.user.sendFeedback(input),
+    async (input: IUseSendFeedback.Body) => {
+      const isAvailable = getLimitStore().getState().inc('sendFeedback')
+
+      if (!isAvailable)
+        throw new Error(
+          'Você já enviou o máximo de feedbacks permitidos por usuário.',
+        )
+
+      return api.user.sendFeedback(input)
+    },
     {
       onSuccess: () => {
-        toast.success('Feedback enviado com sucesso!')
+        const { used, total } = getLimitStore().getState().sendFeedback
+
+        toast.success(
+          `Feedback enviado com sucesso! Solicitacões restantes: ${used}/${total}`,
+        )
       },
     },
   )
