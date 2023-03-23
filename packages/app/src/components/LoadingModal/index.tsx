@@ -16,39 +16,32 @@ export const LoadingModal: React.FC<LoadingModalProps> = ({
 }) => {
   return (
     <Modal {...props}>
-      <Pressable
+      <View
         style={{
-          flex: 1,
+          width: 220,
+          backgroundColor: 'white',
+          borderRadius: 16,
+          alignSelf: 'center',
           alignItems: 'center',
           justifyContent: 'center',
+          paddingVertical: 36,
+          paddingHorizontal: 16,
         }}
       >
-        <View
+        <Spinner />
+        <Spacer />
+
+        <Text
           style={{
-            width: 220,
-            backgroundColor: 'white',
-            borderRadius: 16,
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingVertical: 36,
-            paddingHorizontal: 16
+            fontSize: 14,
+            fontFamily: 'Montserrat_600SemiBold',
+            marginTop: 8,
+            textAlign: 'center',
           }}
         >
-          <Spinner />
-          <Spacer />
-
-          <Text
-            style={{
-              fontSize: 14,
-              fontFamily: 'Montserrat_600SemiBold',
-              marginTop: 8,
-              textAlign: 'center'
-            }}
-          >
-            {description}
-          </Text>
-        </View>
-      </Pressable>
+          {description}
+        </Text>
+      </View>
     </Modal>
   )
 }

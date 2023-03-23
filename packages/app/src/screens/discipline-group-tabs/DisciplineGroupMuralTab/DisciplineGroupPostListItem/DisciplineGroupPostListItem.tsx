@@ -21,6 +21,8 @@ import {
   ContentBody,
 } from './DisciplineGroupPostListItemStyles'
 import UserProfilePicture from '@/components/UserProfilePicture'
+import { useMe } from '@/contexts/me'
+import { delay } from '@/utils/delay'
 
 export interface DisciplineGroupPostListItemProps {
   disciplineGroupPost: IDisciplineGroupPost
@@ -31,14 +33,17 @@ const DisciplineGroupPostListItem: React.FC<
 > = ({ disciplineGroupPost }) => {
   const { deletePost } = useDisciplineGroupMuralPresenter()
 
+  const {user} = useMe()
+
   const bottomMenuVisible = useBoolean()
   const deletePostConfirmVisible = useBoolean()
 
   const createdAt = format(disciplineGroupPost.createdAt, 'dd/MM/yyyy HH:mm')
 
-  const handleDeleteDisciplineGroupPost = () => {
+  const handleDeleteDisciplineGroupPost = async () => {
     deletePostConfirmVisible.off()
-    deletePost.delete(disciplineGroupPost.id)
+    await delay(400)
+    await deletePost.delete(disciplineGroupPost.id)
   }
 
   return (
@@ -62,12 +67,14 @@ const DisciplineGroupPostListItem: React.FC<
 
         <Spacer d="horizontal" s={4} />
 
-        <TouchableOpacity
-          hitSlop={{ top: 24, left: 24, right: 24, bottom: 24 }}
-          onPress={bottomMenuVisible.on}
-        >
-          <Icon name="more-vert" />
-        </TouchableOpacity>
+        {user.type === 'TEACHER' && (
+          <TouchableOpacity
+            hitSlop={{ top: 24, left: 24, right: 24, bottom: 24 }}
+            onPress={bottomMenuVisible.on}
+          >
+            <Icon name="more-vert" />
+          </TouchableOpacity>
+        )}
       </TopContainer>
       <Spacer />
 

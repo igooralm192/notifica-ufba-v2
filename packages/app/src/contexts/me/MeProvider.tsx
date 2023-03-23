@@ -6,8 +6,9 @@ import { AuthState } from '@/store/auth/types'
 
 import React, { useContext, useEffect } from 'react'
 import { useAuth } from '@/contexts/auth'
+
 export interface MeContextData {
-  user: IUser | null
+  user: IUser
 }
 
 const MeContext = React.createContext({} as MeContextData)
