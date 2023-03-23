@@ -1,10 +1,8 @@
-import api from '@/api'
 import { FooterLoading } from '@/components/FooterLoading'
 import { Spacer } from '@/components/Spacer'
-import { useMe } from '@/contexts/me'
 
 import { Button } from '@rneui/themed'
-import React, { useState } from 'react'
+import React from 'react'
 import { FlatList, KeyboardAvoidingView, Platform } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -19,39 +17,17 @@ import {
   useDisciplineGroupChatPresenter,
   withDisciplineGroupChatPresenter,
 } from './DisciplineGroupChatPresenter'
-import { useDisciplineGroupTabsPresenter } from '../DisciplineGroupTabsPresenter'
 
 const DisciplineGroupChatTab: React.FC = () => {
-  const { disciplineGroup } = useDisciplineGroupTabsPresenter()
-  const { isFetchingMore, disciplineGroupMessages, onNextPage } =
-    useDisciplineGroupChatPresenter()
+  const {
+    isFetchingMore,
+    disciplineGroupMessages,
+    message,
+    createMessage,
+    onNextPage,
+  } = useDisciplineGroupChatPresenter()
 
-  const { user } = useMe()
   const insets = useSafeAreaInsets()
-
-  const [message, setMessage] = useState('')
-
-  const handleSendMessage = () => {
-    const formattedMessage = message.trim()
-
-    if (formattedMessage.length == 0) {
-      setMessage(formattedMessage)
-      return
-    }
-
-    api.disciplineGroup.createMessage(
-      {
-        disciplineGroupId: disciplineGroup.id,
-        userId: user!.id,
-        userName: user!.name,
-      },
-      {
-        message: formattedMessage,
-      },
-    )
-
-    setMessage('')
-  }
 
   return (
     <KeyboardAvoidingView
@@ -78,8 +54,8 @@ const DisciplineGroupChatTab: React.FC = () => {
         <SendInputContainer>
           <SendInput
             placeholder="Envie uma mensagem"
-            value={message}
-            onChangeText={setMessage}
+            value={message.text}
+            onChangeText={message.onChange}
             autoCapitalize="sentences"
             multiline
           />
@@ -93,7 +69,7 @@ const DisciplineGroupChatTab: React.FC = () => {
             icon={{ name: 'send', color: 'white', size: 24 }}
             color="primary"
             size="sm"
-            onPress={handleSendMessage}
+            onPress={createMessage}
           />
         </SendButtonContainer>
       </SendContainer>

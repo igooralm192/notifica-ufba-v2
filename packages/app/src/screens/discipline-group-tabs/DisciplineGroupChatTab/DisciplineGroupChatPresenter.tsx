@@ -1,15 +1,21 @@
 import { IDisciplineGroupMessage } from '@shared/entities'
 
 import { FullLoading } from '@/components/FullLoading'
-import { useGetAllDisciplineGroupMessages } from '@/hooks/api'
+import { useMe } from '@/contexts/me'
+import {
+  useCreateDisciplineGroupMessage,
+  useGetAllDisciplineGroupMessages,
+} from '@/hooks/api'
 
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 
 import { useDisciplineGroupTabsPresenter } from '../DisciplineGroupTabsPresenter'
 
 export interface DisciplineGroupChatPresenterContextData {
   isFetchingMore: boolean
   disciplineGroupMessages: IDisciplineGroupMessage[]
+  message: { text: string; onChange: (newMessage: string) => void }
+  createMessage: () => Promise<void>
   onNextPage: () => void
 }
 
@@ -26,10 +32,10 @@ const initialFilter: IChatFilterParams = {
 }
 
 export const DisciplineGroupChatPresenter: React.FC = ({ children }) => {
-  const { disciplineGroup, tabs } = useDisciplineGroupTabsPresenter()
+  const { user } = useMe()
 
-  // TODO: Change to a named type
-  const isChatVisible = tabs.currentIndex == 1
+  const { disciplineGroup, tabs } = useDisciplineGroupTabsPresenter()
+  const { create: createMessage } = useCreateDisciplineGroupMessage()
 
   const {
     isLoading,
@@ -40,11 +46,31 @@ export const DisciplineGroupChatPresenter: React.FC = ({ children }) => {
   } = useGetAllDisciplineGroupMessages(
     { disciplineGroupId: disciplineGroup.id },
     initialFilter,
-    isChatVisible
+    // TODO: Change to a named type
+    tabs.currentIndex == 1,
   )
+
+  const [message, setMessage] = useState('')
 
   const handleNextPage = () => {
     if (!isFetchingMore && hasNextPage) fetchNextPage()
+  }
+
+  const handleCreateMessage = async () => {
+    const formattedMessage = message.trim()
+
+    setMessage('')
+
+    if (formattedMessage.length != 0) {
+      createMessage({
+        params: {
+          disciplineGroupId: disciplineGroup.id,
+          userId: user.id,
+          userName: user.name,
+        },
+        body: { message: formattedMessage },
+      })
+    }
   }
 
   if (isLoading) return <FullLoading />
@@ -54,6 +80,8 @@ export const DisciplineGroupChatPresenter: React.FC = ({ children }) => {
       value={{
         isFetchingMore,
         disciplineGroupMessages,
+        message: { text: message, onChange: setMessage },
+        createMessage: handleCreateMessage,
         onNextPage: handleNextPage,
       }}
     >

@@ -1,6 +1,7 @@
 export * from './discipline/useCreateDisciplineGroup'
 export * from './discipline/useGetAllDisciplines'
 
+export * from './discipline-group/useCreateDisciplineGroupMessage'
 export * from './discipline-group/useCreateDisciplineGroupPost'
 export * from './discipline-group/useDeleteDisciplineGroup'
 export * from './discipline-group/useDeleteDisciplineGroupPost'
