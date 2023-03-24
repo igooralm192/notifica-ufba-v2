@@ -29,16 +29,15 @@ export class CreateNotificationUseCase implements ICreateNotificationUseCase {
       return left(new UserDoesNotExistError())
     }
 
-    const { type, params } = body
-
     try {
-      switch (type) {
-        case 'createMessage':
-          return this.sendCreateMessageNotification(params)
+      switch (body.type) {
+        case 'createMessage': {
+          return this.sendCreateMessageNotification(body.params)
+        }
         case 'createPost':
-          return this.sendCreatePostNotification(params)
+          return this.sendCreatePostNotification(body.params)
         case 'removeMember':
-          return this.sendRemoveMemberNotification(params)
+          return this.sendRemoveMemberNotification(body.params)
       }
     } catch {
       return right({ sent: false })
