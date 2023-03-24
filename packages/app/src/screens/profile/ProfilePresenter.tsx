@@ -28,7 +28,7 @@ export const ProfilePresenter: React.FC = ({ children }) => {
   )
 
   const handleLogout = () => {
-    auth.onTokenChange(null)
+    auth.signOut()
   }
 
   const handleUpdateProfilePicture = async (pictureUri: string) => {

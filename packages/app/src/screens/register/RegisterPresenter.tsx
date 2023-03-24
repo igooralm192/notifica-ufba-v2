@@ -27,7 +27,7 @@ export const RegisterPresenter: React.FC = ({ children }) => {
       password: input.password,
     })
 
-    auth.onTokenChange(token)
+    auth.signIn(token)
   }
 
   return (

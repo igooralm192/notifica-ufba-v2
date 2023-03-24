@@ -21,7 +21,7 @@ export const LoginPresenter: React.FC = ({ children }) => {
   const handleLogin = async ({ email, password }: ILoginEndpoint.Request) => {
     const { token } = await login({ email, password })
 
-    auth.onTokenChange(token)
+    auth.signIn(token)
   }
 
   return (

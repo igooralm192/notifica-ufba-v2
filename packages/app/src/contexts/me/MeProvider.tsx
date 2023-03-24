@@ -22,7 +22,7 @@ const MeProviderBase: React.FC = ({ children }) => {
 
   useEffect(() => {
     if (auth.state === AuthState.AUTHENTICATED && !isLoading && !user) {
-      auth.onTokenChange(null)
+      auth.signOut()
     }
   }, [isLoading, user])
 

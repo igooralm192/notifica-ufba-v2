@@ -1,21 +1,16 @@
 import api from '@/api'
 import { useToast } from '@/contexts/toast'
 import { BaseError } from '@/helpers'
-import {
-  getAuthStore,
-  useAuthStateSelector,
-  useAuthStore,
-} from '@/state/zustand/auth'
+import { useAuthStateSelector, useAuthStore } from '@/state/zustand/auth'
 import { AuthState } from '@/store/auth/types'
 
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import React, { useContext, useEffect } from 'react'
-import Toast from 'react-native-toast-message'
 import { useQueryClient } from 'react-query'
 
 export interface AuthContextData {
   state: AuthState
-  onTokenChange: (token: string | null) => void
+  signIn: (token: string) => void
+  signOut: () => void
 }
 
 const AuthContext = React.createContext({} as AuthContextData)
@@ -27,9 +22,8 @@ const AuthProviderBase: React.FC = ({ children }) => {
   const queryClient = useQueryClient()
   const toast = useToast()
 
-  const handleTokenChange = (token: string | null) => {
-    store.setToken(token)
-  }
+  const signIn = (token: string) => store.setToken(token)
+  const signOut = () => store.setToken(null)
 
   useEffect(() => {
     queryClient.invalidateQueries(['user'])
@@ -38,22 +32,11 @@ const AuthProviderBase: React.FC = ({ children }) => {
   }, [authState])
 
   useEffect(() => {
-    AsyncStorage.getItem('TOKEN').then(store.setToken)
-
-    const unsubscribe = getAuthStore().subscribe(async ({ token }) => {
-      if (token) await AsyncStorage.setItem('TOKEN', token)
-      else await AsyncStorage.removeItem('TOKEN')
-    })
-
-    return () => unsubscribe()
-  }, [])
-
-  useEffect(() => {
     const interceptorId = api.instance.interceptors.response.use(
       undefined,
       async (error: BaseError) => {
         if (error.code === 'ExpiredTokenError') {
-          handleTokenChange(null)
+          signOut()
 
           toast.error('Seu token expirou, favor realizar login novamente.')
         }
@@ -67,7 +50,11 @@ const AuthProviderBase: React.FC = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ state: authState, onTokenChange: handleTokenChange }}
+      value={{
+        state: authState,
+        signIn,
+        signOut,
+      }}
     >
       {children}
     </AuthContext.Provider>
