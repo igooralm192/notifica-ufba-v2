@@ -15,7 +15,7 @@ export interface AuthContextData {
 
 const AuthContext = React.createContext({} as AuthContextData)
 
-const AuthProviderBase: React.FC = ({ children }) => {
+const AuthProviderBase: React.FC<React.PropsWithChildren> = ({ children }) => {
   const store = useAuthStore()
   const authState = useAuthStateSelector()
 

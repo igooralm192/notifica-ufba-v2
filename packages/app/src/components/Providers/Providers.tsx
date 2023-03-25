@@ -3,6 +3,7 @@ import { ApiProvider } from '@/contexts/api'
 import { AuthProvider } from '@/contexts/auth'
 import { StatusBarProvider } from '@/contexts/status-bar'
 import { ToastProvider, useToast } from '@/contexts/toast'
+import { useProviderStore } from '@/state/zustand/provider'
 import { themeOptions } from '@/styles/theme'
 import { AppNavigation } from '@/types/navigation'
 import { assertIsError } from '@/utils/error'
@@ -42,7 +43,6 @@ import {
 } from '@react-navigation/native'
 import { ThemeProvider, useTheme } from '@rneui/themed'
 
-import AppLoading from 'expo-app-loading'
 import * as Linking from 'expo-linking'
 import React, { useEffect } from 'react'
 import {
@@ -53,11 +53,15 @@ import { QueryClient, QueryClientProvider, useQueryClient } from 'react-query'
 import { QueryCache, MutationCache } from 'react-query/core'
 import { ThemeProvider as StyledProvider } from 'styled-components/native'
 
-export const LayoutProvider: React.FC = ({ children }) => {
+export const LayoutProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   return <SafeAreaProvider>{children}</SafeAreaProvider>
 }
 
-export const UIProvider: React.FC = ({ children }) => {
+export const UIProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const { ready } = useProviderStore()
+
   const [fontsLoaded] = useFonts({
     Inter_400Regular,
     Inter_500Medium,
@@ -80,14 +84,18 @@ export const UIProvider: React.FC = ({ children }) => {
     Quicksand_700Bold,
   })
 
-  if (!fontsLoaded) {
-    return <AppLoading />
-  }
+  useEffect(() => {
+    if (fontsLoaded) ready('fonts')
+  }, [fontsLoaded])
+
+  if (!fontsLoaded) return null
 
   return <ThemeProvider theme={themeOptions}>{children}</ThemeProvider>
 }
 
-export const StyleProvider: React.FC = ({ children }) => {
+export const StyleProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   const insets = useSafeAreaInsets()
   const { theme, updateTheme } = useTheme()
 
@@ -98,7 +106,9 @@ export const StyleProvider: React.FC = ({ children }) => {
   return <StyledProvider theme={theme}>{children}</StyledProvider>
 }
 
-export const AlertProvider: React.FC = ({ children }) => {
+export const AlertProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   return <ToastProvider>{children}</ToastProvider>
 }
 
@@ -106,7 +116,9 @@ export const navigationRef = createNavigationContainerRef<AppNavigation>()
 
 const urlPrefix = Linking.createURL('nufba')
 
-export const NavigationProvider: React.FC = ({ children }) => {
+export const NavigationProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   const linking: LinkingOptions<AppNavigation> = {
     prefixes: [
       urlPrefix,
@@ -147,7 +159,9 @@ export const NavigationProvider: React.FC = ({ children }) => {
   )
 }
 
-export const HttpProvider: React.FC = ({ children }) => {
+export const HttpProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -172,7 +186,9 @@ export const HttpProvider: React.FC = ({ children }) => {
   )
 }
 
-export const ErrorProvider: React.FC = ({ children }) => {
+export const ErrorProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   const queryClient = useQueryClient()
   const toast = useToast()
 
@@ -195,7 +211,7 @@ export const ErrorProvider: React.FC = ({ children }) => {
   return <ErrorBoundary>{children}</ErrorBoundary>
 }
 
-export const AllProviders: React.FC = ({ children }) => {
+export const Providers: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
     <HttpProvider>
       <LayoutProvider>

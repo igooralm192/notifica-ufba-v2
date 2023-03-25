@@ -13,7 +13,7 @@ export interface ApiContextData {}
 
 const ApiContext = React.createContext({} as ApiContextData)
 
-const ApiProviderBase: React.FC = ({ children }) => {
+const ApiProviderBase: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {

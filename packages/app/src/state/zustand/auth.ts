@@ -20,6 +20,9 @@ const authStore = create(
     {
       name: 'NOTIFICAUFBA_AUTH',
       storage: createJSONStorage(() => expoStorage),
+      onRehydrateStorage: () => state => {
+        if (state?.token === undefined) state?.setToken(null)
+      },
     },
   ),
 )

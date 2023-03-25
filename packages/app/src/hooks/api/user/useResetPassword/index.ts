@@ -7,7 +7,7 @@ import { IUseResetPassword } from './types'
 export const useResetPassword = (): IUseResetPassword.Output => {
   const toast = useToast()
 
-  const { isLoading: isResetting, mutate: resetPassword } = useMutation(
+  const { isLoading: isResetting, mutateAsync: resetPassword } = useMutation(
     (input: IUseResetPassword.Body) => api.user.resetPassword(input),
     {
       onSuccess: () => {
@@ -18,7 +18,6 @@ export const useResetPassword = (): IUseResetPassword.Output => {
 
   return {
     isResetting,
-    resetPassword: async (input: IUseResetPassword.Body) =>
-      resetPassword(input),
+    resetPassword,
   }
 }

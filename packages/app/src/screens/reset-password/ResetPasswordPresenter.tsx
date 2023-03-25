@@ -53,7 +53,8 @@ export const ResetPasswordPresenter: React.FC<ResetPasswordPresenterProps> = ({
 
     await resetPassword({ newPassword, token })
 
-    navigation.dispatch(StackActions.replace('LoginScreen'))
+    navigation.dispatch(StackActions.replace('WelcomeScreen'))
+    navigation.navigate('LoginScreen')
   }
 
   useEffect(() => {

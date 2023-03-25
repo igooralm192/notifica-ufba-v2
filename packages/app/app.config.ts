@@ -1,8 +1,3 @@
-// @ts-ignore
-// import { API_URL } from "react-native-dotenv";
-
-// console.log(API_URL)
-
 export default {
   expo: {
     name: "notifica-ufba-v2",
@@ -14,7 +9,7 @@ export default {
     userInterfaceStyle: "light",
     splash: {
       image: "./assets/splash.png",
-      resizeMode: "contain",
+      resizeMode: "cover",
       backgroundColor: "#ffffff",
     },
     updates: {
@@ -25,6 +20,9 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.iguzinho.notifica-ufba",
+      config: {
+        usesNonExemptEncryption: false,
+      },
     },
     android: {
       package: "com.notifica_ufba",
@@ -60,7 +58,6 @@ export default {
       eas: {
         projectId: "40b5b6cf-6fef-4d26-b431-b2577f3ef390",
       },
-      // API_URL: ,
     },
     runtimeVersion: "exposdk:46.0.0",
     plugins: [

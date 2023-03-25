@@ -5,10 +5,7 @@ export interface IMessagingStore {
   removeMemberMessage?: { disciplineGroupId: string }
 }
 
-const messagingStore = create<
-  IMessagingStore,
-  [['zustand/subscribeWithSelector', never]]
->(subscribeWithSelector(() => ({})))
+const messagingStore = create(subscribeWithSelector<IMessagingStore>(() => ({})))
 
 export const getMessagingStore = () => messagingStore
 

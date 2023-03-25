@@ -12,7 +12,7 @@ export interface StatusBarContextData {
 
 const StatusBarContext = React.createContext({} as StatusBarContextData)
 
-export const StatusBarProvider: React.FC = ({ children }) => {
+export const StatusBarProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const { theme } = useTheme()
 
   const [statusBarTheme, setStatusBarTheme] = useState<StatusBarTheme>('light')

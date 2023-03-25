@@ -38,7 +38,7 @@ const ErrorFallback: React.FC<FallbackProps> = ({
   )
 }
 
-export const ErrorBoundary: React.FC = ({ children }) => {
+export const ErrorBoundary: React.FC<React.PropsWithChildren> = ({ children }) => {
   const { reset } = useQueryErrorResetBoundary()
 
   const handleError = (error: Error) => {
