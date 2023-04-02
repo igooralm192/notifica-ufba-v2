@@ -7,7 +7,7 @@ import { IUseForgotPassword } from './types'
 export const useForgotPassword = (): IUseForgotPassword.Output => {
   const toast = useToast()
 
-  const { isLoading: isForgotting, mutate: forgotPassword } = useMutation(
+  const { isLoading: isForgotting, mutateAsync: forgotPassword } = useMutation(
     (input: IUseForgotPassword.Body) => api.user.forgotPassword(input),
     {
       onSuccess: () => {
