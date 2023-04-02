@@ -103,26 +103,28 @@ const DisciplineGroupInfoScreen: React.FC = () => {
           <MenuUrl>{disciplineGroup?.menuUrl}</MenuUrl>
         </MenuContainer>
 
-        <MembersContainer>
-          <MembersLabel>Alunos</MembersLabel>
+        {chosenStudentMembers.length > 0 && (
+          <MembersContainer>
+            <MembersLabel>Alunos</MembersLabel>
 
-          <MembersPictureContainer>
-            {chosenStudentMembers.map((s, i) => (
-              <UserProfilePicture
-                key={s.userId}
-                userId={s.userId}
-                pictureProps={{
-                  size: 36,
-                  style: { marginLeft: i > 0 ? -15 : 0, zIndex: -i },
-                }}
-              />
-            ))}
+            <MembersPictureContainer>
+              {chosenStudentMembers.map((s, i) => (
+                <UserProfilePicture
+                  key={s.userId}
+                  userId={s.userId}
+                  pictureProps={{
+                    size: 36,
+                    style: { marginLeft: i > 0 ? -15 : 0, zIndex: -i },
+                  }}
+                />
+              ))}
 
-            {remainingStudentMembers > 0 && (
-              <MembersRemaining>+ 7 pessoas</MembersRemaining>
-            )}
-          </MembersPictureContainer>
-        </MembersContainer>
+              {remainingStudentMembers > 0 && (
+                <MembersRemaining>+ 7 pessoas</MembersRemaining>
+              )}
+            </MembersPictureContainer>
+          </MembersContainer>
+        )}
       </BottomContainer>
 
       {user?.type === 'STUDENT' && (

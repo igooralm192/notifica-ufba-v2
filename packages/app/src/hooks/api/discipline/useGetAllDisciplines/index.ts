@@ -24,7 +24,7 @@ export const useGetAllDisciplines = (
         page: pageParams?.page,
         limit: pageParams?.limit,
         code: pageParams?.code,
-        teacherId: pageParams?.teacherId
+        teacherId: pageParams?.teacherId,
       })
     },
     {
