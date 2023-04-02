@@ -67,11 +67,15 @@ export class PrismaDisciplineRepository
     where: IDisciplineRepositoryListInput['where'],
   ): Prisma.DisciplineWhereInput {
     return {
-      code: {
-        ...where.code,
-        mode: 'insensitive',
-      },
-      groups: { some: pick(where.groups, 'teacherId') },
+      code: where.code
+        ? {
+            ...where.code,
+            mode: 'insensitive',
+          }
+        : undefined,
+      groups: where.groups
+        ? { some: pick(where.groups, 'teacherId') }
+        : undefined,
     }
   }
 }
