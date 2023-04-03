@@ -28,7 +28,7 @@ const DisciplineGroupTabsScreen: React.FC = () => {
   return (
     <Container
       headerProps={{
-        title: `${disciplineCode} - ${disciplineGroupCode}`,
+        title: `${disciplineCode} | ${disciplineGroupCode}`,
         subtitle: disciplineName,
         titleAlign: 'center',
         rightAction: {

@@ -101,9 +101,10 @@ const CreateGroupScreen: React.FC = () => {
                   placeholder="Selecione uma disciplina"
                   value={
                     discipline
-                      ? `${discipline?.code} - ${discipline?.name}`
+                      ? `${discipline?.code} | ${discipline?.name}`
                       : undefined
                   }
+                  selection={{ start: 0, end: 0 }}
                   pointerEvents="none"
                   onChangeText={field.onChange}
                   onBlur={field.onBlur}
@@ -167,6 +168,7 @@ const CreateGroupScreen: React.FC = () => {
                   onSelectOption={value =>
                     form.setValue('place', value, { shouldValidate: true })
                   }
+                  selection={{ start: 0, end: 0 }}
                   onBlur={field.onBlur}
                   errorMessage={fieldState.error?.message}
                   renderErrorMessage={!!fieldState.error}

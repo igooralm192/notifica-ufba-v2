@@ -156,6 +156,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = () => {
               leftIcon={{ name: 'library-books' }}
               title="Selecione o seu curso"
               options={coursesList}
+              selection={{ start: 0, end: 0 }}
               value={field.value}
               onSelectOption={value =>
                 form.setValue('course', value, { shouldValidate: true })

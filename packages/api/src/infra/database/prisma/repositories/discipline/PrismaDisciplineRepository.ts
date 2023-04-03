@@ -58,6 +58,7 @@ export class PrismaDisciplineRepository
             : false,
       },
       where: this.parseWhereInput(input.where),
+      orderBy: { code: 'asc' },
     })
 
     return disciplines

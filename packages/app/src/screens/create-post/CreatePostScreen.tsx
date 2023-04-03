@@ -116,9 +116,10 @@ const CreatePostScreen: React.FC = () => {
                 placeholder="Selecione uma turma"
                 disabled={!!route.params.disciplineGroup}
                 pointerEvents="none"
+                selection={{ start: 0, end: 0 }}
                 value={
                   discipline && disciplineGroup
-                    ? `${discipline?.code} - ${disciplineGroup?.code}`
+                    ? `${discipline?.code} | ${disciplineGroup?.code}`
                     : undefined
                 }
                 onChangeText={field.onChange}

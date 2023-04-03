@@ -4,11 +4,12 @@ import { BottomSheet } from '@/components/BottomSheet'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { LoadingModal } from '@/components/LoadingModal'
 import { Spacer } from '@/components/Spacer'
+import { Stack } from '@/components/Stack'
 import { useMe } from '@/contexts/me'
 import { useNavigation } from '@/helpers'
 import { useBoolean } from '@/hooks/common'
 
-import { Icon, ListItem } from '@rneui/themed'
+import { Icon, ListItem, useTheme } from '@rneui/themed'
 import React from 'react'
 
 import { useDisciplineGroupsPresenter } from '../DisciplineGroupsPresenter'
@@ -35,6 +36,7 @@ const DisciplineGroupListItem: React.FC<DisciplineGroupListItemProps> = ({
 
   const { user } = useMe()
   const navigation = useNavigation()
+  const {theme} = useTheme()
 
   const bottomMenuVisible = useBoolean()
   const unsubscribeConfirmVisible = useBoolean()
@@ -74,7 +76,7 @@ const DisciplineGroupListItem: React.FC<DisciplineGroupListItemProps> = ({
       <LeftContainer>
         <LeftTopContainer>
           <DisciplineCode>
-            {disciplineGroup.discipline?.code} - {disciplineGroup.code}
+            {disciplineGroup.discipline?.code} | {disciplineGroup.code}
           </DisciplineCode>
           <DisciplineName>{disciplineGroup.discipline?.name}</DisciplineName>
         </LeftTopContainer>
@@ -82,9 +84,12 @@ const DisciplineGroupListItem: React.FC<DisciplineGroupListItemProps> = ({
         <Spacer />
 
         <LeftBottomContainer>
-          <DisciplineGroupTeacher>
-            {disciplineGroup.teacher?.user?.name}
-          </DisciplineGroupTeacher>
+          <Stack d="horizontal" s={2} style={{ alignItems: 'center' }}>
+            <Icon name="school" size={12} color={theme.colors.black} />
+            <DisciplineGroupTeacher>
+              {disciplineGroup.teacher?.user?.name}
+            </DisciplineGroupTeacher>
+          </Stack>
         </LeftBottomContainer>
       </LeftContainer>
 
@@ -101,7 +106,7 @@ const DisciplineGroupListItem: React.FC<DisciplineGroupListItemProps> = ({
         onHide={bottomMenuVisible.off}
       >
         <DisciplineCode style={{ marginBottom: 16 }}>
-          {disciplineGroup.discipline?.code} - {disciplineGroup.code}
+          {disciplineGroup.discipline?.code} | {disciplineGroup.code}
         </DisciplineCode>
 
         {options
