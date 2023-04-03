@@ -57,7 +57,7 @@ export class CreateNotificationUseCase implements ICreateNotificationUseCase {
       .map(({ pushToken }) => pushToken)
 
     await this.createMessagingService.create({
-      title: `${disciplineGroup.discipline?.code}/${disciplineGroup.code} - Nova postagem`,
+      title: `${disciplineGroup.discipline?.code} | ${disciplineGroup.code} - Nova postagem`,
       body: content,
       data: {
         type: 'createPost',
@@ -87,7 +87,7 @@ export class CreateNotificationUseCase implements ICreateNotificationUseCase {
       .map(({ pushToken }) => pushToken)
 
     await this.createMessagingService.create({
-      title: `${disciplineGroup.discipline?.code}/${disciplineGroup.code} - Nova mensagem`,
+      title: `${disciplineGroup.discipline?.code} | ${disciplineGroup.code} - Nova mensagem`,
       body: message.slice(0, 100),
       data: {
         type: 'createMessage',
@@ -111,7 +111,7 @@ export class CreateNotificationUseCase implements ICreateNotificationUseCase {
     Either<BaseError, ICreateNotificationUseCase.Output>
   > {
     await this.createMessagingService.create({
-      title: `${disciplineGroup.discipline?.code}/${disciplineGroup.code}`,
+      title: `${disciplineGroup.discipline?.code} | ${disciplineGroup.code} - Nova atualização`,
       body: 'Você foi removido desta turma pelo seu professor!',
       data: {
         type: 'removeMember',
