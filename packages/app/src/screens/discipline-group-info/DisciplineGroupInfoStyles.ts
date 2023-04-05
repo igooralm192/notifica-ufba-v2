@@ -28,7 +28,9 @@ export const DisciplineGroupContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
 `
-export const DisciplineContainer = styled.View``
+export const DisciplineContainer = styled.View`
+  flex: 1;
+`
 export const GroupContainer = styled.View`
   align-items: flex-end;
   justify-content: flex-end;
