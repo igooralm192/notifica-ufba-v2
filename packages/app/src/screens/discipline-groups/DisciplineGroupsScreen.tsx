@@ -125,7 +125,7 @@ const DisciplineGroupsScreen: React.FC<DisciplineGroupsScreenProps> = () => {
               justifyContent: 'center',
             }}
           >
-            <Title>Suas turmas</Title>
+            <Title>Suas turmas 2</Title>
             <Subtitle>Busque e visualize suas turmas.</Subtitle>
           </Animated.View>
         )}
