@@ -4,6 +4,7 @@ import { getProviderStore } from '@/state/zustand/provider'
 
 import * as SentryNative from '@sentry/react-native'
 import * as SplashScreen from 'expo-splash-screen'
+import * as Updates from 'expo-updates'
 import React, { useEffect } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import * as Sentry from 'sentry-expo'
@@ -27,6 +28,17 @@ const App: React.FC = () => {
       }
     })
   }, [])
+
+  useEffect(() => {
+    async function updateApp() {
+      const { isAvailable } = await Updates.checkForUpdateAsync();
+      if (isAvailable) {
+        await Updates.fetchUpdateAsync();
+        await Updates.reloadAsync(); // depende da sua estratégia
+      }
+    }
+    updateApp();
+  }, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
