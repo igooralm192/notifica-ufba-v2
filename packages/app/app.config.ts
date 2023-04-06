@@ -15,6 +15,7 @@ export default {
     updates: {
       fallbackToCacheTimeout: 0,
       url: "https://u.expo.dev/40b5b6cf-6fef-4d26-b431-b2577f3ef390",
+      checkAutomatically: "ON_LOAD",
     },
     assetBundlePatterns: ["**/*"],
     ios: {
