@@ -33,6 +33,7 @@ export class CreateDisciplineGroupPostUseCase
     disciplineGroupId,
     title,
     content,
+    notificationParams,
   }: ICreateDisciplineGroupPostUseCase.Input): Promise<
     Either<BaseError, ICreateDisciplineGroupPostUseCase.Output>
   > {
@@ -76,7 +77,8 @@ export class CreateDisciplineGroupPostUseCase
           disciplineGroup,
           content,
           sentBy: user,
-          receivedBy: allStudents.map(s => s.user),
+          receivedBy:
+            notificationParams?.receivedBy || allStudents.map(s => s.user),
         },
       },
     })

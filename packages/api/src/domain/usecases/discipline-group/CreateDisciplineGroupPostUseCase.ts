@@ -1,4 +1,4 @@
-import { IDisciplineGroupPost } from '@shared/entities'
+import { IDisciplineGroupPost, IUser } from '@shared/entities'
 import { BaseError } from '@/domain/helpers'
 import { Either, UseCase } from '@shared/utils'
 
@@ -8,6 +8,9 @@ export namespace ICreateDisciplineGroupPostUseCase {
     disciplineGroupId: string
     title?: string
     content: string
+    notificationParams?: {
+      receivedBy?: IUser[]
+    }
   }
 
   export type Output = IDisciplineGroupPost

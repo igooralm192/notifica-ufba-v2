@@ -3,6 +3,7 @@ import { Router } from 'express'
 import * as AuthRoutes from './auth'
 import * as DisciplineRoutes from './discipline'
 import * as DisciplineGroupRoutes from './discipline-group'
+import * as ExperimentRoutes from './experiment'
 import * as StudentRoutes from './student'
 import * as TeacherRoutes from './teacher'
 import * as UserRoutes from './user'
@@ -25,6 +26,7 @@ export const makeRouter = () => {
   router.use('/auth', configureRoutes(AuthRoutes))
   router.use('/disciplines', configureRoutes(DisciplineRoutes))
   router.use('/discipline-groups', configureRoutes(DisciplineGroupRoutes))
+  router.use('/experiment', configureRoutes(ExperimentRoutes))
   router.use('/students', configureRoutes(StudentRoutes))
   router.use('/teacher', configureRoutes(TeacherRoutes))
   router.use('/users', configureRoutes(UserRoutes))

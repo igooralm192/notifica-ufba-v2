@@ -32,6 +32,7 @@ export class PostMessageUseCase implements IPostMessageUseCase {
     userId,
     disciplineGroupId,
     message,
+    notificationParams,
     onlyNotify = false,
   }: IPostMessageUseCase.Input): Promise<Either<BaseError, void>> {
     const user = await this.findOneUserRepository.findOne({ id: userId })
@@ -81,7 +82,10 @@ export class PostMessageUseCase implements IPostMessageUseCase {
           disciplineGroup,
           message,
           sentBy: user,
-          receivedBy: [teacher.user, ...allStudents.map(s => s.user)],
+          receivedBy: notificationParams?.receivedBy || [
+            teacher.user,
+            ...allStudents.map(s => s.user),
+          ],
         },
       },
     })

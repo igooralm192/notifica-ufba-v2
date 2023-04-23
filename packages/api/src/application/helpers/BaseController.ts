@@ -6,8 +6,8 @@ export namespace BaseController {
     Body = any,
     Query = any,
     Params = any,
-    Context = { userId?: string, studentId?: string, teacherId?: string },
-    File = { originalName: string, buffer: Buffer, type: string },
+    Context = { userId?: string; studentId?: string; teacherId?: string },
+    File = { originalName: string; buffer: Buffer; type: string },
   > = {
     body?: Body
     query?: Query
@@ -84,6 +84,10 @@ export abstract class BaseController {
   }
 
   public fail(error: Error) {
+    if (error instanceof BaseError) {
+      return this.errorResponse(500, error)
+    }
+
     return this.errorResponse(500, new InternalServerError(error))
   }
 }
