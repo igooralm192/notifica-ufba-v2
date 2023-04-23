@@ -24,7 +24,7 @@ export const useSendFeedback = (): IUseSendFeedback.Output => {
         const { used, total } = getLimitStore().getState().sendFeedback
 
         toast.success(
-          `Feedback enviado com sucesso! Solicitacões restantes: ${used}/${total}`,
+          `Feedback enviado com sucesso!\n\nSolicitações restantes: ${used}/${total}`,
         )
       },
     },

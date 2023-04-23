@@ -23,7 +23,7 @@ export const useGenerateMessage = (): IUseGenerateMessage.Output => {
       onSuccess: () => {
         const { used, total } = getLimitStore().getState().generateMessage
         toast.success(
-          `A mensagem irá ser gerada em 20 segundos, por favor minimize o aplicativo e aguarde.\nSolicitacões restantes: ${used}/${total}`,
+          `A mensagem irá ser gerada em 20 segundos, por favor minimize o aplicativo e aguarde.\n\nSolicitações restantes: ${used}/${total}`,
         )
       },
     },
