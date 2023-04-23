@@ -28,7 +28,7 @@ export type AppNavigation = {
     discipline?: IDiscipline
     disciplineGroup?: IDisciplineGroup
   }
-  
+
   SearchDisciplinesScreen: {
     onDisciplineSelected: (discipline: IDiscipline) => void
   }
@@ -57,4 +57,5 @@ export type AppNavigation = {
   DisciplineGroupMessagesScreen: { disciplineGroupId: string }
   DisciplineGroupInfoScreen: { disciplineGroupId: string }
   EditProfileScreen: { userId: string }
+  ExperimentScreen: undefined
 }

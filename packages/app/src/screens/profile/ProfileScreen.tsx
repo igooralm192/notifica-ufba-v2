@@ -37,7 +37,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
   const previewPictureVisible = useBoolean()
 
   const cameraOrGalleryRef = useRef<'camera' | 'gallery'>()
-  const editPictureModalCallback = useRef<(() => void)>()
+  const editPictureModalCallback = useRef<() => void>()
 
   const pickImageFromCamera = async () => {
     cameraOrGalleryRef.current = 'camera'
@@ -136,9 +136,16 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
         <Spacer s={12} />
 
         <OptionContainer
-          onPress={() =>
-            navigation.navigate('SendFeedbackScreen')
-          }
+          onPress={() => navigation.navigate('ExperimentScreen')}
+        >
+          <OptionIcon name="science" />
+          <OptionName>Experimento UFBA</OptionName>
+        </OptionContainer>
+
+        <Spacer s={12} />
+
+        <OptionContainer
+          onPress={() => navigation.navigate('SendFeedbackScreen')}
         >
           <OptionIcon name="send" />
           <OptionName>Enviar feedback</OptionName>

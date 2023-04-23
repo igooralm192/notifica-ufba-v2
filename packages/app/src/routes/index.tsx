@@ -19,6 +19,7 @@ import {
   SearchGroupsSubscribeScreen,
   SearchDisciplinesScreen,
   SendFeedbackScreen,
+  ExperimentScreen
 } from '@/screens'
 import { AuthState } from '@/store/auth/types'
 
@@ -108,6 +109,11 @@ const Routes: React.FC = () => {
                   <Stack.Screen
                     name="EditProfileScreen"
                     component={EditProfileScreen}
+                    />
+                    
+                    <Stack.Screen
+                    name="ExperimentScreen"
+                    component={ExperimentScreen}
                   />
                 </Stack.Navigator>
               </MessagingProvider>

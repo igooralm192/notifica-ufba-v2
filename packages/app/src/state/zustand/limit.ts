@@ -1,6 +1,10 @@
 import { create } from 'zustand'
 
-export type ILimitType = 'createMessage' | 'sendFeedback'
+export type ILimitType =
+  | 'createMessage'
+  | 'sendFeedback'
+  | 'generatePost'
+  | 'generateMessage'
 export type ILimitData = { used: number; total: number }
 
 export type ILimitStore = {
@@ -12,6 +16,8 @@ export type ILimitStore = {
 const limitStore = create<ILimitStore>((set, get) => ({
   createMessage: { used: 0, total: 20 },
   sendFeedback: { used: 0, total: 5 },
+  generatePost: { used: 0, total: 5 },
+  generateMessage: { used: 0, total: 5 },
   inc: type => {
     const limit = get()[type]
 

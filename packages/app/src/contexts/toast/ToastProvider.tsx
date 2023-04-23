@@ -34,7 +34,11 @@ const toastConfig = {
   },
   notification: (props: BaseToastProps) => {
     return (
-      <Notification title={props.text1 || ''} description={props.text2 || ''} onPress={props.onPress} />
+      <Notification
+        title={props.text1 || ''}
+        description={props.text2 || ''}
+        onPress={props.onPress}
+      />
     )
   },
 }
@@ -43,21 +47,29 @@ interface ShowToastArgs {
   type: 'success' | 'error' | 'info' | 'warning' | 'notification'
   title?: string
   description?: string
+  time?: number
   onPress?: () => void
 }
 
 export const ToastProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
-  const showToast = ({ type, title, description, onPress }: ShowToastArgs) => {
+  const showToast = ({
+    type,
+    title,
+    description,
+    time = 6000,
+    onPress,
+  }: ShowToastArgs) => {
     RNToast.show({
       type,
       text1: title,
       text2: description,
+      visibilityTime: time,
       onPress: () => {
         onPress?.()
         RNToast.hide()
-      }
+      },
     })
   }
 
@@ -74,7 +86,13 @@ export const ToastProvider: React.FC<React.PropsWithChildren> = ({
     showToast({ type: 'warning', description: message })
 
   const notification = (title: string, message: string, onPress?: () => void) =>
-    showToast({ type: 'notification', title, description: message, onPress })
+    showToast({
+      type: 'notification',
+      title,
+      description: message,
+      time: 9000,
+      onPress,
+    })
 
   return (
     <ToastContext.Provider

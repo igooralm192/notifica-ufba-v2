@@ -15,6 +15,9 @@ export * from './discipline-group/useRemoveDisciplineGroupStudent'
 export * from './discipline-group/useSubscribeStudent'
 export * from './discipline-group/useUnsubscribeStudent'
 
+export * from './experiment/useGeneratePost'
+export * from './experiment/useGenerateMessage'
+
 export * from './student/useCreateStudent'
 export * from './student/useUpdateMyStudent'
 
