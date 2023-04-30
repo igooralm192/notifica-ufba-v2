@@ -11,6 +11,7 @@ export type ILimitStore = {
   [P in ILimitType]: ILimitData
 } & {
   inc(type: ILimitType): boolean
+  available(type: ILimitType): boolean
 }
 
 const limitStore = create<ILimitStore>((set, get) => ({
@@ -27,6 +28,11 @@ const limitStore = create<ILimitStore>((set, get) => ({
 
     return true
   },
+  available: (type) => { 
+    const limit = get()[type]
+
+    return limit.used < limit.total
+  }
 }))
 
 export const getLimitStore = () => limitStore

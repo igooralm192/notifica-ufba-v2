@@ -47,6 +47,13 @@ export type AppNavigation = {
     ) => void
   }
 
+  SearchSubscribedGroupsScreen: {
+    onDisciplineGroupSelected: (
+      discipline: IDiscipline,
+      disciplineGroup: IDisciplineGroup,
+    ) => void
+  }
+
   SendFeedbackScreen: undefined
 
   DisciplineGroupTabsScreen: {

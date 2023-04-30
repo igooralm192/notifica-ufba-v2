@@ -19,7 +19,8 @@ import {
   SearchGroupsSubscribeScreen,
   SearchDisciplinesScreen,
   SendFeedbackScreen,
-  ExperimentScreen
+  ExperimentScreen,
+  SearchSubscribedGroupsScreen,
 } from '@/screens'
 import { AuthState } from '@/store/auth/types'
 
@@ -102,6 +103,12 @@ const Routes: React.FC = () => {
                   />
 
                   <Stack.Screen
+                    name="SearchSubscribedGroupsScreen"
+                    component={SearchSubscribedGroupsScreen}
+                    options={{ headerShown: false, presentation: 'modal' }}
+                  />
+
+                  <Stack.Screen
                     name="SendFeedbackScreen"
                     component={SendFeedbackScreen}
                   />
@@ -109,9 +116,9 @@ const Routes: React.FC = () => {
                   <Stack.Screen
                     name="EditProfileScreen"
                     component={EditProfileScreen}
-                    />
-                    
-                    <Stack.Screen
+                  />
+
+                  <Stack.Screen
                     name="ExperimentScreen"
                     component={ExperimentScreen}
                   />
