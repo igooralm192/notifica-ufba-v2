@@ -1,7 +1,11 @@
 export namespace IGeneratePostEndpoint {
-  export interface Request {}
+  export interface Params {
+    disciplineGroupId: string
+  }
 }
 
 export namespace IGenerateMessageEndpoint {
-  export interface Request {}
+  export interface Params {
+    disciplineGroupId: string
+  }
 }
