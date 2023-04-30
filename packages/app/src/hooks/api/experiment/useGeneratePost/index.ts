@@ -9,8 +9,8 @@ export const useGeneratePost = (): IUseGeneratePost.Output => {
   const toast = useToast()
 
   const { isLoading: isGenerating, mutateAsync: generate } = useMutation(
-    (input: IUseGeneratePost.Body) => {
-      const isAvailable = getLimitStore().getState().inc('generatePost')
+    (input: IUseGeneratePost.Params) => {
+      const isAvailable = getLimitStore().getState().available('generatePost')
 
       if (!isAvailable)
         throw new Error(
@@ -21,6 +21,8 @@ export const useGeneratePost = (): IUseGeneratePost.Output => {
     },
     {
       onSuccess: () => {
+        getLimitStore().getState().inc('generatePost')
+
         const { used, total } = getLimitStore().getState().generatePost
 
         toast.success(

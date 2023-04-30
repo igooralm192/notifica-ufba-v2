@@ -9,8 +9,10 @@ export const useGenerateMessage = (): IUseGenerateMessage.Output => {
   const toast = useToast()
 
   const { isLoading: isGenerating, mutateAsync: generate } = useMutation(
-    (input: IUseGenerateMessage.Body) => {
-      const isAvailable = getLimitStore().getState().inc('generateMessage')
+    (input: IUseGenerateMessage.Params) => {
+      const isAvailable = getLimitStore()
+        .getState()
+        .available('generateMessage')
 
       if (!isAvailable)
         throw new Error(
@@ -21,7 +23,10 @@ export const useGenerateMessage = (): IUseGenerateMessage.Output => {
     },
     {
       onSuccess: () => {
+        getLimitStore().getState().inc('generateMessage')
+
         const { used, total } = getLimitStore().getState().generateMessage
+
         toast.success(
           `A mensagem irá ser gerada em 20 segundos, por favor minimize o aplicativo e aguarde.\n\nSolicitações restantes: ${used}/${total}`,
         )
