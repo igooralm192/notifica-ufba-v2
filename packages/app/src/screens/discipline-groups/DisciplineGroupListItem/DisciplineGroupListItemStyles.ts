@@ -9,6 +9,7 @@ export const Container = styled.Pressable`
 `
 
 export const LeftContainer = styled.View`
+  flex: 1;
   padding: 16px;
 `
 export const LeftTopContainer = styled.View``
