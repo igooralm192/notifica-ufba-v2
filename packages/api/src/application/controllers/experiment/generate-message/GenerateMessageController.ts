@@ -4,9 +4,9 @@ import { BaseController } from '@/application/helpers'
 import { MissingParamsError } from '@/application/errors'
 
 export namespace IGenerateMessageController {
-  export type Body = IGenerateMessageUseCase.Input
+  export type Params = IGenerateMessageUseCase.Params
 
-  export type Request = BaseController.Request<Body>
+  export type Request = BaseController.Request<any, any, Params>
 }
 
 export class GenerateMessageController extends BaseController {
@@ -23,8 +23,15 @@ export class GenerateMessageController extends BaseController {
       return this.forbidden(new MissingParamsError())
     }
 
+    const disciplineGroupId = request.params?.disciplineGroupId
+
+    if (!disciplineGroupId) {
+      return this.forbidden(new MissingParamsError())
+    }
+
     const result = await this.generateMessageUseCase.generateMessage({
       context: { userId },
+      params: { disciplineGroupId },
     })
 
     if (result.isRight()) {

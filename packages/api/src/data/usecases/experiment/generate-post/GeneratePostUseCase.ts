@@ -20,6 +20,7 @@ export class GeneratePostUseCase implements IGeneratePostUseCase {
 
   async generatePost({
     context,
+    params
   }: IGeneratePostUseCase.Input): Promise<
     Either<BaseError, IGeneratePostUseCase.Output>
   > {
@@ -32,7 +33,7 @@ export class GeneratePostUseCase implements IGeneratePostUseCase {
     })
 
     const disciplineGroup = await this.findOneDisciplineGroupRepository.findOne(
-      { where: { id: '642b2053e2baeceac4a802a6' } }, // IC0029
+      { where: { id: params.disciplineGroupId} },
     )
 
     if (!disciplineGroup) {

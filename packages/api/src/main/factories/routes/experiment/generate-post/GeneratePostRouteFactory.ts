@@ -6,7 +6,7 @@ import { Router } from 'express'
 
 export const makeGeneratePostRoute = (router: Router) => {
   router.post(
-    '/post',
+    '/post/:disciplineGroupId',
     ExpressMiddlewareAdapter.adapt(makeAuthorizeUserMiddleware()),
     ExpressRouteAdapter.adapt(makeGeneratePostController()),
   )

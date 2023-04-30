@@ -17,6 +17,7 @@ export class GenerateMessageUseCase implements IGenerateMessageUseCase {
 
   async generateMessage({
     context,
+    params,
   }: IGenerateMessageUseCase.Input): Promise<
     Either<BaseError, IGenerateMessageUseCase.Output>
   > {
@@ -29,7 +30,7 @@ export class GenerateMessageUseCase implements IGenerateMessageUseCase {
     })
 
     const disciplineGroup = await this.findOneDisciplineGroupRepository.findOne(
-      { where: { id: '642b2053e2baeceac4a802a6' } }, // IC0029
+      { where: { id: params.disciplineGroupId } },
     )
 
     if (!disciplineGroup) {

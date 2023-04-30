@@ -5,8 +5,14 @@ export namespace IGenerateMessageUseCase {
   export type Context = {
     userId: string
   }
+
+  export type Params = {
+    disciplineGroupId: string
+  }
+
   export type Input = {
     context: Context
+    params: Params
   }
 
   export type Output = void
