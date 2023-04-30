@@ -1,8 +1,11 @@
+import { IDiscipline, IDisciplineGroup } from '@shared/entities'
+
 import { Spacer } from '@/components/Spacer'
 import { Spinner } from '@/components/Spinner'
 import { useStatusBar } from '@/contexts/status-bar'
+import { useNavigation } from '@/helpers'
 
-import React from 'react'
+import React, { useState } from 'react'
 import {
   ScrollView,
   TouchableOpacity,
@@ -16,6 +19,8 @@ import {
 } from './ExperimentPresenter'
 import {
   Container,
+  InputContainer,
+  ExperimentInput,
   OptionContainer,
   OptionIcon,
   OptionName,
@@ -57,37 +62,89 @@ function ExperimentLoading() {
 const ExperimentScreen: React.FC<ExperimentScreenProps> = () => {
   const { generatePost, generateMessage } = useExperimentPresenter()
 
+  const navigation = useNavigation()
+
+  const [discipline, setDiscipline] = useState<IDiscipline | null>(null)
+  const [disciplineGroup, setDisciplineGroup] =
+    useState<IDisciplineGroup | null>(null)
+
+  const handleDisciplineGroupSelected = (
+    discipline: IDiscipline,
+    disciplineGroup: IDisciplineGroup,
+  ) => {
+    setDiscipline(discipline)
+    setDisciplineGroup(disciplineGroup)
+  }
+
+  const handleGeneratePost = () => {
+    if (discipline && disciplineGroup) {
+      generatePost.generate(disciplineGroup?.id)
+    }
+  }
+
+  const handleGenerateMessage = () => {
+    if (discipline && disciplineGroup) {
+      generateMessage.generate(disciplineGroup?.id)
+    }
+  }
+
   useStatusBar('primary')
 
   return (
     <Container headerProps={{ title: 'Experimento UFBA' }}>
       <ScrollView contentContainerStyle={{ paddingTop: 24 }}>
-        <ExperimentButton
-          disabled={generatePost.loading}
-          onPress={generatePost.generate}
+        <InputContainer
+          onPress={() => {
+            navigation.navigate('SearchSubscribedGroupsScreen', {
+              onDisciplineGroupSelected: handleDisciplineGroupSelected,
+            })
+          }}
         >
-          {generatePost.loading ? (
-            <ExperimentLoading />
-          ) : (
-            <OptionIcon name="post-add" />
-          )}
+          <ExperimentInput
+            label="Turma"
+            placeholder="Selecione uma turma"
+            pointerEvents="none"
+            selection={{ start: 0, end: 0 }}
+            value={
+              discipline && disciplineGroup
+                ? `${discipline?.code} | ${disciplineGroup?.code}`
+                : undefined
+            }
+            editable={false}
+            testID="experiment-discipline-group-input"
+          />
+        </InputContainer>
 
-          <OptionName>Gerar postagem - IC0029</OptionName>
-        </ExperimentButton>
+        {discipline && disciplineGroup && (
+          <>
+            <ExperimentButton
+              disabled={generatePost.loading}
+              onPress={handleGeneratePost}
+            >
+              {generatePost.loading ? (
+                <ExperimentLoading />
+              ) : (
+                <OptionIcon name="post-add" />
+              )}
 
-        <Spacer s={12} />
+              <OptionName>Gerar postagem</OptionName>
+            </ExperimentButton>
 
-        <ExperimentButton
-          disabled={generateMessage.loading}
-          onPress={generateMessage.generate}
-        >
-          {generateMessage.loading ? (
-            <ExperimentLoading />
-          ) : (
-            <OptionIcon name="add-comment" />
-          )}
-          <OptionName>Gerar mensagem - IC0029</OptionName>
-        </ExperimentButton>
+            <Spacer s={12} />
+
+            <ExperimentButton
+              disabled={generateMessage.loading}
+              onPress={handleGenerateMessage}
+            >
+              {generateMessage.loading ? (
+                <ExperimentLoading />
+              ) : (
+                <OptionIcon name="add-comment" />
+              )}
+              <OptionName>Gerar mensagem</OptionName>
+            </ExperimentButton>
+          </>
+        )}
       </ScrollView>
     </Container>
   )

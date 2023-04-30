@@ -1,4 +1,4 @@
-import UserSVG from '@/assets/user.svg'
+import { Input } from '@/components/Input'
 import { Layout } from '@/components/Layout'
 import { Stack } from '@/components/Stack'
 
@@ -7,44 +7,20 @@ import styled from 'styled-components/native'
 
 export const Container = styled(Layout)``
 
-export const UserContainer = styled.View`
-  padding: 24px;
-  align-items: center;
+export const InputContainer = styled.Pressable`
+  margin: 0 24px 16px;
 `
 
-export const PhotoContainer = styled.View`
-  width: 100px;
-  height: 100px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50px;
-  background-color: #ebffde;
-  overflow: hidden;
-`
+export const ExperimentInput = styled(Input).attrs({
+  inputContainerStyle: {
+    paddingVertical: 4,
+    paddingHorizontal: 4,
+  },
 
-export const PhotoEditContainer = styled.View`
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  width: 32px;
-  height: 32px;
-  border-radius: 16px;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid white;
-  background-color: ${({ theme }) => theme.colors.primary};
-`
-
-export const Photo = styled.Image`
-  width: 100%;
-  height: 100%;
-`
-export const UserName = styled(Text)`
-  font-family: 'Quicksand_700Bold';
-  font-size: 24px;
-`
-
-export const UserImagePlaceholder = styled(UserSVG)``
+  labelStyle: {
+    paddingVertical: 8,
+  },
+})``
 
 export const OptionsContainer = styled.View``
 

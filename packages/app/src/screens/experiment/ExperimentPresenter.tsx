@@ -4,11 +4,11 @@ import React, { useContext } from 'react'
 export interface ExperimentPresenterContextData {
   generatePost: {
     loading: boolean
-    generate(): Promise<void>
+    generate(disciplineGroupId: string): Promise<void>
   }
   generateMessage: {
     loading: boolean
-    generate(): Promise<void>
+    generate(disciplineGroupId: string): Promise<void>
   }
 }
 
@@ -22,11 +22,11 @@ export const ExperimentPresenter = ({ children }: React.PropsWithChildren) => {
   const { isGenerating: isGeneratingMessage, generate: generateMessage } =
     useGenerateMessage()
 
-  const handleGeneratePost = async () => {
-    await generatePost({})
+  const handleGeneratePost = async (disciplineGroupId: string) => {
+    await generatePost({ disciplineGroupId })
   }
-  const handleGenerateMessage = async () => {
-    await generateMessage({})
+  const handleGenerateMessage = async (disciplineGroupId: string) => {
+    await generateMessage({ disciplineGroupId })
   }
 
   return (
