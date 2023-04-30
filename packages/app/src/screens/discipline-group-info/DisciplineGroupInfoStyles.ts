@@ -1,5 +1,6 @@
 import { Button } from '@/components/Button'
 import { Layout } from '@/components/Layout'
+import { TextLink } from '@/components/TextLink'
 import { Text } from '@rneui/themed'
 import styled from 'styled-components/native'
 
@@ -71,7 +72,7 @@ export const SectionLabel = styled(Text)`
   font-size: 12px;
 `
 
-export const SectionText = styled(Text)`
+export const SectionText = styled(TextLink)`
   color: ${({ theme }) => theme.colors.black};
   font-family: 'Quicksand_500Medium';
   font-size: 14px;
