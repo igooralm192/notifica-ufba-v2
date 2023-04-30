@@ -122,6 +122,7 @@ const Header: React.FC<HeaderProps> = ({
                 statusBar.theme === 'light'
                   ? theme.colors.black
                   : theme.colors.white,
+              textAlign: 'center',
             }}
           >
             {subtitle}
