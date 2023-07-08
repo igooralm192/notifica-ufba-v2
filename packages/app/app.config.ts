@@ -61,15 +61,13 @@ export default {
         projectId: "40b5b6cf-6fef-4d26-b431-b2577f3ef390",
       },
     },
-    runtimeVersion: "exposdk:46.0.0",
+    runtimeVersion: "exposdk:48.0.0",
     plugins: [
-      "sentry-expo",
-      // "@notifee/react-native",
       [
         "expo-image-picker",
         {
-          cameraPermission: "O aplicativo irá utilizar sua camera.",
-          photosPermission: "O aplicativo irá acessar suas fotos.",
+          cameraPermission: "O aplicativo precisa da sua permissão para utilizar a câmera.",
+          photosPermission: "O aplicativo precisa da sua permissão para acessar as fotos.",
         },
       ],
     ],

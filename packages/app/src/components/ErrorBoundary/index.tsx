@@ -4,7 +4,6 @@ import {
   FallbackProps,
 } from 'react-error-boundary'
 import { useQueryErrorResetBoundary } from 'react-query'
-import * as Sentry from 'sentry-expo'
 
 import {
   Container,
@@ -43,7 +42,6 @@ export const ErrorBoundary: React.FC<React.PropsWithChildren> = ({ children }) =
 
   const handleError = (error: Error) => {
     console.log('ERRO', error)
-    Sentry.Native.captureException(error)
   }
 
   return (

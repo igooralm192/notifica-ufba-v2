@@ -2,21 +2,12 @@ import { Providers } from '@/components/Providers'
 import Routes from '@/routes'
 import { getProviderStore } from '@/state/zustand/provider'
 
-import * as SentryNative from '@sentry/react-native'
 import * as SplashScreen from 'expo-splash-screen'
-import * as Updates from 'expo-updates'
 import React, { useEffect } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import * as Sentry from 'sentry-expo'
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync()
-
-Sentry.init({
-  dsn: 'https://f1c9e1659ccd415eb67af0751dc68303@o4504024240029696.ingest.sentry.io/4504024240881664',
-  enableInExpoDevelopment: true,
-  debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
-})
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -29,17 +20,6 @@ const App: React.FC = () => {
     })
   }, [])
 
-  useEffect(() => {
-    async function updateApp() {
-      const { isAvailable } = await Updates.checkForUpdateAsync();
-      if (isAvailable) {
-        await Updates.fetchUpdateAsync();
-        await Updates.reloadAsync(); // depende da sua estratégia
-      }
-    }
-    updateApp();
-  }, []);
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Providers>
@@ -49,4 +29,4 @@ const App: React.FC = () => {
   )
 }
 
-export default SentryNative.wrap(App)
+export default App

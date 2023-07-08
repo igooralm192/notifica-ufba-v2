@@ -35,7 +35,7 @@ const AuthProviderBase: React.FC<React.PropsWithChildren> = ({ children }) => {
     const interceptorId = api.instance.interceptors.response.use(
       undefined,
       async (error: BaseError) => {
-        if (error.code === 'ExpiredTokenError') {
+        if (error?.code === 'ExpiredTokenError') {
           signOut()
 
           toast.error('Seu token expirou, favor realizar login novamente.')
